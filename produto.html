@@ -381,7 +381,7 @@ async function prepararModelo() {
   } else {
     const mats = {
       madeira: new THREE.MeshStandardMaterial({ name: 'madeira', color: 0xffffff, roughness: 0.5, metalness: 0 }),
-      tecido: new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.55, sheenColor: new THREE.Color(0.16, 0.16, 0.16) }),
+      tecido: new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.55, sheenColor: new THREE.Color(0.16, 0.16, 0.16), side: THREE.DoubleSide }),   // dois lados: alguns blocos trazem o tampo como uma folha aberta
       palha: new THREE.MeshStandardMaterial({ name: 'palha', color: 0xffffff, roughness: 0.7, metalness: 0, side: THREE.DoubleSide, alphaTest: 0.5 }),
       metal: new THREE.MeshStandardMaterial({ name: 'metal', color: new THREE.Color(P.corMetal || '#B9B6AE'), roughness: 0.32, metalness: 1 }),
       preto: new THREE.MeshStandardMaterial({ name: 'preto', color: 0x1c1b1a, roughness: 0.6, metalness: 0 }),
