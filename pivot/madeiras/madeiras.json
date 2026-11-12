@@ -1,0 +1,11 @@
+{
+  "fonte": "foto real das réguas Alma (WhatsApp 10/11/2026, verso), retificada e nivelada; ordem deduzida espelhando a frente do cartão (verso: Semibrilho, Nero, Mocca, Castanho, Avelã com selo ALMA) — confirmada por Matheus em 12/11/2026",
+  "obs": "texturas de baixa resolução (96-180 px de largura); usar repetição no 3D. M05 = base da M04 com a cor média real da M05; brilho vem do material",
+  "madeiras": {
+    "Avelã M01":                 { "textura": "m01-avela.png",           "cor_media": "#B37344", "roughness": 0.55 },
+    "Castanho M02":              { "textura": "m02-castanho.png",        "cor_media": "#A26A3D", "roughness": 0.55 },
+    "Mocca M03":                 { "textura": "m03-mocca.png",           "cor_media": "#754C2C", "roughness": 0.55 },
+    "Nero Fosco M04":            { "textura": "m04-nero.png",            "cor_media": "#2D2D31", "roughness": 0.80 },
+    "Nero Fosco Semibrilho M05": { "textura": "m05-nero-semibrilho.png", "cor_media": "#272424", "roughness": 0.35 }
+  }
+}
