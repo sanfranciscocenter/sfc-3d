@@ -5,7 +5,7 @@ export const PRODUTOS = {
   'cartier-cadeira': {
     nome: 'Cadeira Cartier', sobre: 'Alma Mobília',
     glb: 'alma/modelos/cartier-cadeira.glb',
-    palhaTile: 0.036,   // trama mais fina, como na foto do anúncio
+    // trama da palha: a mesma da Pivot (padrão 0,054). Matheus confirmou em 12/11/2026; não usar palhaTile aqui.
     // #2 é o aro em volta da palha do assento (o vivo); #3 palha do assento; #4 palha do encosto
     partes: { '*1': 'madeira', '#2': 'vivo', '*': 'palha', '*2': 'palha' },
     forro: ['#3'],   // na foto real o assento não é vazado: fundo liso atrás da palha
