@@ -134,8 +134,9 @@ const GLB = CDN + 'modelo/pivot-estofada-draco.glb';
 const TECIDO_TILE = 0.18;                    // lado da foto do tecido (um pouco ampliado para a trama aparecer)
 const MADEIRA_U = 0.045, MADEIRA_V = 0.16;   // largura x comprimento da tábua fotografada
 const PALHA_TILE = 0.054;                    // 4 células de palha
-// moldura do encosto em palha (metros), medidas estimadas pelas fotos do produto
-const QUADRO = { folga: 0.022, fundo: 0.034, chanfro: 0.005, raio: 0.032, raioFuro: 0.014, lado: 0.03, cima: 0.028, baixo: 0.058, borda: 0.011, vivo: 0.007, avanco: 0.012 };
+// Encosto em palha (metros). Tamanho, espessura e arredondamento vêm do encosto estofado do próprio modelo.
+// Abaixo, só o que foi medido na foto frontal do produto (786 px = 38,8 cm de largura).
+const QUADRO = { lado: 0.031, cima: 0.034, baixo: 0.083, raioFuro: 0.008, borda: 0.0165, bordaBaixo: 0.03, vivo: 0.006, raioTela: 0.005 };
 
 const MADEIRAS = [
   ['Avelã M01','m01-avela.jpg',0.48],
@@ -248,7 +249,17 @@ function encostoPalha(geoTecido, an, raizEncosto) {
   const incl = Math.atan((n * syz - sy * sz) / Math.max(1e-9, n * syy - sy * sy));   // inclinação para trás
   // Medidas tiradas das fotos reais: moldura de cantos arredondados, travessa de baixo mais alta,
   // palha aplicada NA FRENTE da moldura (não embutida), também de cantos arredondados e com vivo em volta.
-  const Q = QUADRO, w = cx.tam[0] + Q.folga, h = cx.tam[1] / Math.max(0.5, Math.cos(incl));
+  // A moldura copia o encosto estofado: mesma largura, altura, espessura, posição e arredondamento.
+  // As medidas saem do próprio estofado, visto de frente (sem a inclinação).
+  const Q = QUADRO, c0 = new THREE.Vector3(...cx.centro), desfaz = new THREE.Matrix4().makeRotationX(-incl), pl = [], v3 = new THREE.Vector3();
+  const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9];
+  for (const i of vistos) { v3.fromBufferAttribute(pos, i).sub(c0).applyMatrix4(desfaz); const p = [v3.x, v3.y, v3.z]; pl.push(p);
+    for (let a = 0; a < 3; a++) { if (p[a] < mn[a]) mn[a] = p[a]; if (p[a] > mx[a]) mx[a] = p[a]; } }
+  const w = mx[0] - mn[0], h = mx[1] - mn[1], fundo = mx[2] - mn[2], meio = [0, 1, 2].map(a => (mx[a] + mn[a]) / 2);
+  // num canto arredondado de raio r, o ponto mais próximo da quina da caixa fica a r·(√2−1) dela
+  const raioDe = (a, b) => { let d = 1e9; for (const p of pl) for (const sa of [mn[a], mx[a]]) for (const sb of [mn[b], mx[b]]) d = Math.min(d, Math.hypot(p[a] - sa, p[b] - sb)); return d / (Math.SQRT2 - 1); };
+  const raio = Math.min(Math.max(raioDe(0, 1), 0.004), Math.min(w, h) / 3);
+  const chanfro = Math.min(Math.max(Math.min(raioDe(0, 2), raioDe(1, 2)), 0.002), fundo / 2 - 0.002);
   const ret = (alvo, x0, y0, x1, y1, r) => {   // retângulo de cantos arredondados
     alvo.moveTo(x0 + r, y0); alvo.lineTo(x1 - r, y0); alvo.quadraticCurveTo(x1, y0, x1, y0 + r);
     alvo.lineTo(x1, y1 - r); alvo.quadraticCurveTo(x1, y1, x1 - r, y1);
@@ -257,24 +268,27 @@ function encostoPalha(geoTecido, an, raizEncosto) {
   };
   const X = w / 2, Y = h / 2;
   // moldura: anel extrudado com as arestas suavizadas
-  const anel = ret(new THREE.Shape(), -X, -Y, X, Y, Q.raio);
+  const anel = ret(new THREE.Shape(), -X, -Y, X, Y, raio);
   anel.holes.push(ret(new THREE.Path(), -X + Q.lado, -Y + Q.baixo, X - Q.lado, Y - Q.cima, Q.raioFuro));
-  const gAnel = new THREE.ExtrudeGeometry(anel, { depth: Q.fundo - 2 * Q.chanfro, bevelEnabled: true, bevelThickness: Q.chanfro, bevelSize: Q.chanfro, bevelSegments: 4, curveSegments: 10 })
-    .translate(0, 0, -Q.fundo / 2 + Q.chanfro);
+  // bevelOffset negativo: o arredondamento da aresta não aumenta o tamanho de fora
+  const gAnel = new THREE.ExtrudeGeometry(anel, { depth: fundo - 2 * chanfro, bevelEnabled: true, bevelThickness: chanfro, bevelSize: chanfro, bevelOffset: -chanfro, bevelSegments: 5, curveSegments: 12 })
+    .translate(0, 0, -fundo / 2 + chanfro);
   // veio: na vertical nas laterais, na horizontal nas travessas
   const moldura = monta(gAnel, analisa(gAnel), 'madeira', null, x => Math.abs(x) > X - Q.lado ? 1 : 0);
-  // tela de palha na frente, com uma borda de madeira aparecendo em volta
-  const bx = X - Q.borda, by = Y - Q.borda, rt = Math.max(0.004, Q.raio - Q.borda), zf = Q.fundo / 2 + Q.chanfro + 0.0012;
-  const tela = new THREE.ShapeGeometry(ret(new THREE.Shape(), -bx, -by, bx, by, rt), 10).toNonIndexed().translate(0, 0, zf);
+  // tela de palha na frente, com a borda de madeira aparecendo em volta (medida na foto frontal)
+  const bx = X - Q.borda, y0 = -Y + Q.bordaBaixo, y1 = Y - Q.borda, zf = fundo / 2 + 0.0012;
+  const tela = new THREE.ShapeGeometry(ret(new THREE.Shape(), -bx, y0, bx, y1, Q.raioTela), 10).toNonIndexed().translate(0, 0, zf);
   const tp = tela.attributes.position, tuv = new Float32Array(tp.count * 2);
   for (let i = 0; i < tp.count; i++) { tuv[i * 2] = tp.getX(i) / PALHA_TILE; tuv[i * 2 + 1] = tp.getY(i) / PALHA_TILE; }
   tela.setAttribute('uv', new THREE.BufferAttribute(tuv, 2));
   // vivo: o acabamento trançado que contorna a palha
-  const fita = ret(new THREE.Shape(), -bx - Q.vivo / 2, -by - Q.vivo / 2, bx + Q.vivo / 2, by + Q.vivo / 2, rt + Q.vivo / 2);
-  fita.holes.push(ret(new THREE.Path(), -bx + Q.vivo / 2, -by + Q.vivo / 2, bx - Q.vivo / 2, by - Q.vivo / 2, Math.max(0.002, rt - Q.vivo / 2)));
-  const vivo = new THREE.ExtrudeGeometry(fita, { depth: 0.0025, bevelEnabled: true, bevelThickness: 0.001, bevelSize: 0.001, bevelSegments: 2, curveSegments: 10 }).translate(0, 0, zf);
+  const v2 = Q.vivo / 2, fita = ret(new THREE.Shape(), -bx - v2, y0 - v2, bx + v2, y1 + v2, Q.raioTela + v2);
+  fita.holes.push(ret(new THREE.Path(), -bx + v2, y0 + v2, bx - v2, y1 - v2, Math.max(0.0015, Q.raioTela - v2)));
+  const vivo = new THREE.ExtrudeGeometry(fita, { depth: 0.002, bevelEnabled: true, bevelThickness: 0.001, bevelSize: 0.001, bevelOffset: -0.001, bevelSegments: 2, curveSegments: 10 }).translate(0, 0, zf);
   vivo.deleteAttribute('uv');
-  const M = new THREE.Matrix4().makeRotationX(incl).setPosition(cx.centro[0], cx.centro[1], cx.centro[2] + Q.avanco);
+  // volta para o lugar exato do estofado (mesmo centro, mesma inclinação)
+  const M = new THREE.Matrix4().makeRotationX(incl).multiply(new THREE.Matrix4().makeTranslation(meio[0], meio[1], meio[2])).premultiply(new THREE.Matrix4().makeTranslation(c0.x, c0.y, c0.z));
+  console.info('[encosto palha] largura', w.toFixed(3), 'altura', h.toFixed(3), 'espessura', fundo.toFixed(3), 'raio do canto', raio.toFixed(4), 'aresta', chanfro.toFixed(4));
   moldura.applyMatrix4(M); tela.applyMatrix4(M); vivo.applyMatrix4(M);
   return { moldura, tela, vivo };
 }
