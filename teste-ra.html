@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Teste RA · Cadeira Pivot</title>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <style>
   :root { --bg:#f6f3ee; --ink:#2b2622; --muted:#7a7068; --line:#e2dbd1; --accent:#2b2622; }
@@ -13,7 +16,9 @@
   header { padding:16px 16px 0; }
   h1 { font-size:18px; font-weight:600; margin:0; }
   header p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+  .stage { position:relative; }
   model-viewer { width:100%; height:58vh; min-height:340px; background:linear-gradient(#fbfaf7,#efe9e0); --poster-color:transparent; }
+  .status { position:absolute; left:0; right:0; top:45%; text-align:center; color:var(--muted); font-size:13px; pointer-events:none; }
   .ar-btn { position:absolute; right:12px; bottom:12px; border:0; border-radius:999px; background:var(--accent); color:#fff; padding:10px 16px; font:600 14px system-ui; }
   section { padding:12px 16px; border-top:1px solid var(--line); }
   h2 { font-size:13px; font-weight:600; margin:0 0 8px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
@@ -22,7 +27,6 @@
   .grp { font-size:12px; color:var(--muted); margin:8px 0 6px; }
   .sw { width:40px; height:40px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 1px var(--line); background-size:cover; background-position:center; cursor:pointer; padding:0; }
   .sw[aria-pressed="true"] { box-shadow:0 0 0 2px var(--accent); }
-  footer { padding:12px 16px 32px; color:var(--muted); font-size:12px; }
 </style>
 </head>
 <body>
@@ -31,14 +35,16 @@
   <p>Página interna de teste. Toque em “Ver no meu ambiente” no celular.</p>
 </header>
 
-<model-viewer id="mv"
-  src="https://cdn.jsdelivr.net/gh/matheussanfrancisco/sfc-3d@main/pivot/modelo/pivot-estofada-draco.glb"
-  alt="Cadeira Pivot em 3D"
-  camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1"
-  environment-image="neutral"
-  ar ar-modes="webxr quick-look scene-viewer" ar-scale="fixed" ar-placement="floor">
-  <button slot="ar-button" class="ar-btn">Ver no meu ambiente</button>
-</model-viewer>
+<div class="stage">
+  <model-viewer id="mv"
+    alt="Cadeira Pivot em 3D"
+    camera-controls touch-action="pan-y" shadow-intensity="1.1" shadow-softness="0.9" exposure="1.05"
+    environment-image="neutral" tone-mapping="commerce" interpolation-decay="120"
+    ar ar-modes="webxr quick-look" ar-scale="fixed" ar-placement="floor">
+    <button slot="ar-button" class="ar-btn">Ver no meu ambiente</button>
+  </model-viewer>
+  <div class="status" id="status">Preparando o modelo…</div>
+</div>
 
 <section>
   <h2>Madeira <b id="nm-madeira"></b></h2>
@@ -48,68 +54,201 @@
   <h2>Acabamento <b id="nm-tecido"></b></h2>
   <div id="tecidos"></div>
 </section>
-<footer>Nesta versão de teste as cores são a média de cada amostra. A textura real (trama e veio) entra na próxima etapa.</footer>
 
 <script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+
 const CDN = 'https://cdn.jsdelivr.net/gh/matheussanfrancisco/sfc-3d@main/pivot/';
+const GLB = CDN + 'modelo/pivot-estofada-draco.glb';
+
+// Tamanho real que cada textura cobre (em metros)
+const TECIDO_TILE = 0.16;          // atlas espelhado 2x2: cada quadrante = 8 cm de tecido
+const MADEIRA_U = 0.045, MADEIRA_V = 0.20;  // largura x comprimento do veio
+
 const MADEIRAS = [
-  ['Avelã M01','m01-avela.png','#B37344',0.55],
-  ['Castanho M02','m02-castanho.png','#A26A3D',0.55],
-  ['Mocca M03','m03-mocca.png','#754C2C',0.55],
-  ['Nero Fosco M04','m04-nero.png','#2D2D31',0.80],
-  ['Nero Fosco Semibrilho M05','m05-nero-semibrilho.png','#272424',0.35]
+  ['Avelã M01','m01-avela.png',0.50],
+  ['Castanho M02','m02-castanho.png',0.50],
+  ['Mocca M03','m03-mocca.png',0.50],
+  ['Nero Fosco M04','m04-nero.png',0.85],
+  ['Nero Fosco Semibrilho M05','m05-nero-semibrilho.png',0.32]
 ];
-const COR = {"501":"#71766D","502":"#875752","503":"#695043","504":"#485863","505":"#7A4B2E","507":"#AB894C","514":"#BBBBBE","517":"#BDBAB7","523":"#A2A5AF","524":"#716E70","525":"#1E1F23","530":"#875642","534":"#683417","535":"#605956","537":"#1C1C1C","538":"#AEA7A3","539":"#888889","540":"#5E5E63","541":"#7D6251","542":"#555852","543":"#BEBDBF","544":"#C7C7C7","545":"#6B615F","546":"#272930","547":"#717070","548":"#845233","549":"#76635B","550":"#716C4A","551":"#9E8A70","552":"#4D3829","553":"#555026","554":"#BE7023","555":"#916D37","556":"#99633C"};
 const GRUPOS = [
-  ['Tecido Essencial', [501,514,517,523,524,525,530,539,542,543,545,546,547,548,549,550], 0.95],
-  ['Tecido Premium',   [502,503,504,505,507,538,540,541,544], 0.95],
-  ['Couro',            [534,535,537,551,552,553,554,555,556], 0.5]
+  ['Tecido Essencial', [501,514,517,523,524,525,530,539,542,543,545,546,547,548,549,550], 1.0, 2.2],
+  ['Tecido Premium',   [502,503,504,505,507,538,540,541,544], 1.0, 2.2],
+  ['Couro',            [534,535,537,551,552,553,554,555,556], 0.55, 1.2]
 ];
 
 const mv = document.getElementById('mv');
-const mat = name => mv.model?.materials.find(m => m.name === name);
+const statusEl = document.getElementById('status');
 
-function swatch(label, img, onPick, group) {
+/* ---------- 1. Modelo: gera o mapeamento de textura (UV) em caixa ---------- */
+function componentes(geo) {
+  const pos = geo.attributes.position, n = pos.count;
+  const idx = geo.index ? geo.index.array : Uint32Array.from({ length: n }, (_, i) => i);
+  const mapa = new Map(), w = new Int32Array(n);
+  for (let i = 0; i < n; i++) {
+    const k = Math.round(pos.getX(i) * 1e4) + ',' + Math.round(pos.getY(i) * 1e4) + ',' + Math.round(pos.getZ(i) * 1e4);
+    let id = mapa.get(k); if (id === undefined) { id = mapa.size; mapa.set(k, id); } w[i] = id;
+  }
+  const pai = Int32Array.from({ length: mapa.size }, (_, i) => i);
+  const acha = a => { while (pai[a] !== a) { pai[a] = pai[pai[a]]; a = pai[a]; } return a; };
+  for (let t = 0; t < idx.length; t += 3) {
+    const a = acha(w[idx[t]]), b = acha(w[idx[t + 1]]), c = acha(w[idx[t + 2]]);
+    if (b !== a) pai[b] = a; const c2 = acha(c); if (c2 !== a) pai[c2] = a;
+  }
+  return { idx, raizDoTri: t => acha(w[idx[t * 3]]) };
+}
+
+function comUV(geo, modo) {
+  const pos = geo.attributes.position, nor = geo.attributes.normal;
+  const { idx, raizDoTri } = componentes(geo);
+  const nt = idx.length / 3;
+  // caixa de cada peça solta -> eixo mais comprido (direção do veio)
+  const caixas = new Map();
+  for (let t = 0; t < nt; t++) {
+    const r = raizDoTri(t); let b = caixas.get(r);
+    if (!b) { b = { min: [1e9, 1e9, 1e9], max: [-1e9, -1e9, -1e9] }; caixas.set(r, b); }
+    for (let k = 0; k < 3; k++) { const i = idx[t * 3 + k]; const p = [pos.getX(i), pos.getY(i), pos.getZ(i)];
+      for (let a = 0; a < 3; a++) { if (p[a] < b.min[a]) b.min[a] = p[a]; if (p[a] > b.max[a]) b.max[a] = p[a]; } }
+  }
+  for (const b of caixas.values()) { const d = [0, 1, 2].map(a => b.max[a] - b.min[a]); b.longo = d.indexOf(Math.max(...d)); }
+
+  const P = new Float32Array(nt * 9), N = new Float32Array(nt * 9), UV = new Float32Array(nt * 6);
+  const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), fn = new THREE.Vector3();
+  for (let t = 0; t < nt; t++) {
+    const i0 = idx[t * 3], i1 = idx[t * 3 + 1], i2 = idx[t * 3 + 2];
+    A.fromBufferAttribute(pos, i0); B.fromBufferAttribute(pos, i1); C.fromBufferAttribute(pos, i2);
+    fn.subVectors(B, A).cross(C.clone().sub(A));
+    const an = [Math.abs(fn.x), Math.abs(fn.y), Math.abs(fn.z)]; const nAxis = an.indexOf(Math.max(...an));
+    let uA, vA, su, sv;
+    if (modo === 'madeira') {
+      const L = caixas.get(raizDoTri(t)).longo;
+      if (L !== nAxis) { vA = L; uA = 3 - L - nAxis; } else { [uA, vA] = [0, 1, 2].filter(a => a !== nAxis); }
+      su = MADEIRA_U; sv = MADEIRA_V;
+    } else {
+      [uA, vA] = nAxis === 0 ? [2, 1] : nAxis === 1 ? [0, 2] : [0, 1];
+      su = sv = TECIDO_TILE;
+    }
+    [i0, i1, i2].forEach((i, k) => {
+      const p = [pos.getX(i), pos.getY(i), pos.getZ(i)];
+      P.set(p, t * 9 + k * 3);
+      if (nor) N.set([nor.getX(i), nor.getY(i), nor.getZ(i)], t * 9 + k * 3);
+      UV.set([p[uA] / su, p[vA] / sv], t * 6 + k * 2);
+    });
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(P, 3));
+  if (nor) g.setAttribute('normal', new THREE.BufferAttribute(N, 3)); else g.computeVertexNormals();
+  g.setAttribute('uv', new THREE.BufferAttribute(UV, 2));
+  return g;
+}
+
+async function prepararModelo() {
+  const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
+  const gltf = await new GLTFLoader().setDRACOLoader(draco).loadAsync(GLB);
+  gltf.scene.updateMatrixWorld(true);
+  const cena = new THREE.Scene();
+  gltf.scene.traverse(o => {
+    if (!o.isMesh) return;
+    const nome = (o.material.name || o.name || '').toLowerCase();
+    const geo = o.geometry.clone().applyMatrix4(o.matrixWorld);
+    const modo = nome.includes('madeira') ? 'madeira' : nome.includes('tecido') ? 'tecido' : null;
+    const g = modo ? comUV(geo, modo) : geo;
+    const m = new THREE.MeshStandardMaterial({ name: nome, color: 0xffffff, roughness: 0.6, metalness: 0 });
+    if (nome.includes('latao')) { m.color.set(0xCFA65F); m.roughness = 0.3; m.metalness = 0.9; }
+    const mesh = new THREE.Mesh(g, m); mesh.name = nome; cena.add(mesh);
+  });
+  const buf = await new GLTFExporter().parseAsync(cena, { binary: true });
+  return URL.createObjectURL(new Blob([buf], { type: 'model/gltf-binary' }));
+}
+
+/* ---------- 2. Texturas ---------- */
+const carregaImg = url => new Promise((ok, erro) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => ok(i); i.onerror = erro; i.src = url; });
+const blobURL = (canvas, tipo, q) => new Promise(ok => canvas.toBlob(b => ok(URL.createObjectURL(b)), tipo, q));
+
+// Tecido/couro: atlas espelhado 2x2 (repete sem emenda) + mapa de relevo tirado da própria foto
+async function texturasTecido(url, forca) {
+  const img = await carregaImg(url), Q = 512, S = Q * 2;
+  const c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d', { willReadFrequently: true });
+  for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) {
+    x.save(); x.translate(i ? S : 0, j ? S : 0); x.scale(i ? -1 : 1, j ? -1 : 1); x.drawImage(img, 0, 0, Q, Q); x.restore();
+  }
+  const d = x.getImageData(0, 0, S, S).data;
+  const h = new Float32Array(S * S);
+  for (let p = 0; p < S * S; p++) h[p] = (d[p * 4] * 0.299 + d[p * 4 + 1] * 0.587 + d[p * 4 + 2] * 0.114) / 255;
+  const cn = document.createElement('canvas'); cn.width = cn.height = S; const xn = cn.getContext('2d'); const out = xn.createImageData(S, S);
+  const H = (px, py) => h[((py + S) % S) * S + ((px + S) % S)];
+  for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) {
+    const dx = (H(px + 1, py) - H(px - 1, py)) * forca, dy = (H(px, py + 1) - H(px, py - 1)) * forca;
+    const inv = 1 / Math.hypot(dx, dy, 1), o = (py * S + px) * 4;
+    out.data[o] = (-dx * inv * 0.5 + 0.5) * 255; out.data[o + 1] = (dy * inv * 0.5 + 0.5) * 255; out.data[o + 2] = (inv * 0.5 + 0.5) * 255; out.data[o + 3] = 255;
+  }
+  xn.putImageData(out, 0, 0);
+  return { cor: await blobURL(c, 'image/jpeg', 0.9), relevo: await blobURL(cn, 'image/png') };
+}
+
+const cache = new Map();
+async function textura(chave, uri, tipo) {
+  if (!cache.has(chave)) cache.set(chave, (async () => {
+    const t = await mv.createTexture(uri, tipo);
+    t.sampler.setWrapS(10497); t.sampler.setWrapT(10497);
+    return t;
+  })());
+  return cache.get(chave);
+}
+const mat = nome => mv.model?.materials.find(m => m.name === nome);
+let vezM = 0, vezT = 0;
+
+async function aplicaMadeira(nome, arq, rough) {
+  const vez = ++vezM; document.getElementById('nm-madeira').textContent = nome;
+  const t = await textura('m:' + arq, CDN + 'madeiras/' + arq, 'image/png'); if (vez !== vezM) return;
+  const m = mat('madeira'); if (!m) return;
+  m.pbrMetallicRoughness.setBaseColorFactor('#ffffff');
+  m.pbrMetallicRoughness.baseColorTexture.setTexture(t);
+  m.pbrMetallicRoughness.setRoughnessFactor(rough);
+}
+async function aplicaTecido(nome, cod, rough, forca) {
+  const vez = ++vezT; document.getElementById('nm-tecido').textContent = nome;
+  const k = 't:' + cod;
+  if (!cache.has(k + ':uris')) cache.set(k + ':uris', texturasTecido(CDN + `acabamentos/crn-tc${cod}.jpg`, forca));
+  const uris = await cache.get(k + ':uris');
+  const [tc, tn] = await Promise.all([textura(k + ':c', uris.cor, 'image/jpeg'), textura(k + ':n', uris.relevo, 'image/png')]);
+  if (vez !== vezT) return;
+  const m = mat('tecido'); if (!m) return;
+  m.pbrMetallicRoughness.setBaseColorFactor('#ffffff');
+  m.pbrMetallicRoughness.baseColorTexture.setTexture(tc);
+  m.normalTexture.setTexture(tn);
+  m.pbrMetallicRoughness.setRoughnessFactor(rough);
+}
+
+/* ---------- 3. Interface ---------- */
+function amostra(rotulo, img, aoEscolher, grupo) {
   const b = document.createElement('button');
-  b.className = 'sw'; b.title = label; b.setAttribute('aria-label', label); b.setAttribute('aria-pressed','false');
+  b.className = 'sw'; b.title = rotulo; b.setAttribute('aria-label', rotulo); b.setAttribute('aria-pressed', 'false');
   b.style.backgroundImage = `url("${img}")`;
   b.addEventListener('click', () => {
-    group.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed','false'));
-    b.setAttribute('aria-pressed','true'); onPick();
+    grupo.querySelectorAll('.sw').forEach(s => s.setAttribute('aria-pressed', 'false'));
+    b.setAttribute('aria-pressed', 'true'); aoEscolher();
   });
   return b;
 }
-
 const boxM = document.getElementById('madeiras');
-MADEIRAS.forEach(([nome, arq, cor, rough], i) => {
-  const b = swatch(nome, CDN + 'madeiras/' + arq, () => {
-    const m = mat('madeira'); if (!m) return;
-    m.pbrMetallicRoughness.setBaseColorFactor(cor);
-    m.pbrMetallicRoughness.setRoughnessFactor(rough);
-    document.getElementById('nm-madeira').textContent = nome;
-  }, boxM);
-  boxM.appendChild(b);
-});
-
+MADEIRAS.forEach(([nome, arq, rough]) => boxM.appendChild(amostra(nome, CDN + 'madeiras/' + arq, () => aplicaMadeira(nome, arq, rough), boxM)));
 const boxT = document.getElementById('tecidos');
-GRUPOS.forEach(([titulo, codigos, rough]) => {
+GRUPOS.forEach(([titulo, codigos, rough, forca]) => {
   const g = document.createElement('div'); g.className = 'grp'; g.textContent = titulo; boxT.appendChild(g);
-  const row = document.createElement('div'); row.className = 'row'; boxT.appendChild(row);
-  codigos.forEach(c => {
-    const nome = `${titulo.startsWith('Couro') ? 'Couro' : titulo} - TC ${c}`;
-    row.appendChild(swatch(nome, CDN + `acabamentos/crn-tc${c}.jpg`, () => {
-      const m = mat('tecido'); if (!m) return;
-      m.pbrMetallicRoughness.setBaseColorFactor(COR[c]);
-      m.pbrMetallicRoughness.setRoughnessFactor(rough);
-      document.getElementById('nm-tecido').textContent = nome;
-    }, boxT));
-  });
+  const linha = document.createElement('div'); linha.className = 'row'; boxT.appendChild(linha);
+  codigos.forEach(c => { const nome = `${titulo} - TC ${c}`; linha.appendChild(amostra(nome, CDN + `acabamentos/crn-tc${c}.jpg`, () => aplicaTecido(nome, c, rough, forca), boxT)); });
 });
 
-mv.addEventListener('load', () => {
-  boxM.querySelector('.sw').click();
-  boxT.querySelector('.sw').click();
-});
+mv.addEventListener('load', () => { statusEl.hidden = true; boxM.querySelector('.sw').click(); boxT.querySelector('.sw').click(); });
+try {
+  await customElements.whenDefined('model-viewer');
+  mv.src = await prepararModelo();
+} catch (e) { statusEl.textContent = 'Não foi possível carregar o modelo.'; console.error(e); }
 </script>
 </body>
 </html>
