@@ -4,56 +4,79 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Teste RA · Cadeira Pivot</title>
+<title>Cadeira Pivot · Personalize em 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
 </script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <style>
-  :root { --bg:#f6f3ee; --ink:#2b2622; --muted:#7a7068; --line:#e2dbd1; --accent:#2b2622; }
+  :root { --base:#3B4730; --base-escuro:#36402C; --base-claro:#4F5A45; --tinta:#1B1F17; --apoio:#79909B; --neutro:#F6F6F5; --borda:rgba(59,71,48,.14); --serif:"Instrument Serif",Georgia,serif; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  header { padding:16px 16px 0; }
-  h1 { font-size:18px; font-weight:600; margin:0; }
-  header p { margin:4px 0 0; color:var(--muted); font-size:13px; }
-  .stage { position:relative; }
-  model-viewer { width:100%; height:58vh; min-height:340px; background:linear-gradient(#fbfaf7,#efe9e0); --poster-color:transparent; }
-  .status { position:absolute; left:0; right:0; top:45%; text-align:center; color:var(--muted); font-size:13px; pointer-events:none; }
-  .ar-btn { position:absolute; right:12px; bottom:12px; border:0; border-radius:999px; background:var(--accent); color:#fff; padding:10px 16px; font:600 14px system-ui; }
-  section { padding:12px 16px; border-top:1px solid var(--line); }
-  h2 { font-size:13px; font-weight:600; margin:0 0 8px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
-  h2 b { color:var(--ink); text-transform:none; letter-spacing:0; font-weight:600; margin-left:6px; }
-  .row { display:flex; flex-wrap:wrap; gap:8px; }
-  .grp { font-size:12px; color:var(--muted); margin:8px 0 6px; }
-  .sw { width:40px; height:40px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 1px var(--line); background-size:cover; background-position:center; cursor:pointer; padding:0; }
-  .sw[aria-pressed="true"] { box-shadow:0 0 0 2px var(--accent); }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; background:#fff; color:var(--tinta); font:15px/1.55 Roboto, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .pagina { max-width:1320px; margin:0 auto; padding:16px; display:grid; gap:16px; }
+  .palco { position:relative; background:var(--neutro); border-radius:28px; overflow:hidden; }
+  model-viewer { display:block; width:100%; height:56vh; min-height:340px; background:transparent; --poster-color:transparent; --progress-bar-color:var(--base); }
+  .status { position:absolute; inset:0; display:grid; place-items:center; color:var(--apoio); font-size:11px; letter-spacing:.14em; text-transform:uppercase; pointer-events:none; }
+  .dica { position:absolute; left:50%; bottom:14px; transform:translateX(-50%); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--apoio); white-space:nowrap; pointer-events:none; }
+  .ra { position:absolute; right:14px; top:14px; border:0; border-radius:999px; background:var(--base); color:#fff; padding:11px 18px; font:500 14px Roboto, sans-serif; cursor:pointer; }
+  .ra:hover { background:var(--base-escuro); }
+  .painel { padding:4px 4px 24px; min-width:0; }
+  .sobre { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--base); font-weight:700; margin:0; }
+  h1 { font-family:var(--serif); font-weight:400; font-size:clamp(34px,5vw,50px); line-height:.98; letter-spacing:-.02em; margin:10px 0 12px; text-wrap:balance; }
+  h1 em { font-style:italic; color:var(--base); }
+  .texto { color:var(--base-claro); max-width:50ch; margin:0 0 20px; }
+  .grupo { background:#fff; border:1px solid var(--borda); border-radius:20px; padding:14px 16px 16px; margin:0 0 12px; }
+  .grupo h2 { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin:0 0 12px; font:700 11px Roboto, sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--base); }
+  .grupo h2 b { font-family:var(--serif); font-weight:400; font-size:20px; letter-spacing:0; text-transform:none; color:var(--tinta); }
+  .linha { font-size:12px; color:var(--apoio); margin:12px 0 8px; }
+  .linha:first-of-type { margin-top:0; }
+  .amostras { display:flex; flex-wrap:wrap; gap:8px; }
+  .sw { width:40px; height:40px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 1px var(--borda); background-color:var(--neutro); background-size:cover; background-position:center; cursor:pointer; padding:0; transition:transform .15s; }
+  .sw:hover { transform:scale(1.08); }
+  .sw[aria-pressed="true"] { box-shadow:0 0 0 2px var(--tinta); }
+  .sw:focus-visible { outline:2px solid var(--base); outline-offset:3px; }
+  @media (min-width:900px) {
+    .pagina { grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:28px; padding:28px; align-items:start; }
+    .palco { position:sticky; top:28px; border-radius:36px; }
+    model-viewer { height:calc(100vh - 56px); min-height:520px; }
+    .painel { padding-top:12px; }
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>Cadeira Pivot · teste de realidade aumentada</h1>
-  <p>Página interna de teste. Toque em “Ver no meu ambiente” no celular.</p>
-</header>
+<main class="pagina">
+  <div class="palco">
+    <model-viewer id="mv"
+      alt="Cadeira Pivot em 3D"
+      camera-controls touch-action="pan-y" shadow-intensity="1.1" shadow-softness="0.9" exposure="1.05"
+      environment-image="neutral" tone-mapping="commerce" interpolation-decay="120"
+      camera-orbit="30deg 72deg auto"
+      ar ar-modes="webxr quick-look" ar-scale="fixed" ar-placement="floor">
+      <button slot="ar-button" class="ra">Ver no meu ambiente</button>
+    </model-viewer>
+    <div class="status" id="status">Preparando o modelo</div>
+    <div class="dica" id="dica" hidden>Arraste para girar</div>
+  </div>
 
-<div class="stage">
-  <model-viewer id="mv"
-    alt="Cadeira Pivot em 3D"
-    camera-controls touch-action="pan-y" shadow-intensity="1.1" shadow-softness="0.9" exposure="1.05"
-    environment-image="neutral" tone-mapping="commerce" interpolation-decay="120"
-    ar ar-modes="webxr quick-look" ar-scale="fixed" ar-placement="floor">
-    <button slot="ar-button" class="ar-btn">Ver no meu ambiente</button>
-  </model-viewer>
-  <div class="status" id="status">Preparando o modelo…</div>
-</div>
+  <div class="painel">
+    <p class="sobre">Alma Mobília · Design Felipe Madeira</p>
+    <h1>Cadeira Pivot, <em>do seu jeito</em></h1>
+    <p class="texto">Escolha a madeira e o acabamento e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar a cadeira na sua sala.</p>
 
-<section>
-  <h2>Madeira <b id="nm-madeira"></b></h2>
-  <div class="row" id="madeiras"></div>
-</section>
-<section>
-  <h2>Acabamento <b id="nm-tecido"></b></h2>
-  <div id="tecidos"></div>
-</section>
+    <section class="grupo">
+      <h2>Madeira <b id="nm-madeira"></b></h2>
+      <div class="amostras" id="madeiras"></div>
+    </section>
+    <section class="grupo">
+      <h2>Acabamento <b id="nm-tecido"></b></h2>
+      <div id="tecidos"></div>
+    </section>
+  </div>
+</main>
 
 <script type="module">
 import * as THREE from 'three';
@@ -62,11 +85,12 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/matheussanfrancisco/sfc-3d@main/pivot/';
+const LOJA = 'https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/';
 const GLB = CDN + 'modelo/pivot-estofada-draco.glb';
 
 // Tamanho real que cada textura cobre (em metros)
-const TECIDO_TILE = 0.18;          // atlas espelhado 2x2: cada quadrante = 9 cm de tecido
-const MADEIRA_U = 0.045, MADEIRA_V = 0.20;  // largura x comprimento do veio
+const TECIDO_TILE = 0.13;                    // lado da foto do tecido
+const MADEIRA_U = 0.045, MADEIRA_V = 0.20;   // largura x comprimento do veio
 
 const MADEIRAS = [
   ['Avelã M01','m01-avela.png',0.50],
@@ -75,14 +99,16 @@ const MADEIRAS = [
   ['Nero Fosco M04','m04-nero.png',0.85],
   ['Nero Fosco Semibrilho M05','m05-nero-semibrilho.png',0.32]
 ];
+// [linha, códigos, rugosidade, força do relevo]
 const GRUPOS = [
-  ['Tecido Essencial', [501,514,517,523,524,525,530,539,542,543,545,546,547,548,549,550], 1.0, 2.2],
-  ['Tecido Premium',   [502,503,504,505,507,538,540,541,544], 1.0, 2.2],
+  ['Tecido Essencial', [501,514,517,523,524,525,530,539,542,543,545,546,547,548,549,550], 1.0, 2.4],
+  ['Tecido Premium',   [502,503,504,505,507,538,540,541,544], 1.0, 2.4],
   ['Couro',            [534,535,537,551,552,553,554,555,556], 0.55, 1.2]
 ];
-
 // acabamentos das linhas de tecido que são lisos (sintéticos e camurças): menos relevo, mais brilho
 const LISOS = new Set([544, 545, 546, 547, 548, 549]);
+// miniaturas das amostras (as mesmas do site)
+const MIDIA = {501:30360,502:30361,503:30362,504:30363,505:30364,507:30365,514:30366,517:30367,523:30368,524:30369,525:30370,530:30371,538:30372,539:30373,540:30374,541:30375,542:30376,543:30377,544:30378,545:30379,546:30380,547:30381,548:30382,549:30383,550:30384,534:30351,535:30352,537:30353,551:30354,552:30355,553:30356,554:30357,555:30358,556:30359};
 
 const mv = document.getElementById('mv');
 const statusEl = document.getElementById('status');
@@ -173,34 +199,30 @@ async function prepararModelo() {
 
 /* ---------- 2. Texturas ---------- */
 const carregaImg = url => new Promise((ok, erro) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => ok(i); i.onerror = erro; i.src = url; });
-const blobURL = (canvas, tipo, q) => new Promise(ok => canvas.toBlob(b => ok(URL.createObjectURL(b)), tipo, q));
 
-// Tecido/couro: atlas espelhado 2x2 (repete sem emenda) + mapa de relevo tirado da própria foto
-async function texturasTecido(url, forca) {
-  // as fotos em tecidos-hd já vêm recortadas e com a luz nivelada (feito a partir do original da fábrica)
-  const f = await carregaImg(url), Q = 768, S = Q * 2;
+// As fotos em tecidos-v2 vêm do original da fábrica, já com luz nivelada e emenda nas bordas (repetem sem costura).
+// Aqui só se calcula o mapa de relevo a partir da própria foto.
+async function relevoDe(url, forca) {
+  const img = await carregaImg(url), S = 1024;
   const c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d', { willReadFrequently: true });
-  for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) {
-    x.save(); x.translate(i ? S : 0, j ? S : 0); x.scale(i ? -1 : 1, j ? -1 : 1); x.drawImage(f, 0, 0, Q, Q); x.restore();
-  }
-  const d = x.getImageData(0, 0, S, S).data;
-  const h = new Float32Array(S * S);
+  x.drawImage(img, 0, 0, S, S);
+  const d = x.getImageData(0, 0, S, S).data, h = new Float32Array(S * S);
   for (let p = 0; p < S * S; p++) h[p] = (d[p * 4] * 0.299 + d[p * 4 + 1] * 0.587 + d[p * 4 + 2] * 0.114) / 255;
-  const cn = document.createElement('canvas'); cn.width = cn.height = S; const xn = cn.getContext('2d'); const out = xn.createImageData(S, S);
-  const H = (px, py) => h[((py + S) % S) * S + ((px + S) % S)];
-  for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) {
-    const dx = (H(px + 1, py) - H(px - 1, py)) * forca, dy = (H(px, py + 1) - H(px, py - 1)) * forca;
-    const inv = 1 / Math.hypot(dx, dy, 1), o = (py * S + px) * 4;
-    out.data[o] = (-dx * inv * 0.5 + 0.5) * 255; out.data[o + 1] = (dy * inv * 0.5 + 0.5) * 255; out.data[o + 2] = (inv * 0.5 + 0.5) * 255; out.data[o + 3] = 255;
-  }
-  xn.putImageData(out, 0, 0);
-  return { cor: await blobURL(c, 'image/jpeg', 0.92), relevo: await blobURL(cn, 'image/jpeg', 0.92) };
+  const out = x.createImageData(S, S), M = S - 1;
+  for (let py = 0; py < S; py++) { const ya = ((py - 1) & M) * S, yb = ((py + 1) & M) * S, y0 = py * S;
+    for (let px = 0; px < S; px++) {
+      const dx = (h[y0 + ((px + 1) & M)] - h[y0 + ((px - 1) & M)]) * forca, dy = (h[yb + px] - h[ya + px]) * forca;
+      const inv = 1 / Math.hypot(dx, dy, 1), o = (y0 + px) * 4;
+      out.data[o] = (-dx * inv * 0.5 + 0.5) * 255; out.data[o + 1] = (dy * inv * 0.5 + 0.5) * 255; out.data[o + 2] = (inv * 0.5 + 0.5) * 255; out.data[o + 3] = 255;
+    } }
+  x.putImageData(out, 0, 0);
+  return new Promise(ok => c.toBlob(b => ok(URL.createObjectURL(b)), 'image/jpeg', 0.92));
 }
 
 const cache = new Map();
-async function textura(chave, uri, tipo) {
+function textura(chave, uri, tipo) {
   if (!cache.has(chave)) cache.set(chave, (async () => {
-    const t = await mv.createTexture(uri, tipo);
+    const t = await mv.createTexture(await uri, tipo);
     t.sampler.setWrapS(10497); t.sampler.setWrapT(10497);
     return t;
   })());
@@ -219,11 +241,9 @@ async function aplicaMadeira(nome, arq, rough) {
 }
 async function aplicaTecido(nome, cod, rough, forca) {
   const vez = ++vezT; document.getElementById('nm-tecido').textContent = nome;
-  const k = 't:' + cod;
   if (LISOS.has(cod)) { rough = 0.6; forca = 1.0; }
-  if (!cache.has(k + ':uris')) cache.set(k + ':uris', texturasTecido(CDN + `tecidos-hd/tc${cod}.jpg`, forca));
-  const uris = await cache.get(k + ':uris');
-  const [tc, tn] = await Promise.all([textura(k + ':c', uris.cor, 'image/jpeg'), textura(k + ':n', uris.relevo, 'image/jpeg')]);
+  const url = CDN + `tecidos-v2/tc${cod}.jpg`;
+  const [tc, tn] = await Promise.all([textura('c:' + cod, url, 'image/jpeg'), textura('n:' + cod, relevoDe(url, forca), 'image/jpeg')]);
   if (vez !== vezT) return;
   const m = mat('tecido'); if (!m) return;
   m.pbrMetallicRoughness.setBaseColorFactor('#ffffff');
@@ -235,7 +255,7 @@ async function aplicaTecido(nome, cod, rough, forca) {
 /* ---------- 3. Interface ---------- */
 function amostra(rotulo, img, aoEscolher, grupo) {
   const b = document.createElement('button');
-  b.className = 'sw'; b.title = rotulo; b.setAttribute('aria-label', rotulo); b.setAttribute('aria-pressed', 'false');
+  b.className = 'sw'; b.type = 'button'; b.title = rotulo; b.setAttribute('aria-label', rotulo); b.setAttribute('aria-pressed', 'false');
   b.style.backgroundImage = `url("${img}")`;
   b.addEventListener('click', () => {
     grupo.querySelectorAll('.sw').forEach(s => s.setAttribute('aria-pressed', 'false'));
@@ -247,16 +267,21 @@ const boxM = document.getElementById('madeiras');
 MADEIRAS.forEach(([nome, arq, rough]) => boxM.appendChild(amostra(nome, CDN + 'madeiras/' + arq, () => aplicaMadeira(nome, arq, rough), boxM)));
 const boxT = document.getElementById('tecidos');
 GRUPOS.forEach(([titulo, codigos, rough, forca]) => {
-  const g = document.createElement('div'); g.className = 'grp'; g.textContent = titulo; boxT.appendChild(g);
-  const linha = document.createElement('div'); linha.className = 'row'; boxT.appendChild(linha);
-  codigos.forEach(c => { const nome = `${titulo} - TC ${c}`; linha.appendChild(amostra(nome, CDN + `acabamentos/crn-tc${c}.jpg`, () => aplicaTecido(nome, c, rough, forca), boxT)); });
+  const g = document.createElement('div'); g.className = 'linha'; g.textContent = titulo; boxT.appendChild(g);
+  const linha = document.createElement('div'); linha.className = 'amostras'; boxT.appendChild(linha);
+  codigos.forEach(c => { const nome = `${titulo} · TC ${c}`;
+    linha.appendChild(amostra(nome, `${LOJA}${MIDIA[c]}/crn-tc${c}.jpg?ims=fit-in/96x96`, () => aplicaTecido(nome, c, rough, forca), boxT)); });
 });
 
-mv.addEventListener('load', () => { statusEl.hidden = true; boxM.querySelector('.sw').click(); boxT.querySelector('.sw').click(); });
+mv.addEventListener('load', () => {
+  statusEl.hidden = true; document.getElementById('dica').hidden = false;
+  boxM.querySelector('.sw').click(); boxT.querySelector('.sw').click();
+});
+mv.addEventListener('camera-change', e => { if (e.detail.source === 'user-interaction') document.getElementById('dica').hidden = true; });
 try {
   await customElements.whenDefined('model-viewer');
   mv.src = await prepararModelo();
-} catch (e) { statusEl.textContent = 'Não foi possível carregar o modelo.'; console.error(e); }
+} catch (e) { statusEl.textContent = 'Não foi possível carregar o modelo'; console.error(e); }
 </script>
 </body>
 </html>
