@@ -19,6 +19,14 @@
       sel: { madeira: 'Escolha a madeira (AL):', acabamento: 'Escolha o acabamento (CRN):' }
     },
     // configurador genérico (produto.html?p=<chave>); sem derivacao = produto sem linhas de tecido
+    '/cadeira-cassa': {
+      pagina: 'produto.html', params: 'p=cassa-cadeira', derivacao: 208,
+      sel: { madeira: 'Escolha a madeira (AL):', acabamento: 'Escolha o acabamento (CRN):' }
+    },
+    '/banqueta-cassa': {
+      pagina: 'produto.html', params: 'p=cassa-banqueta', derivacao: 208,
+      sel: { madeira: 'Escolha a madeira (AL):', acabamento: 'Escolha o acabamento (CRN):' }
+    },
     '/cadeira-cartier': {
       pagina: 'produto.html', params: 'p=cartier-cadeira',
       sel: { madeira: 'Escolha a madeira (AL):', tela: 'Escolha a tela (AL):' }
