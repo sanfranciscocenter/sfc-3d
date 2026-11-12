@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Teste RA · Cadeira Pivot</title>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+  :root { --bg:#f6f3ee; --ink:#2b2622; --muted:#7a7068; --line:#e2dbd1; --accent:#2b2622; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding:16px 16px 0; }
+  h1 { font-size:18px; font-weight:600; margin:0; }
+  header p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+  model-viewer { width:100%; height:58vh; min-height:340px; background:linear-gradient(#fbfaf7,#efe9e0); --poster-color:transparent; }
+  .ar-btn { position:absolute; right:12px; bottom:12px; border:0; border-radius:999px; background:var(--accent); color:#fff; padding:10px 16px; font:600 14px system-ui; }
+  section { padding:12px 16px; border-top:1px solid var(--line); }
+  h2 { font-size:13px; font-weight:600; margin:0 0 8px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+  h2 b { color:var(--ink); text-transform:none; letter-spacing:0; font-weight:600; margin-left:6px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; }
+  .grp { font-size:12px; color:var(--muted); margin:8px 0 6px; }
+  .sw { width:40px; height:40px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 1px var(--line); background-size:cover; background-position:center; cursor:pointer; padding:0; }
+  .sw[aria-pressed="true"] { box-shadow:0 0 0 2px var(--accent); }
+  footer { padding:12px 16px 32px; color:var(--muted); font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Cadeira Pivot · teste de realidade aumentada</h1>
+  <p>Página interna de teste. Toque em “Ver no meu ambiente” no celular.</p>
+</header>
+
+<model-viewer id="mv"
+  src="https://cdn.jsdelivr.net/gh/matheussanfrancisco/sfc-3d@main/pivot/modelo/pivot-estofada-draco.glb"
+  alt="Cadeira Pivot em 3D"
+  camera-controls touch-action="pan-y" shadow-intensity="1" exposure="1"
+  environment-image="neutral"
+  ar ar-modes="webxr quick-look scene-viewer" ar-scale="fixed" ar-placement="floor">
+  <button slot="ar-button" class="ar-btn">Ver no meu ambiente</button>
+</model-viewer>
+
+<section>
+  <h2>Madeira <b id="nm-madeira"></b></h2>
+  <div class="row" id="madeiras"></div>
+</section>
+<section>
+  <h2>Acabamento <b id="nm-tecido"></b></h2>
+  <div id="tecidos"></div>
+</section>
+<footer>Nesta versão de teste as cores são a média de cada amostra. A textura real (trama e veio) entra na próxima etapa.</footer>
+
+<script type="module">
+const CDN = 'https://cdn.jsdelivr.net/gh/matheussanfrancisco/sfc-3d@main/pivot/';
+const MADEIRAS = [
+  ['Avelã M01','m01-avela.png','#B37344',0.55],
+  ['Castanho M02','m02-castanho.png','#A26A3D',0.55],
+  ['Mocca M03','m03-mocca.png','#754C2C',0.55],
+  ['Nero Fosco M04','m04-nero.png','#2D2D31',0.80],
+  ['Nero Fosco Semibrilho M05','m05-nero-semibrilho.png','#272424',0.35]
+];
+const COR = {"501":"#71766D","502":"#875752","503":"#695043","504":"#485863","505":"#7A4B2E","507":"#AB894C","514":"#BBBBBE","517":"#BDBAB7","523":"#A2A5AF","524":"#716E70","525":"#1E1F23","530":"#875642","534":"#683417","535":"#605956","537":"#1C1C1C","538":"#AEA7A3","539":"#888889","540":"#5E5E63","541":"#7D6251","542":"#555852","543":"#BEBDBF","544":"#C7C7C7","545":"#6B615F","546":"#272930","547":"#717070","548":"#845233","549":"#76635B","550":"#716C4A","551":"#9E8A70","552":"#4D3829","553":"#555026","554":"#BE7023","555":"#916D37","556":"#99633C"};
+const GRUPOS = [
+  ['Tecido Essencial', [501,514,517,523,524,525,530,539,542,543,545,546,547,548,549,550], 0.95],
+  ['Tecido Premium',   [502,503,504,505,507,538,540,541,544], 0.95],
+  ['Couro',            [534,535,537,551,552,553,554,555,556], 0.5]
+];
+
+const mv = document.getElementById('mv');
+const mat = name => mv.model?.materials.find(m => m.name === name);
+
+function swatch(label, img, onPick, group) {
+  const b = document.createElement('button');
+  b.className = 'sw'; b.title = label; b.setAttribute('aria-label', label); b.setAttribute('aria-pressed','false');
+  b.style.backgroundImage = `url("${img}")`;
+  b.addEventListener('click', () => {
+    group.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true'); onPick();
+  });
+  return b;
+}
+
+const boxM = document.getElementById('madeiras');
+MADEIRAS.forEach(([nome, arq, cor, rough], i) => {
+  const b = swatch(nome, CDN + 'madeiras/' + arq, () => {
+    const m = mat('madeira'); if (!m) return;
+    m.pbrMetallicRoughness.setBaseColorFactor(cor);
+    m.pbrMetallicRoughness.setRoughnessFactor(rough);
+    document.getElementById('nm-madeira').textContent = nome;
+  }, boxM);
+  boxM.appendChild(b);
+});
+
+const boxT = document.getElementById('tecidos');
+GRUPOS.forEach(([titulo, codigos, rough]) => {
+  const g = document.createElement('div'); g.className = 'grp'; g.textContent = titulo; boxT.appendChild(g);
+  const row = document.createElement('div'); row.className = 'row'; boxT.appendChild(row);
+  codigos.forEach(c => {
+    const nome = `${titulo.startsWith('Couro') ? 'Couro' : titulo} - TC ${c}`;
+    row.appendChild(swatch(nome, CDN + `acabamentos/crn-tc${c}.jpg`, () => {
+      const m = mat('tecido'); if (!m) return;
+      m.pbrMetallicRoughness.setBaseColorFactor(COR[c]);
+      m.pbrMetallicRoughness.setRoughnessFactor(rough);
+      document.getElementById('nm-tecido').textContent = nome;
+    }, boxT));
+  });
+});
+
+mv.addEventListener('load', () => {
+  boxM.querySelector('.sw').click();
+  boxT.querySelector('.sw').click();
+});
+</script>
+</body>
+</html>
