@@ -2,6 +2,19 @@
 // partes: papel de cada peça do GLB. Chave = nome do material no GLB, ou "#n" para a malha de índice n (tem prioridade).
 // Papéis: madeira | tecido | palha | metal | preto | original | oculto
 export const PRODUTOS = {
+  'cassa-cadeira': {
+    nome: 'Cadeira Cassa', sobre: 'Alma Mobília', glb: 'alma/modelos/cassa-cadeira.glb',
+    escala: 0.1,   // o bloco veio 10× maior (5,4 m de largura)
+    corMetal: '#C8A35A',   // botões de latão atrás do encosto (foto de detalhe do anúncio)
+    // #0 quadro do assento, #3 pernas (madeira); #1 assento e encosto (tecido); #2 dois botões atrás do encosto (metal)
+    partes: { '*3': 'madeira', '*1': 'tecido', '*4': 'metal' }
+  },
+  'cassa-banqueta': {
+    nome: 'Banqueta Cassa', sobre: 'Alma Mobília', glb: 'alma/modelos/cassa-banqueta.glb',
+    corMetal: '#C8A35A',
+    // #0 pernas, #1 quadro e travessas (madeira); #2 assento e encosto (tecido); #3 dois botões atrás do encosto (metal)
+    partes: { '*': 'madeira', '*1': 'tecido', '*2': 'metal' }
+  },
   'cartier-cadeira': {
     nome: 'Cadeira Cartier', sobre: 'Alma Mobília',
     glb: 'alma/modelos/cartier-cadeira.glb',
