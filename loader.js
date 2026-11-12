@@ -12,6 +12,11 @@
     '/cadeira-pivot': {
       pagina: 'pivot.html', params: 'enc=palha', derivacao: 208,
       sel: { madeira: 'Escolha a madeira (AL):', tela: 'Escolha a tela (AL):', acabamento: 'Escolha o acabamento (CRN):' }
+    },
+    // mesmo modelo, anúncio separado: só encosto estofado (não tem a personalização de tela)
+    '/cadeira-pivot-encosto-estofado': {
+      pagina: 'pivot.html', params: 'enc=estofado', derivacao: 208,
+      sel: { madeira: 'Escolha a madeira (AL):', acabamento: 'Escolha o acabamento (CRN):' }
     }
   };
   const cfg = PRODUTOS[location.pathname.replace(/\/+$/, '')];
@@ -73,7 +78,7 @@
   }
   const estadoDaPagina = () => ({
     sfc3d: 'estado', precos: precosPorLinha(),
-    madeira: sel(cfg.sel.madeira)?.value || '', tela: sel(cfg.sel.tela)?.value || '', acabamento: sel(cfg.sel.acabamento)?.value || ''
+    madeira: sel(cfg.sel.madeira)?.value || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: sel(cfg.sel.acabamento)?.value || ''
   });
 
   /* ---------- pop-up ---------- */
@@ -141,15 +146,18 @@
   }
   async function aplica(d) {
     const okLinha = await trocaLinha(d.linha);
+    // só as personalizações que este anúncio tem (o estofado não tem tela)
+    const pares = ['acabamento', 'tela', 'madeira'].filter(k => cfg.sel[k]).map(k => [cfg.sel[k], d[k]]);
     let ok = 0;
-    for (let tentativa = 0; tentativa < 3 && ok < 3; tentativa++) {
-      ok = [[cfg.sel.acabamento, d.acabamento], [cfg.sel.tela, d.tela], [cfg.sel.madeira, d.madeira]].filter(([n, v]) => grava(n, v)).length;
-      if (ok < 3) await zz(600);
+    for (let tentativa = 0; tentativa < 3 && ok < pares.length; tentativa++) {
+      ok = pares.filter(([n, v]) => grava(n, v)).length;
+      if (ok < pares.length) await zz(600);
     }
     await zz(700);   // confere de novo: o tema refaz o bloco depois de trocar a linha
-    const firmes = [[cfg.sel.acabamento, d.acabamento], [cfg.sel.tela, d.tela], [cfg.sel.madeira, d.madeira]].filter(([n, v]) => sel(n)?.value === v || grava(n, v)).length;
-    const tudo = okLinha && firmes === 3;
-    avisa(tudo ? 'Configuração aplicada: ' + d.madeira + ', palha ' + d.tela + ', ' + d.acabamento : 'Não consegui marcar todas as opções. Confira a seleção abaixo.');
+    const firmes = pares.filter(([n, v]) => sel(n)?.value === v || grava(n, v)).length;
+    const tudo = okLinha && firmes === pares.length;
+    const resumo = [d.madeira, cfg.sel.tela ? 'palha ' + d.tela : '', d.acabamento].filter(Boolean).join(', ');
+    avisa(tudo ? 'Configuração aplicada: ' + resumo : 'Não consegui marcar todas as opções. Confira a seleção abaixo.');
     const alvo = document.querySelector('.sfc-linhas') || sel(cfg.sel.acabamento);
     if (alvo && alvo.scrollIntoView) alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
     evento('sfc3d_usar', { produto: location.pathname, madeira: d.madeira, tela: d.tela, acabamento: d.acabamento, linha: d.linha, aplicado: tudo });

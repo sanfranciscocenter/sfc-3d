@@ -381,8 +381,10 @@ const num = (k, max, padrao) => { const v = parseInt(par.get(k), 10); return Num
 const estado = { m: num('m', MADEIRAS.length - 1, 0), e: num('e', ENCOSTOS.length - 1, 0), t: MIDIA[par.get('t')] ? +par.get('t') : 501 };
 let urls = null, modeloAtual = null, vez = 0;
 // Modo pop-up (dentro do site): ?embed=1 mostra preço e o botão "Usar esta configuração"; ?enc=palha tira o encosto estofado
-const EMBED = par.get('embed') === '1', SO_PALHA = par.get('enc') === 'palha';
+// ?enc=estofado é o anúncio só estofado: some o grupo Encosto inteiro
+const EMBED = par.get('embed') === '1', SO_PALHA = par.get('enc') === 'palha', SO_ESTOFADO = par.get('enc') === 'estofado';
 if (SO_PALHA && estado.e === 0) estado.e = 1;
+if (SO_ESTOFADO) estado.e = 0;
 let precos = null;
 const grupoDe = c => GRUPOS.find(([, cs]) => cs.includes(c));
 const LINHA_SITE = { 'Tecido Essencial': 'Essencial', 'Tecido Premium': 'Premium', 'Couro': 'Couro legítimo' };
@@ -426,6 +428,7 @@ function amostra(rotulo, img, ativo, aoEscolher, caixa, chave) {
 const boxM = $('madeiras');
 MADEIRAS.forEach(([nome, arq], i) => boxM.appendChild(amostra(nome, CDN + 'madeiras-v2/' + arq, i === estado.m, () => estado.m = i, boxM, i)));
 const boxE = $('encostos');
+if (SO_ESTOFADO) { boxE.closest('.grupo').hidden = true; document.querySelector('.texto').textContent = 'Escolha a madeira e o acabamento e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar a cadeira na sua sala.'; }
 ENCOSTOS.forEach(([nome, arq, mini], i) => {
   if (SO_PALHA && i === 0) return;
   const b = document.createElement('button'); b.className = 'pilula'; b.type = 'button'; b.dataset.k = i; b.setAttribute('aria-pressed', i === estado.e ? 'true' : 'false');
