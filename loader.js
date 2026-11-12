@@ -58,9 +58,12 @@
   /* ---------- leitura da página ---------- */
   function precosPorLinha() {
     const out = {};
+    // produto com "Preço sob consulta": o pop-up não mostra preço nenhum
+    if (document.querySelector('.sfc-sc-oculto, .sfc-sc-box')) return out;
     try {
       const txt = [...document.scripts].map(s => s.textContent).find(t => t.includes('derivacoes_produto') && t.includes('"deri_id":' + cfg.derivacao)) || '';
-      const re = new RegExp('"valor":"(\\d+(?:\\.\\d+)?)","valor_de"[^\\[]*?"derivacoes_produto":\\[\\{[^\\]]*?"deri_id":' + cfg.derivacao + '[^\\]]*?"derivacao":"([^"]+)"', 'g');
+      // [^{}] mantém a leitura dentro do mesmo item (sem isso pega o preço de um produto sugerido)
+      const re = new RegExp('"valor":"(\\d+(?:\\.\\d+)?)","valor_de"[^{}]{0,400}?"derivacoes_produto":\\[\\{[^{}]{0,300}?"deri_id":' + cfg.derivacao + '[^{}]{0,200}?"derivacao":"([^"]+)"', 'g');
       let m; while ((m = re.exec(txt))) {
         const nome = JSON.parse('"' + m[2] + '"');
         out[nome] = Number(m[1]).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
