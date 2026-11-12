@@ -2,6 +2,16 @@
 // partes: papel de cada peça do GLB. Chave = nome do material no GLB, ou "#n" para a malha de índice n (tem prioridade).
 // Papéis: madeira | tecido | palha | metal | preto | original | oculto
 export const PRODUTOS = {
+  'origami-cadeira': { nome: 'Cadeira Origami', sobre: 'Alma Mobília', glb: 'alma/modelos/origami-cadeira.glb',
+    // #0 assento e encosto (tecido); #1 a #4 travessas e #5 pernas (madeira)
+    partes: { '*1': 'tecido', '*3': 'madeira', '*': 'madeira' } },
+  'origami-cadeira-palha': { nome: 'Cadeira Origami Assento em Palha', sobre: 'Alma Mobília', glb: 'alma/modelos/origami-cadeira-palha.glb',
+    // #0 a #4 estrutura e quadro do assento (madeira); #5 encosto estofado; #6 tela de palha do assento
+    partes: { '*': 'madeira', '*2': 'tecido', '*1': 'palha' } },
+  'origami-banqueta': { nome: 'Banqueta Origami', sobre: 'Alma Mobília', glb: 'alma/modelos/origami-banqueta.glb',
+    // O bloco da fábrica é o da versão em palha. No anúncio a banqueta é toda estofada:
+    // #4 (quadro do assento) e #5 (tela) viram a almofada do assento; #6 encosto estofado; o resto é madeira
+    partes: { '*': 'madeira', '*3': 'tecido', '*2': 'tecido', '*1': 'tecido' } },
   'cassa-cadeira': {
     nome: 'Cadeira Cassa', sobre: 'Alma Mobília', glb: 'alma/modelos/cassa-cadeira.glb',
     escala: 0.1,   // o bloco veio 10× maior (5,4 m de largura)
