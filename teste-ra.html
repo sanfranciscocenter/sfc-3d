@@ -65,7 +65,7 @@ const CDN = 'https://cdn.jsdelivr.net/gh/matheussanfrancisco/sfc-3d@main/pivot/'
 const GLB = CDN + 'modelo/pivot-estofada-draco.glb';
 
 // Tamanho real que cada textura cobre (em metros)
-const TECIDO_TILE = 0.16;          // atlas espelhado 2x2: cada quadrante = 8 cm de tecido
+const TECIDO_TILE = 0.18;          // atlas espelhado 2x2: cada quadrante = 9 cm de tecido
 const MADEIRA_U = 0.045, MADEIRA_V = 0.20;  // largura x comprimento do veio
 
 const MADEIRAS = [
@@ -80,6 +80,9 @@ const GRUPOS = [
   ['Tecido Premium',   [502,503,504,505,507,538,540,541,544], 1.0, 2.2],
   ['Couro',            [534,535,537,551,552,553,554,555,556], 0.55, 1.2]
 ];
+
+// acabamentos das linhas de tecido que são lisos (sintéticos e camurças): menos relevo, mais brilho
+const LISOS = new Set([544, 545, 546, 547, 548, 549]);
 
 const mv = document.getElementById('mv');
 const statusEl = document.getElementById('status');
@@ -157,7 +160,10 @@ async function prepararModelo() {
     const geo = o.geometry.clone().applyMatrix4(o.matrixWorld);
     const modo = nome.includes('madeira') ? 'madeira' : nome.includes('tecido') ? 'tecido' : null;
     const g = modo ? comUV(geo, modo) : geo;
-    const m = new THREE.MeshStandardMaterial({ name: nome, color: 0xffffff, roughness: 0.6, metalness: 0 });
+    // tecido ganha "sheen": o brilho aveludado suave que estofado tem nas bordas
+    const m = modo === 'tecido'
+      ? new THREE.MeshPhysicalMaterial({ name: nome, color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.55, sheenColor: new THREE.Color(0.16, 0.16, 0.16) })
+      : new THREE.MeshStandardMaterial({ name: nome, color: 0xffffff, roughness: 0.6, metalness: 0 });
     if (nome.includes('latao')) { m.color.set(0xCFA65F); m.roughness = 0.3; m.metalness = 0.9; }
     const mesh = new THREE.Mesh(g, m); mesh.name = nome; cena.add(mesh);
   });
@@ -171,24 +177,8 @@ const blobURL = (canvas, tipo, q) => new Promise(ok => canvas.toBlob(b => ok(URL
 
 // Tecido/couro: atlas espelhado 2x2 (repete sem emenda) + mapa de relevo tirado da própria foto
 async function texturasTecido(url, forca) {
-  const img = await carregaImg(url), Q = 512, S = Q * 2;
-  // nivela a luz da foto (tira manchas claras/escuras grandes) para a repetição não aparecer
-  const f = document.createElement('canvas'); f.width = f.height = Q; const xf = f.getContext('2d', { willReadFrequently: true });
-  xf.drawImage(img, 0, 0, Q, Q); const orig = xf.getImageData(0, 0, Q, Q);
-  {
-    const od = orig.data, W1 = Q + 1, I = new Float64Array(W1 * W1), R = Q >> 3; let soma = 0;
-    for (let yy = 0; yy < Q; yy++) { let linha = 0; for (let xx = 0; xx < Q; xx++) {
-      const p = (yy * Q + xx) * 4, l = od[p] * 0.299 + od[p + 1] * 0.587 + od[p + 2] * 0.114; linha += l; soma += l;
-      I[(yy + 1) * W1 + xx + 1] = I[yy * W1 + xx + 1] + linha; } }
-    const media = soma / (Q * Q);
-    for (let yy = 0; yy < Q; yy++) for (let xx = 0; xx < Q; xx++) {
-      const xa = Math.max(0, xx - R), xb2 = Math.min(Q, xx + R + 1), ya = Math.max(0, yy - R), yb = Math.min(Q, yy + R + 1);
-      const loc = (I[yb * W1 + xb2] - I[ya * W1 + xb2] - I[yb * W1 + xa] + I[ya * W1 + xa]) / ((xb2 - xa) * (yb - ya));
-      const fator = media / Math.max(4, loc), p = (yy * Q + xx) * 4;
-      od[p] = Math.min(255, od[p] * fator); od[p + 1] = Math.min(255, od[p + 1] * fator); od[p + 2] = Math.min(255, od[p + 2] * fator);
-    }
-  }
-  xf.putImageData(orig, 0, 0);
+  // as fotos em tecidos-hd já vêm recortadas e com a luz nivelada (feito a partir do original da fábrica)
+  const f = await carregaImg(url), Q = 768, S = Q * 2;
   const c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d', { willReadFrequently: true });
   for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) {
     x.save(); x.translate(i ? S : 0, j ? S : 0); x.scale(i ? -1 : 1, j ? -1 : 1); x.drawImage(f, 0, 0, Q, Q); x.restore();
@@ -204,7 +194,7 @@ async function texturasTecido(url, forca) {
     out.data[o] = (-dx * inv * 0.5 + 0.5) * 255; out.data[o + 1] = (dy * inv * 0.5 + 0.5) * 255; out.data[o + 2] = (inv * 0.5 + 0.5) * 255; out.data[o + 3] = 255;
   }
   xn.putImageData(out, 0, 0);
-  return { cor: await blobURL(c, 'image/jpeg', 0.9), relevo: await blobURL(cn, 'image/png') };
+  return { cor: await blobURL(c, 'image/jpeg', 0.92), relevo: await blobURL(cn, 'image/jpeg', 0.92) };
 }
 
 const cache = new Map();
@@ -230,9 +220,10 @@ async function aplicaMadeira(nome, arq, rough) {
 async function aplicaTecido(nome, cod, rough, forca) {
   const vez = ++vezT; document.getElementById('nm-tecido').textContent = nome;
   const k = 't:' + cod;
-  if (!cache.has(k + ':uris')) cache.set(k + ':uris', texturasTecido(CDN + `acabamentos/crn-tc${cod}.jpg`, forca));
+  if (LISOS.has(cod)) { rough = 0.6; forca = 1.0; }
+  if (!cache.has(k + ':uris')) cache.set(k + ':uris', texturasTecido(CDN + `tecidos-hd/tc${cod}.jpg`, forca));
   const uris = await cache.get(k + ':uris');
-  const [tc, tn] = await Promise.all([textura(k + ':c', uris.cor, 'image/jpeg'), textura(k + ':n', uris.relevo, 'image/png')]);
+  const [tc, tn] = await Promise.all([textura(k + ':c', uris.cor, 'image/jpeg'), textura(k + ':n', uris.relevo, 'image/jpeg')]);
   if (vez !== vezT) return;
   const m = mat('tecido'); if (!m) return;
   m.pbrMetallicRoughness.setBaseColorFactor('#ffffff');
