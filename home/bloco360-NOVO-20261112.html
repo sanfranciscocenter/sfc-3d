@@ -1,0 +1,343 @@
+<!-- SFC 2027 · Componente HTML 6: PEÇA EM DESTAQUE · CADEIRA PIVOT EM 3D (entra entre os banners editoriais e "Mais desejados")
+     v2 (12/11/2026, T-114): mesmos tecidos, couros e madeiras reais do configurador da página do produto.
+     Modelo e texturas vêm de cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d. Three.js carrega do jsDelivr. -->
+<section class="sfc-360" id="peca-em-destaque" aria-label="Cadeira Pivot em 3D">
+  <div class="sfc-360-sticky">
+    <div class="sfc-wrap sfc-360-grid">
+      <div class="sfc-360-stage" id="sfc360stage">
+        <div class="sfc-360-halo"></div>
+        <canvas id="sfc360canvas" aria-label="Cadeira Pivot girando em 3D"></canvas>
+        <div class="sfc-360-deg"><i id="sfc360ring"></i><div><b id="sfc360deg">0°</b><span>rotação</span></div></div>
+        <div class="sfc-360-hint" id="sfc360hint">role para girar · arraste para explorar</div>
+        <img class="sfc-360-fallback" id="sfc360fallback" src="https://sanfranciscocenter.cdn.magazord.com.br/img/2026/05/produto/26167/cadeira-pivot-estofada-3.jpg" alt="Cadeira Pivot Encosto Estofado" loading="lazy" onerror="this.remove()">
+      </div>
+      <div class="sfc-360-copy">
+        <div class="sfc-eyebrow sfc-rv">Peça em destaque · gire em 360°</div>
+        <h2 class="sfc-360-title sfc-rv" data-delay="1">Cadeira Pivot. Cada ângulo, <em>uma decisão</em> de design.</h2>
+        <p class="sfc-360-text sfc-rv" data-delay="2">Assinada por Felipe Madeira, a Pivot traduz o modernismo brasileiro dos anos 60: estrutura mínima em jequitibá-rosa maciço, assento e encosto com inclinações sutis e detalhes em latão. Escolha o acabamento e veja a peça mudar na hora.</p>
+        <div class="sfc-360-specs sfc-rv" data-delay="2">
+          <div><small>Estrutura</small><b>Jequitibá-rosa maciço</b></div>
+          <div><small>Assento</small><b>Couro legítimo ou tecido</b></div>
+          <div><small>Medidas</small><b>46,5 × 82 × 56 cm</b></div>
+          <div><small>Altura do assento</small><b>47 cm</b></div>
+        </div>
+        <div class="sfc-360-sw sfc-rv" data-delay="3" role="group" aria-label="Acabamento do estofado">
+          <small>Estofado</small>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="550" data-name="Tecido Essencial · TC 550" aria-label="Tecido Essencial TC 550" aria-pressed="true" style="background:#716C4A url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30384/crn-tc550.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="501" data-name="Tecido Essencial · TC 501" aria-label="Tecido Essencial TC 501" aria-pressed="false" style="background:#71766D url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30360/crn-tc501.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="517" data-name="Tecido Essencial · TC 517" aria-label="Tecido Essencial TC 517" aria-pressed="false" style="background:#BDBAB7 url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30367/crn-tc517.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="530" data-name="Tecido Essencial · TC 530" aria-label="Tecido Essencial TC 530" aria-pressed="false" style="background:#875642 url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30371/crn-tc530.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="525" data-name="Tecido Essencial · TC 525" aria-label="Tecido Essencial TC 525" aria-pressed="false" style="background:#1E1F23 url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30370/crn-tc525.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="504" data-name="Tecido Premium · TC 504" aria-label="Tecido Premium TC 504" aria-pressed="false" style="background:#485863 url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30363/crn-tc504.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="507" data-name="Tecido Premium · TC 507" aria-label="Tecido Premium TC 507" aria-pressed="false" style="background:#AB894C url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30365/crn-tc507.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="541" data-name="Tecido Premium · TC 541" aria-label="Tecido Premium TC 541" aria-pressed="false" style="background:#7D6251 url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30375/crn-tc541.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="534" data-name="Couro · TC 534" aria-label="Couro TC 534" aria-pressed="false" style="background:#683417 url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30351/crn-tc534.jpg?ims=fit-in/96x96) center/cover"></button>
+          <button type="button" class="sfc-sw360" data-part="tecido" data-t="551" data-name="Couro · TC 551" aria-label="Couro TC 551" aria-pressed="false" style="background:#9E8A70 url(https://sanfranciscocenter.cdn.magazord.com.br/img/2026/09/produto/30354/crn-tc551.jpg?ims=fit-in/96x96) center/cover"></button>
+        </div>
+        <div class="sfc-360-sw sfc-rv" data-delay="3" role="group" aria-label="Tom da madeira">
+          <small>Madeira</small>
+          <button type="button" class="sfc-sw360" data-part="madeira" data-m="m01-avela.jpg" data-r="0.48" data-name="Avelã M01" aria-label="Avelã M01" aria-pressed="false" style="background:#D9A465"></button>
+          <button type="button" class="sfc-sw360" data-part="madeira" data-m="m02-castanho.jpg" data-r="0.48" data-name="Castanho M02" aria-label="Castanho M02" aria-pressed="false" style="background:#9A6248"></button>
+          <button type="button" class="sfc-sw360" data-part="madeira" data-m="m03-mocca.jpg" data-r="0.48" data-name="Mocca M03" aria-label="Mocca M03" aria-pressed="true" style="background:#5E3A2A"></button>
+          <button type="button" class="sfc-sw360" data-part="madeira" data-m="m04-nero-b.jpg" data-r="0.85" data-name="Nero Fosco M04" aria-label="Nero Fosco M04" aria-pressed="false" style="background:#2E2D2C"></button>
+          <button type="button" class="sfc-sw360" data-part="madeira" data-m="m05-nero-semibrilho-b.jpg" data-r="0.3" data-name="Nero Fosco Semibrilho M05" aria-label="Nero Fosco Semibrilho M05" aria-pressed="false" style="background:#1F1E1E"></button>
+        </div>
+        <p class="sfc-360-esc sfc-rv" data-delay="3" id="sfc360esc" aria-live="polite">Mocca M03 · Tecido Essencial · TC 550</p>
+        <div class="sfc-360-actions sfc-rv" data-delay="3">
+          <a class="sfc-btn sfc-btn-primary" href="https://www.sanfranciscocenter.com.br/cadeira-pivot-encosto-estofado">Ver a Cadeira Pivot <span class="sfc-arr">→</span></a>
+          <a class="sfc-btn sfc-btn-ghost" href="https://www.sanfranciscocenter.com.br/cadeira-pivot">Versão com encosto em palha</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.sfc-360{ position:relative; height:220vh; margin-top:clamp(40px,5vw,72px); }
+.sfc-360-sticky{ position:sticky; top:max(12px, calc(50vh - 330px)); height:auto; max-height:calc(100vh - 24px); display:flex; align-items:center; background:#F6F6F5; overflow:hidden; max-width:1320px; margin:0 auto; border-radius:36px; padding:clamp(20px,3vw,40px) 0; }
+.sfc-360-grid{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(20px,3vw,44px); align-items:center; width:100%; }
+.sfc-360-stage{ position:relative; aspect-ratio:1; width:min(100%,calc(100vh - 120px),600px); margin:0 auto; display:grid; place-items:center; }
+.sfc-360-halo{ position:absolute; inset:8%; border-radius:50%; background:radial-gradient(circle,#fff 0%,rgba(255,255,255,0) 70%); pointer-events:none; }
+.sfc-360-stage canvas{ position:absolute; inset:0; width:100% !important; height:100% !important; display:block; cursor:grab; touch-action:pan-y; }
+.sfc-360-stage canvas.is-dragging{ cursor:grabbing; }
+.sfc-360-fallback{ display:none; width:80%; height:auto; }
+.sfc-360-stage.no-webgl canvas, .sfc-360-stage.no-webgl .sfc-360-deg, .sfc-360-stage.no-webgl .sfc-360-hint{ display:none; }
+.sfc-360-stage.no-webgl .sfc-360-fallback{ display:block; }
+.sfc-360-deg{ position:absolute; right:2%; top:2%; display:flex; align-items:center; gap:10px; font-size:11px; color:#79909B; letter-spacing:.1em; text-transform:uppercase; }
+.sfc-360-deg b{ display:block; font-family:"Instrument Serif",Georgia,serif; font-size:24px; color:#1B1F17; font-weight:400; line-height:1; font-variant-numeric:tabular-nums; }
+.sfc-360-deg i{ width:44px; height:44px; border-radius:50%; background:conic-gradient(#3B4730 var(--p,0%),#D8DBD6 0); display:grid; place-items:center; }
+.sfc-360-deg i::after{ content:""; width:34px; height:34px; border-radius:50%; background:#F6F6F5; }
+.sfc-360-hint{ position:absolute; bottom:2%; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#79909B; white-space:nowrap; transition:opacity .4s; }
+.sfc-360-title{ font-family:"Instrument Serif",Georgia,serif !important; font-weight:400 !important; font-size:clamp(30px,3.6vw,50px) !important; line-height:.98 !important; letter-spacing:-.02em; margin:12px 0 14px !important; color:#1B1F17; text-wrap:balance; }
+.sfc-360-title em{ font-style:italic; color:#3B4730; }
+.sfc-360-text{ color:#4F5A45; max-width:50ch; font-size:15px; line-height:1.55; margin:0 0 18px; }
+@media (min-width:901px) and (max-height:800px){ .sfc-360-title{ font-size:34px !important; margin:8px 0 8px !important; } .sfc-360-text{ font-size:14px; margin-bottom:12px; } .sfc-360-specs{ gap:8px; margin-bottom:12px; } .sfc-360-specs div{ padding:8px 12px; } .sfc-360-specs b{ font-size:17px; } }
+.sfc-360-specs{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:18px; }
+.sfc-360-specs div{ background:#fff; border:1px solid rgba(59,71,48,.14); border-radius:16px; padding:12px 14px; }
+.sfc-360-specs small{ display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#3B4730; font-weight:700; }
+.sfc-360-specs b{ font-family:"Instrument Serif",Georgia,serif; font-weight:400; font-size:20px; color:#1B1F17; }
+.sfc-360-sw{ display:inline-flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px; border-radius:24px; background:#fff; border:1px solid rgba(59,71,48,.14); max-width:100%; margin:0 8px 10px 0; vertical-align:top; }
+.sfc-360-sw small{ padding:0 8px; color:#79909B; font-size:12px; }
+.sfc-sw360{ width:30px; height:30px; border-radius:50%; border:2px solid transparent; padding:0; cursor:pointer; position:relative; transition:transform .3s, border-color .3s; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08); background-clip:padding-box; }
+.sfc-sw360:hover{ transform:scale(1.12); }
+.sfc-sw360[aria-pressed="true"]{ border-color:#1B1F17; }
+.sfc-sw360:focus-visible{ outline:2px solid #3B4730; outline-offset:2px; }
+.sfc-sw360::after{ content:attr(data-name); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translate(-50%,4px); font-size:11px; white-space:nowrap; background:#1B1F17; color:#fff; padding:5px 9px; border-radius:8px; opacity:0; transition:.25s; pointer-events:none; z-index:2; }
+.sfc-sw360:hover::after{ opacity:1; transform:translate(-50%,0); }
+.sfc-360-esc{ margin:2px 0 0; font-family:"Instrument Serif",Georgia,serif; font-size:19px; line-height:1.2; color:#1B1F17; }
+.sfc-360-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+@media (max-width:900px){
+  .sfc-360{ height:auto; }
+  .sfc-360-sticky{ position:static; height:auto; max-height:none; overflow:visible; padding:22px 0 30px; border-radius:0; }
+  .sfc-360-grid{ grid-template-columns:1fr; gap:14px; }
+  .sfc-360-stage{ width:100%; aspect-ratio:4/5; max-width:460px; }
+  .sfc-360-title{ font-size:clamp(28px,8vw,40px) !important; margin:8px 0 8px !important; }
+  .sfc-360-text{ font-size:14px; margin-bottom:12px; }
+  .sfc-360-specs{ gap:8px; margin-bottom:12px; }
+  .sfc-360-specs div{ padding:8px 12px; border-radius:12px; }
+  .sfc-360-specs b{ font-size:16px; }
+  .sfc-360-sw{ padding:6px; }
+  .sfc-sw360{ width:28px; height:28px; }
+  .sfc-360-esc{ font-size:17px; }
+  .sfc-360-deg{ display:none; }
+  .sfc-360-hint{ font-size:10px; }
+  .sfc-360-actions{ margin-top:8px; }
+}
+@media (prefers-reduced-motion:reduce){ .sfc-360{ height:auto; } .sfc-360-sticky{ position:static; height:auto; padding:40px 0; } }
+</style>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+/* mesmos arquivos do configurador da página do produto (T-114) */
+const CDN = 'https://cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d@main/pivot/';
+const GLB = CDN + 'modelo/pivot-estofada-draco.glb';
+const TECIDO_TILE = 0.18, MADEIRA_U = 0.045, MADEIRA_V = 0.16;   /* metros que cada textura cobre */
+/* [forca do relevo, rugosidade] por acabamento */
+const TIPO = { 550: [1.0, 0.6], 501: [2.7, 1], 517: [1.9, 1], 530: [3.4, 1], 525: [1.9, 1], 504: [3.4, 1], 507: [3.4, 1], 541: [3.4, 1], 534: [1.4, 0.5], 551: [1.4, 0.5] };
+
+const stage = document.getElementById('sfc360stage');
+const canvas = document.getElementById('sfc360canvas');
+const section = document.querySelector('.sfc-360');
+const degEl = document.getElementById('sfc360deg'), ringEl = document.getElementById('sfc360ring'), hintEl = document.getElementById('sfc360hint'), escEl = document.getElementById('sfc360esc');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+} catch (e) { stage.classList.add('no-webgl'); }
+
+if (renderer) {
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const ANISO = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.6;
+
+  const camera = new THREE.PerspectiveCamera(26, 1, 0.05, 20);
+  camera.position.set(0, 0.62, 2.55); camera.lookAt(0, 0.42, 0);
+
+  const key = new THREE.DirectionalLight(0xfff3e2, 1.7); key.position.set(1.6, 3.2, 2.2);
+  key.castShadow = true; key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 5; key.shadow.bias = -0.0005;
+  key.shadow.camera.left = -1; key.shadow.camera.right = 1; key.shadow.camera.top = 1.4; key.shadow.camera.bottom = -0.5;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xe4ecff, 0.6); rim.position.set(-2.5, 2, -2); scene.add(rim);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xb8b0a0, 0.35));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.ShadowMaterial({ opacity: 0.16 }));
+  floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+
+  const group = new THREE.Group(); scene.add(group);
+  var needs = true;
+
+  /* ---------- mapeamento de textura (UV) em caixa: o modelo vem sem UV ---------- */
+  function analisa(geo) {
+    const pos = geo.attributes.position, n = pos.count;
+    const idx = geo.index ? geo.index.array : Uint32Array.from({ length: n }, (_, i) => i);
+    const mapa = new Map(), w = new Int32Array(n);
+    for (let i = 0; i < n; i++) {
+      const k = Math.round(pos.getX(i) * 1e4) + ',' + Math.round(pos.getY(i) * 1e4) + ',' + Math.round(pos.getZ(i) * 1e4);
+      let id = mapa.get(k); if (id === undefined) { id = mapa.size; mapa.set(k, id); } w[i] = id;
+    }
+    const pai = Int32Array.from({ length: mapa.size }, (_, i) => i);
+    const acha = (a) => { while (pai[a] !== a) { pai[a] = pai[pai[a]]; a = pai[a]; } return a; };
+    for (let t = 0; t < idx.length; t += 3) {
+      const a = acha(w[idx[t]]), b = acha(w[idx[t + 1]]), c = acha(w[idx[t + 2]]);
+      if (b !== a) pai[b] = a; const c2 = acha(c); if (c2 !== a) pai[c2] = a;
+    }
+    const nt = idx.length / 3, raiz = (t) => acha(w[idx[t * 3]]), caixas = new Map();
+    for (let t = 0; t < nt; t++) {
+      const r = raiz(t); let b = caixas.get(r);
+      if (!b) { b = { min: [1e9, 1e9, 1e9], max: [-1e9, -1e9, -1e9] }; caixas.set(r, b); }
+      for (let k = 0; k < 3; k++) { const i = idx[t * 3 + k], p = [pos.getX(i), pos.getY(i), pos.getZ(i)];
+        for (let a = 0; a < 3; a++) { if (p[a] < b.min[a]) b.min[a] = p[a]; if (p[a] > b.max[a]) b.max[a] = p[a]; } }
+    }
+    for (const b of caixas.values()) { const d = [0, 1, 2].map((a) => b.max[a] - b.min[a]); b.longo = d.indexOf(Math.max(...d)); }
+    return { idx, nt, raiz, caixas };
+  }
+  function comUV(geo, modo) {
+    const pos = geo.attributes.position, nor = geo.attributes.normal, { idx, nt, raiz, caixas } = analisa(geo);
+    const P = new Float32Array(nt * 9), N = new Float32Array(nt * 9), UV = new Float32Array(nt * 6);
+    const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), fn = new THREE.Vector3();
+    for (let t = 0; t < nt; t++) {
+      const i0 = idx[t * 3], i1 = idx[t * 3 + 1], i2 = idx[t * 3 + 2];
+      A.fromBufferAttribute(pos, i0); B.fromBufferAttribute(pos, i1); C.fromBufferAttribute(pos, i2);
+      fn.subVectors(B, A).cross(C.clone().sub(A));
+      const an = [Math.abs(fn.x), Math.abs(fn.y), Math.abs(fn.z)], nAxis = an.indexOf(Math.max(...an));
+      let uA, vA, su, sv;
+      if (modo === 'madeira') {   /* veio no sentido do comprimento de cada peca */
+        const L = caixas.get(raiz(t)).longo;
+        if (L !== nAxis) { vA = L; uA = 3 - L - nAxis; } else { [uA, vA] = [0, 1, 2].filter((a) => a !== nAxis); }
+        su = MADEIRA_U; sv = MADEIRA_V;
+      } else { [uA, vA] = nAxis === 0 ? [2, 1] : nAxis === 1 ? [0, 2] : [0, 1]; su = sv = TECIDO_TILE; }
+      [i0, i1, i2].forEach((i, k) => {
+        const p = [pos.getX(i), pos.getY(i), pos.getZ(i)];
+        P.set(p, t * 9 + k * 3); if (nor) N.set([nor.getX(i), nor.getY(i), nor.getZ(i)], t * 9 + k * 3);
+        UV.set([p[uA] / su, p[vA] / sv], t * 6 + k * 2);
+      });
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(P, 3));
+    if (nor) g.setAttribute('normal', new THREE.BufferAttribute(N, 3)); else g.computeVertexNormals();
+    g.setAttribute('uv', new THREE.BufferAttribute(UV, 2));
+    return g;
+  }
+
+  /* ---------- materiais e texturas reais ---------- */
+  const mats = {
+    madeira: new THREE.MeshStandardMaterial({ color: 0x5E3A2A, roughness: 0.48, metalness: 0 }),
+    tecido: new THREE.MeshPhysicalMaterial({ color: 0x716C4A, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.55, sheenColor: new THREE.Color(0.16, 0.16, 0.16) }),
+    latao: new THREE.MeshStandardMaterial({ color: 0xCFA65F, roughness: 0.3, metalness: 0.9 })
+  };
+  const texLoader = new THREE.TextureLoader(); texLoader.setCrossOrigin('anonymous');
+  const cache = new Map();
+  /* cor = a foto; relevo = calculado da propria foto (as fotos ja repetem sem emenda) */
+  function carrega(url, forca, W, H) {
+    if (!cache.has(url)) cache.set(url, new Promise((ok, erro) => texLoader.load(url, (cor) => {
+      cor.colorSpace = THREE.SRGBColorSpace; cor.wrapS = cor.wrapT = THREE.RepeatWrapping; cor.anisotropy = ANISO;
+      const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d', { willReadFrequently: true });
+      x.drawImage(cor.image, 0, 0, W, H);
+      const d = x.getImageData(0, 0, W, H).data, h = new Float32Array(W * H);
+      for (let p = 0; p < W * H; p++) h[p] = (d[p * 4] * 0.299 + d[p * 4 + 1] * 0.587 + d[p * 4 + 2] * 0.114) / 255;
+      const out = x.createImageData(W, H);
+      for (let py = 0; py < H; py++) { const ya = ((py - 1 + H) % H) * W, yb = ((py + 1) % H) * W, y0 = py * W;
+        for (let px = 0; px < W; px++) {
+          const dx = (h[y0 + (px + 1) % W] - h[y0 + (px - 1 + W) % W]) * forca, dy = (h[yb + px] - h[ya + px]) * forca;
+          const inv = 1 / Math.hypot(dx, dy, 1), o = (y0 + px) * 4;
+          out.data[o] = (-dx * inv * 0.5 + 0.5) * 255; out.data[o + 1] = (dy * inv * 0.5 + 0.5) * 255; out.data[o + 2] = (inv * 0.5 + 0.5) * 255; out.data[o + 3] = 255;
+        } }
+      x.putImageData(out, 0, 0);
+      const relevo = new THREE.CanvasTexture(c); relevo.wrapS = relevo.wrapT = THREE.RepeatWrapping; relevo.anisotropy = ANISO;
+      ok({ cor, relevo });
+    }, undefined, erro)));
+    return cache.get(url);
+  }
+  const escolha = { madeira: null, tecido: null }; let vezM = 0, vezT = 0;
+  function nomeia() { if (escEl && escolha.madeira && escolha.tecido) escEl.textContent = escolha.madeira.dataset.name + ' · ' + escolha.tecido.dataset.name; }
+  function aplicaMadeira(b) {
+    escolha.madeira = b; nomeia(); const vez = ++vezM;
+    carrega(CDN + 'madeiras-v2/' + b.dataset.m, 0.9, 512, 1024).then((t) => { if (vez !== vezM) return;
+      const m = mats.madeira; m.color.set(0xffffff); m.map = t.cor; m.normalMap = t.relevo; m.roughness = +b.dataset.r; m.needsUpdate = true; needs = true; }).catch(() => {});
+  }
+  function aplicaTecido(b) {
+    escolha.tecido = b; nomeia(); const vez = ++vezT, cfg = TIPO[b.dataset.t] || [2.7, 1];
+    carrega(CDN + 'tecidos-v2/tc' + b.dataset.t + '.jpg', cfg[0], 1024, 1024).then((t) => { if (vez !== vezT) return;
+      const m = mats.tecido; m.color.set(0xffffff); m.map = t.cor; m.normalMap = t.relevo; m.roughness = cfg[1]; m.needsUpdate = true; needs = true; }).catch(() => {});
+  }
+
+  /* ---------- modelo ---------- */
+  const dl = new DRACOLoader(); dl.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
+  const loader = new GLTFLoader(); loader.setDRACOLoader(dl);
+  loader.load(GLB, (g) => {
+    g.scene.updateMatrixWorld(true);
+    const pecas = new THREE.Group();
+    g.scene.traverse((o) => {
+      if (!o.isMesh) return;
+      const n = (o.name || (o.material && o.material.name) || '').toLowerCase();
+      const tipo = n.includes('tecido') ? 'tecido' : n.includes('latao') ? 'latao' : 'madeira';
+      const geo = o.geometry.clone().applyMatrix4(o.matrixWorld);
+      const malha = new THREE.Mesh(tipo === 'latao' ? geo : comUV(geo, tipo), mats[tipo]);
+      malha.castShadow = true; malha.receiveShadow = true; pecas.add(malha);
+    });
+    const box = new THREE.Box3().setFromObject(pecas); const c = box.getCenter(new THREE.Vector3());
+    pecas.position.set(-c.x, -box.min.y, -c.z);
+    group.add(pecas);
+    needs = true;
+    /* acabamento inicial: o que estiver marcado no HTML */
+    const m0 = document.querySelector('.sfc-sw360[data-part="madeira"][aria-pressed="true"]'), t0 = document.querySelector('.sfc-sw360[data-part="tecido"][aria-pressed="true"]');
+    if (m0) aplicaMadeira(m0); if (t0) aplicaTecido(t0);
+  }, undefined, () => stage.classList.add('no-webgl'));
+
+  /* acabamentos */
+  document.querySelectorAll('.sfc-sw360').forEach((b) => b.addEventListener('click', () => {
+    const part = b.dataset.part;
+    document.querySelectorAll('.sfc-sw360[data-part="' + part + '"]').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+    b.setAttribute('aria-pressed', 'true');
+    if (part === 'madeira') aplicaMadeira(b); else aplicaTecido(b);
+  }));
+
+  /* tamanho */
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    /* distancia da camera calculada para a cadeira (0,82 m) ocupar ~86% da altura visivel */
+    const fovV = THREE.MathUtils.degToRad(camera.fov); const need = 0.9 / 0.86;
+    const distH = (need / 2) / Math.tan(fovV / 2);
+    const distW = (0.62 / 0.86 / 2) / Math.tan(fovV / 2) / camera.aspect;
+    const dist = Math.max(distH, distW);
+    camera.position.set(0, 0.55, dist); camera.lookAt(0, 0.41, 0);
+    needs = true;
+  }
+  new ResizeObserver(resize).observe(stage); resize();
+
+  /* rotacao: scroll + arraste */
+  var scrollRot = 0, dragRot = 0, rot = 0, visible = false, dragging = false, lastX = 0, lastT = 0, vel = 0;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  function onScroll() {
+    const sticky = getComputedStyle(section.firstElementChild).position === 'sticky';
+    let p;
+    if (sticky) { const r = section.getBoundingClientRect(); const travel = r.height - innerHeight; p = travel > 0 ? clamp(-r.top / travel, 0, 1) : 0; }
+    else { const r = stage.getBoundingClientRect(); p = clamp((innerHeight - r.top) / (innerHeight + r.height), 0, 1); }
+    scrollRot = p * Math.PI * 2;
+    const deg = Math.round(p * 360); if (degEl) degEl.textContent = deg + '°'; if (ringEl) ringEl.style.setProperty('--p', (p * 100) + '%');
+    if (hintEl) hintEl.style.opacity = (p > 0.03 && p < 0.97) ? '0' : '1';
+    needs = true;
+  }
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  canvas.addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; lastT = performance.now(); vel = 0; canvas.classList.add('is-dragging'); canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener('pointermove', (e) => { if (!dragging) return; const dx = e.clientX - lastX; const now = performance.now(); vel = dx / Math.max(1, now - lastT); lastX = e.clientX; lastT = now; dragRot += dx * 0.012; needs = true; });
+  const endDrag = () => { dragging = false; canvas.classList.remove('is-dragging'); };
+  canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag); canvas.addEventListener('pointerleave', endDrag);
+
+  const io = new IntersectionObserver((es) => { visible = es[0].isIntersecting; if (visible) { needs = true; frame(); } }, { rootMargin: '10% 0px' });
+  io.observe(section);
+
+  let raf = 0, last = performance.now();
+  function frame() {
+    if (raf) return;
+    raf = requestAnimationFrame((t) => {
+      raf = 0; if (!visible) return;
+      const dt = Math.min(50, t - last); last = t;
+      if (!dragging && Math.abs(vel) > 0.0005) { dragRot += vel * dt * 0.012; vel *= 0.93; needs = true; }
+      const target = scrollRot + dragRot;
+      const prev = rot; rot = reduce ? target : rot + (target - rot) * 0.12;
+      const idle = reduce ? 0 : Math.sin(t / 2200) * 0.01;
+      group.rotation.y = rot + idle; group.position.y = reduce ? 0 : Math.sin(t / 1700) * 0.004;
+      if (needs || Math.abs(rot - prev) > 0.0002 || !reduce) renderer.render(scene, camera);
+      needs = false;
+      frame();
+    });
+  }
+}
+</script>
