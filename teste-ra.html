@@ -172,9 +172,20 @@ const blobURL = (canvas, tipo, q) => new Promise(ok => canvas.toBlob(b => ok(URL
 // Tecido/couro: atlas espelhado 2x2 (repete sem emenda) + mapa de relevo tirado da própria foto
 async function texturasTecido(url, forca) {
   const img = await carregaImg(url), Q = 512, S = Q * 2;
+  // nivela a luz da foto (tira manchas claras/escuras grandes) para a repetição não aparecer
+  const f = document.createElement('canvas'); f.width = f.height = Q; const xf = f.getContext('2d', { willReadFrequently: true });
+  xf.drawImage(img, 0, 0, Q, Q); const orig = xf.getImageData(0, 0, Q, Q);
+  const p8 = document.createElement('canvas'); p8.width = p8.height = 6; p8.getContext('2d').drawImage(img, 0, 0, 6, 6);
+  const bl = document.createElement('canvas'); bl.width = bl.height = Q; const xb = bl.getContext('2d', { willReadFrequently: true });
+  xb.imageSmoothingEnabled = true; xb.imageSmoothingQuality = 'high'; xb.drawImage(p8, -Q / 12, -Q / 12, Q + Q / 6, Q + Q / 6);
+  const borr = xb.getImageData(0, 0, Q, Q).data, med = [0, 0, 0];
+  for (let p = 0; p < Q * Q; p++) for (let k = 0; k < 3; k++) med[k] += orig.data[p * 4 + k];
+  for (let k = 0; k < 3; k++) med[k] /= Q * Q;
+  for (let p = 0; p < Q * Q; p++) for (let k = 0; k < 3; k++) orig.data[p * 4 + k] = Math.min(255, orig.data[p * 4 + k] * med[k] / Math.max(8, borr[p * 4 + k]));
+  xf.putImageData(orig, 0, 0);
   const c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d', { willReadFrequently: true });
   for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) {
-    x.save(); x.translate(i ? S : 0, j ? S : 0); x.scale(i ? -1 : 1, j ? -1 : 1); x.drawImage(img, 0, 0, Q, Q); x.restore();
+    x.save(); x.translate(i ? S : 0, j ? S : 0); x.scale(i ? -1 : 1, j ? -1 : 1); x.drawImage(f, 0, 0, Q, Q); x.restore();
   }
   const d = x.getImageData(0, 0, S, S).data;
   const h = new Float32Array(S * S);
