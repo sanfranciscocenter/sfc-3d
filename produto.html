@@ -212,9 +212,18 @@ function monta(geo, an, modo) {
   const P3 = [], N = [], UV = [];
   const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), fn = new THREE.Vector3();
   const lado = modo === 'palha' ? (P.palhaTile || PALHA_TILE) : TECIDO_TILE;
+  // Correção de bloco: peça fechada com as faces viradas para dentro (aparece "furada", dá para ver através dela).
+  // O volume assinado de cada peça solta diz se está do avesso; nesse caso a ordem dos vértices é invertida.
+  const vol = new Map();
+  if (modo !== 'palha') for (let t = 0; t < nt; t++) {
+    A.fromBufferAttribute(pos, idx[t * 3]); B.fromBufferAttribute(pos, idx[t * 3 + 1]); C.fromBufferAttribute(pos, idx[t * 3 + 2]);
+    const r = raiz(t), c = caixas.get(r).centro; A.x -= c[0]; A.y -= c[1]; A.z -= c[2]; B.x -= c[0]; B.y -= c[1]; B.z -= c[2]; C.x -= c[0]; C.y -= c[1]; C.z -= c[2];
+    vol.set(r, (vol.get(r) || 0) + A.dot(B.clone().cross(C)) / 6);
+  }
+  const avesso = r => { const v = vol.get(r), d = caixas.get(r).tam; return v !== undefined && v < -0.02 * d[0] * d[1] * d[2]; };
   for (let t = 0; t < nt; t++) {
-    const r = raiz(t);
-    const i0 = idx[t * 3], i1 = idx[t * 3 + 1], i2 = idx[t * 3 + 2];
+    const r = raiz(t), inv = avesso(r);
+    const i0 = idx[t * 3], i1 = idx[t * 3 + (inv ? 2 : 1)], i2 = idx[t * 3 + (inv ? 1 : 2)];
     A.fromBufferAttribute(pos, i0); B.fromBufferAttribute(pos, i1); C.fromBufferAttribute(pos, i2);
     fn.subVectors(B, A).cross(C.clone().sub(A));
     const an3 = [Math.abs(fn.x), Math.abs(fn.y), Math.abs(fn.z)], nAxis = an3.indexOf(Math.max(...an3));
@@ -229,7 +238,8 @@ function monta(geo, an, modo) {
     }
     for (const i of [i0, i1, i2]) {
       const p = [pos.getX(i), pos.getY(i), pos.getZ(i)];
-      P3.push(...p); if (nor) N.push(nor.getX(i), nor.getY(i), nor.getZ(i));
+      P3.push(...p);
+      if (nor) { const nx = nor.getX(i), ny = nor.getY(i), nz = nor.getZ(i), s = nx * fn.x + ny * fn.y + nz * fn.z < 0 ? -1 : 1; N.push(nx * s, ny * s, nz * s); }   // normal sempre para fora
       UV.push(p[uA] / su, p[vA] / sv);
     }
   }
@@ -347,6 +357,7 @@ async function prepararModelo() {
     if (!o.isMesh) return;
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     const g = o.geometry.clone().applyMatrix4(o.matrixWorld);
+    if (P.escala) g.scale(P.escala, P.escala, P.escala);   // bloco que veio na unidade errada
     if (o.matrixWorld.determinant() < 0 && g.index) { const a = g.index.array; for (let i = 0; i < a.length; i += 3) { const t = a[i]; a[i] = a[i + 2]; a[i + 2] = t; } }
     pecas.push({ i: n++, geo: g, nomeMat: mats[0]?.name || '', original: mats[0] });
   });
