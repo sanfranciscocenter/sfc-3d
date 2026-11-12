@@ -5,8 +5,8 @@
 (() => {
   if (window.__sfc3d) return; window.__sfc3d = true;
 
-  const BASE = 'https://matheussanfrancisco.github.io/sfc-3d/';
-  const ORIGEM = 'https://matheussanfrancisco.github.io';
+  const BASE = 'https://sanfranciscocenter.github.io/sfc-3d/';
+  const ORIGEM = 'https://sanfranciscocenter.github.io';
   // caminho da página do produto -> página do configurador e nome exato de cada personalização
   const PRODUTOS = {
     '/cadeira-pivot': {
