@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Cadeira Pivot · Personalize em 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+  :root { --base:#3B4730; --base-escuro:#36402C; --base-claro:#4F5A45; --tinta:#1B1F17; --apoio:#79909B; --neutro:#F6F6F5; --borda:rgba(59,71,48,.14); --serif:"Instrument Serif",Georgia,serif; }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; background:#fff; color:var(--tinta); font:15px/1.55 Roboto, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  button { font-family:inherit; }
+  .pagina { max-width:1320px; margin:0 auto; padding:16px; display:grid; gap:16px; }
+  .palco { position:relative; background:var(--neutro); border-radius:28px; overflow:hidden; }
+  model-viewer { display:block; width:100%; height:56vh; min-height:340px; background:transparent; --poster-color:transparent; --progress-bar-color:var(--base); }
+  .status { position:absolute; inset:0; display:grid; place-items:center; color:var(--apoio); font-size:11px; letter-spacing:.14em; text-transform:uppercase; pointer-events:none; }
+  .ra { position:absolute; right:14px; top:14px; border:0; border-radius:999px; background:var(--base); color:#fff; padding:11px 18px; font:500 14px Roboto, sans-serif; cursor:pointer; }
+  .ra:hover { background:var(--base-escuro); }
+  .vistas { position:absolute; left:50%; bottom:14px; transform:translateX(-50%); display:flex; gap:4px; padding:4px; border-radius:999px; background:rgba(255,255,255,.86); border:1px solid var(--borda); backdrop-filter:blur(8px); max-width:calc(100% - 24px); }
+  .vistas button { border:0; background:transparent; border-radius:999px; padding:7px 13px; font-size:12px; font-weight:500; color:var(--base-claro); cursor:pointer; white-space:nowrap; }
+  .vistas button[aria-pressed="true"] { background:var(--base); color:#fff; }
+  .painel { padding:4px 4px 24px; min-width:0; }
+  .sobre { font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--base); font-weight:700; margin:0; }
+  h1 { font-family:var(--serif); font-weight:400; font-size:clamp(34px,5vw,50px); line-height:.98; letter-spacing:-.02em; margin:10px 0 12px; text-wrap:balance; }
+  h1 em { font-style:italic; color:var(--base); }
+  .texto { color:var(--base-claro); max-width:50ch; margin:0 0 20px; }
+  .grupo { background:#fff; border:1px solid var(--borda); border-radius:20px; padding:14px 16px 16px; margin:0 0 12px; }
+  .grupo h2 { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin:0 0 12px; font:700 11px Roboto, sans-serif; letter-spacing:.1em; text-transform:uppercase; color:var(--base); }
+  .grupo h2 b { font-family:var(--serif); font-weight:400; font-size:20px; letter-spacing:0; text-transform:none; color:var(--tinta); }
+  .linha { font-size:12px; color:var(--apoio); margin:12px 0 8px; }
+  .amostras { display:flex; flex-wrap:wrap; gap:8px; }
+  .sw { width:40px; height:40px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 1px var(--borda); background-color:var(--neutro); background-size:cover; background-position:center; cursor:pointer; padding:0; transition:transform .15s; }
+  .sw:hover { transform:scale(1.08); }
+  .sw[aria-pressed="true"] { box-shadow:0 0 0 2px var(--tinta); }
+  .sw:focus-visible, .pilula:focus-visible, .vistas button:focus-visible, .acao:focus-visible { outline:2px solid var(--base); outline-offset:3px; }
+  .pilulas { display:flex; flex-wrap:wrap; gap:8px; }
+  .pilula { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--borda); background:#fff; border-radius:999px; padding:6px 14px 6px 6px; font-size:13px; color:var(--tinta); cursor:pointer; }
+  .pilula i { width:28px; height:28px; border-radius:50%; background-size:cover; background-position:center; background-color:var(--neutro); box-shadow:inset 0 0 0 1px var(--borda); }
+  .pilula[aria-pressed="true"] { border-color:var(--tinta); box-shadow:0 0 0 1px var(--tinta); }
+  .escolhido { display:flex; align-items:center; gap:12px; margin:0 0 4px; padding:0; border:0; background:none; cursor:zoom-in; text-align:left; color:inherit; }
+  .escolhido i { width:64px; height:64px; border-radius:14px; background-size:220%; background-position:center; box-shadow:inset 0 0 0 1px var(--borda); flex:none; }
+  .escolhido span { font-size:12px; color:var(--apoio); }
+  .acoes { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:16px; }
+  .acao { border:1px solid var(--base); background:#fff; color:var(--base); border-radius:999px; padding:10px 18px; font-size:14px; font-weight:500; cursor:pointer; }
+  .acao:hover { background:var(--base); color:#fff; }
+  .aviso { font-size:12px; color:var(--apoio); }
+  .barra { position:sticky; bottom:0; z-index:5; display:flex; align-items:center; justify-content:space-between; gap:12px; margin:16px -4px 0; padding:12px 16px; background:rgba(255,255,255,.96); border:1px solid var(--borda); border-radius:20px; backdrop-filter:blur(8px); }
+  .barra small { display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--base); font-weight:700; }
+  .barra strong { font-family:var(--serif); font-weight:400; font-size:26px; line-height:1.1; }
+  .usar { border:0; border-radius:999px; background:var(--base); color:#fff; padding:13px 22px; font-size:15px; font-weight:500; cursor:pointer; white-space:nowrap; }
+  .usar:hover { background:var(--base-escuro); }
+  .usar:focus-visible { outline:2px solid var(--base); outline-offset:3px; }
+  body.embed .pagina { padding:12px; }
+  body.embed #compartilhar { display:none; }
+  body.embed h1 { font-size:clamp(28px,4vw,40px); }
+  .lupa { position:fixed; inset:0; z-index:20; background:rgba(27,31,23,.72); display:grid; place-items:center; padding:16px; }
+  .lupa[hidden] { display:none; }
+  .lupa figure { margin:0; background:#fff; border-radius:24px; overflow:hidden; width:min(92vw,560px); }
+  .lupa img { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
+  .lupa figcaption { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; font-family:var(--serif); font-size:20px; }
+  .lupa button { border:0; background:var(--neutro); border-radius:999px; padding:8px 14px; font-size:13px; cursor:pointer; color:var(--tinta); }
+  @media (min-width:900px) {
+    .pagina { grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:28px; padding:28px; align-items:start; }
+    .palco { position:sticky; top:28px; border-radius:36px; }
+    model-viewer { height:calc(100vh - 56px); min-height:520px; }
+    .painel { padding-top:12px; }
+  }
+</style>
+</head>
+<body>
+<main class="pagina">
+  <div class="palco">
+    <model-viewer id="mv"
+      alt="Cadeira Pivot em 3D"
+      camera-controls touch-action="pan-y" shadow-intensity="1.25" shadow-softness="0.85" exposure="1.3"
+      tone-mapping="commerce" interpolation-decay="110"
+      camera-orbit="30deg 72deg auto"
+      ar ar-modes="webxr quick-look" ar-scale="fixed" ar-placement="floor">
+      <button slot="ar-button" class="ra">Ver no meu ambiente</button>
+    </model-viewer>
+    <div class="status" id="status">Preparando o modelo</div>
+    <div class="vistas" id="vistas" hidden role="group" aria-label="Vistas">
+      <button type="button" data-o="30deg 72deg auto" aria-pressed="true">Geral</button>
+      <button type="button" data-o="0deg 82deg auto">Frente</button>
+      <button type="button" data-o="90deg 82deg auto">Lado</button>
+      <button type="button" data-o="180deg 80deg auto">Costas</button>
+      <button type="button" data-o="28deg 66deg 1.25m" data-alvo="0m 0.6m -0.05m" data-fov="22deg">Detalhe</button>
+    </div>
+  </div>
+
+  <div class="painel">
+    <p class="sobre">Alma Mobília · Design Felipe Madeira</p>
+    <h1>Cadeira Pivot, <em>do seu jeito</em></h1>
+    <p class="texto">Escolha a madeira, o encosto e o acabamento e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar a cadeira na sua sala.</p>
+
+    <section class="grupo">
+      <h2>Madeira <b id="nm-madeira"></b></h2>
+      <div class="amostras" id="madeiras"></div>
+    </section>
+    <section class="grupo">
+      <h2>Encosto <b id="nm-encosto"></b></h2>
+      <div class="pilulas" id="encostos"></div>
+    </section>
+    <section class="grupo">
+      <h2>Acabamento <b id="nm-tecido"></b></h2>
+      <button class="escolhido" id="escolhido" type="button" aria-label="Ampliar a amostra do acabamento"><i></i><span>Toque para ver a amostra de perto</span></button>
+      <div id="tecidos"></div>
+    </section>
+    <div class="acoes">
+      <button class="acao" id="compartilhar" type="button">Compartilhar esta configuração</button>
+      <span class="aviso" id="aviso" role="status"></span>
+    </div>
+    <div class="barra" id="barra" hidden>
+      <div><small id="b-linha"></small><strong id="b-preco"></strong></div>
+      <button class="usar" id="usar" type="button">Usar esta configuração</button>
+    </div>
+  </div>
+</main>
+
+<div class="lupa" id="lupa" hidden>
+  <figure>
+    <img id="lupa-img" alt="">
+    <figcaption><span id="lupa-nome"></span><button type="button" id="lupa-fechar">Fechar</button></figcaption>
+  </figure>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+
+const CDN = 'https://cdn.jsdelivr.net/gh/matheussanfrancisco/sfc-3d@main/pivot/';
+const LOJA = 'https://sanfranciscocenter.cdn.magazord.com.br/img/';
+const GLB = CDN + 'modelo/pivot-estofada-draco.glb';
+
+// Tamanho real que cada textura cobre (em metros)
+const TECIDO_TILE = 0.18;                    // lado da foto do tecido (um pouco ampliado para a trama aparecer)
+const MADEIRA_U = 0.045, MADEIRA_V = 0.16;   // largura x comprimento da tábua fotografada
+const PALHA_TILE = 0.054;                    // 4 células de palha
+// Encosto em palha (metros). Tamanho, espessura e arredondamento vêm do encosto estofado do próprio modelo.
+// Abaixo, só o que foi medido na foto frontal do produto (786 px = 38,8 cm de largura).
+const QUADRO = { fundoMax: 0.035, lado: 0.031, cima: 0.034, baixo: 0.083, raioFuro: 0.008, borda: 0.0165, bordaBaixo: 0.03, vivo: 0.006, raioTela: 0.005 };
+
+const MADEIRAS = [
+  ['Avelã M01','m01-avela.jpg',0.48],
+  ['Castanho M02','m02-castanho.jpg',0.48],
+  ['Mocca M03','m03-mocca.jpg',0.48],
+  ['Nero Fosco M04','m04-nero-b.jpg',0.85],
+  ['Nero Fosco Semibrilho M05','m05-nero-semibrilho-b.jpg',0.3]
+];
+const ENCOSTOS = [
+  ['Estofado', null, null, null],
+  ['Palha Natural PN01', 'pn01-natural.png', '2025/05/produto/25389/natural-pn-01.jpg', '#D8C08E'],
+  ['Palha Bronze PN02', 'pn02-bronze.png', '2025/05/produto/25388/bronze-pn02.jpg', '#B27C3E'],
+  ['Palha Preta PN03', 'pn03-preta.png', '2025/05/produto/25390/preta-pn03.jpg', '#2B2826']
+];
+const GRUPOS = [
+  ['Tecido Essencial', [501,514,517,523,524,525,530,539,542,543,545,546,547,548,549,550]],
+  ['Tecido Premium',   [502,503,504,505,507,538,540,541,544]],
+  ['Couro',            [534,535,537,551,552,553,554,555,556]]
+];
+// Relevo e brilho por tipo de material: [força do relevo, rugosidade]
+const TIPO = { grosso: [3.4, 1.0], medio: [2.7, 1.0], fino: [1.9, 1.0], liso: [1.0, 0.6], couro: [1.4, 0.5] };
+const TIPO_DE = {};
+[502,503,504,505,507,530,538,540,541].forEach(c => TIPO_DE[c] = 'grosso');
+[501,539,542,543].forEach(c => TIPO_DE[c] = 'medio');
+[514,517,523,524,525].forEach(c => TIPO_DE[c] = 'fino');
+[544,545,546,547,548,549,550].forEach(c => TIPO_DE[c] = 'liso');
+[534,535,537,551,552,553,554,555,556].forEach(c => TIPO_DE[c] = 'couro');
+// miniaturas das amostras (as mesmas do site)
+const MIDIA = {501:30360,502:30361,503:30362,504:30363,505:30364,507:30365,514:30366,517:30367,523:30368,524:30369,525:30370,530:30371,538:30372,539:30373,540:30374,541:30375,542:30376,543:30377,544:30378,545:30379,546:30380,547:30381,548:30382,549:30383,550:30384,534:30351,535:30352,537:30353,551:30354,552:30355,553:30356,554:30357,555:30358,556:30359};
+
+const $ = id => document.getElementById(id);
+const mv = $('mv'), statusEl = $('status');
+
+/* ---------- 1. Modelo ---------- */
+function analisa(geo) {
+  const pos = geo.attributes.position, n = pos.count;
+  const idx = geo.index ? geo.index.array : Uint32Array.from({ length: n }, (_, i) => i);
+  const mapa = new Map(), w = new Int32Array(n);
+  for (let i = 0; i < n; i++) {
+    const k = Math.round(pos.getX(i) * 1e4) + ',' + Math.round(pos.getY(i) * 1e4) + ',' + Math.round(pos.getZ(i) * 1e4);
+    let id = mapa.get(k); if (id === undefined) { id = mapa.size; mapa.set(k, id); } w[i] = id;
+  }
+  const pai = Int32Array.from({ length: mapa.size }, (_, i) => i);
+  const acha = a => { while (pai[a] !== a) { pai[a] = pai[pai[a]]; a = pai[a]; } return a; };
+  for (let t = 0; t < idx.length; t += 3) {
+    const a = acha(w[idx[t]]), b = acha(w[idx[t + 1]]), c = acha(w[idx[t + 2]]);
+    if (b !== a) pai[b] = a; const c2 = acha(c); if (c2 !== a) pai[c2] = a;
+  }
+  const nt = idx.length / 3, raiz = t => acha(w[idx[t * 3]]), caixas = new Map();
+  for (let t = 0; t < nt; t++) {
+    const r = raiz(t); let b = caixas.get(r);
+    if (!b) { b = { min: [1e9, 1e9, 1e9], max: [-1e9, -1e9, -1e9], tris: 0 }; caixas.set(r, b); } b.tris++;
+    for (let k = 0; k < 3; k++) { const i = idx[t * 3 + k], p = [pos.getX(i), pos.getY(i), pos.getZ(i)];
+      for (let a = 0; a < 3; a++) { if (p[a] < b.min[a]) b.min[a] = p[a]; if (p[a] > b.max[a]) b.max[a] = p[a]; } }
+  }
+  for (const b of caixas.values()) { const d = [0, 1, 2].map(a => b.max[a] - b.min[a]); b.tam = d; b.longo = d.indexOf(Math.max(...d)); b.centro = [0, 1, 2].map(a => (b.max[a] + b.min[a]) / 2); }
+  return { idx, nt, raiz, caixas };
+}
+
+// Monta a geometria com mapeamento de textura (UV) em caixa. filtro(raiz) escolhe as peças.
+function monta(geo, an, modo, filtro, longoDe) {
+  const pos = geo.attributes.position, nor = geo.attributes.normal, { idx, nt, raiz, caixas } = an;
+  const P = [], N = [], UV = [];
+  const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), fn = new THREE.Vector3();
+  for (let t = 0; t < nt; t++) {
+    const r = raiz(t); if (filtro && !filtro(r)) continue;
+    const i0 = idx[t * 3], i1 = idx[t * 3 + 1], i2 = idx[t * 3 + 2];
+    A.fromBufferAttribute(pos, i0); B.fromBufferAttribute(pos, i1); C.fromBufferAttribute(pos, i2);
+    fn.subVectors(B, A).cross(C.clone().sub(A));
+    const an3 = [Math.abs(fn.x), Math.abs(fn.y), Math.abs(fn.z)], nAxis = an3.indexOf(Math.max(...an3));
+    let uA, vA, su, sv;
+    if (modo === 'madeira') {
+      const L = longoDe ? longoDe((A.x + B.x + C.x) / 3, (A.y + B.y + C.y) / 3) : caixas.get(r).longo;
+      if (L !== nAxis) { vA = L; uA = 3 - L - nAxis; } else { [uA, vA] = [0, 1, 2].filter(a => a !== nAxis); }
+      su = MADEIRA_U; sv = MADEIRA_V;
+    } else {
+      [uA, vA] = nAxis === 0 ? [2, 1] : nAxis === 1 ? [0, 2] : [0, 1];
+      su = sv = TECIDO_TILE;
+    }
+    for (const i of [i0, i1, i2]) {
+      const p = [pos.getX(i), pos.getY(i), pos.getZ(i)];
+      P.push(...p); if (nor) N.push(nor.getX(i), nor.getY(i), nor.getZ(i));
+      UV.push(p[uA] / su, p[vA] / sv);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(P, 3));
+  if (nor) g.setAttribute('normal', new THREE.Float32BufferAttribute(N, 3)); else g.computeVertexNormals();
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(UV, 2));
+  return g;
+}
+function junta(geos) {
+  const g = new THREE.BufferGeometry();
+  for (const nome of ['position', 'normal', 'uv']) {
+    const tam = nome === 'uv' ? 2 : 3, arr = new Float32Array(geos.reduce((s, x) => s + x.attributes[nome].array.length, 0)); let o = 0;
+    for (const x of geos) { arr.set(x.attributes[nome].array, o); o += x.attributes[nome].array.length; }
+    g.setAttribute(nome, new THREE.BufferAttribute(arr, tam));
+  }
+  return g;
+}
+
+// Encosto em palha: moldura de madeira + tela, no lugar e na inclinação do encosto estofado
+function encostoPalha(geoTecido, an, raizEncosto) {
+  const pos = geoTecido.attributes.position, cx = an.caixas.get(raizEncosto);
+  let n = 0, sy = 0, sz = 0, syy = 0, syz = 0; const vistos = new Set();
+  for (let t = 0; t < an.nt; t++) if (an.raiz(t) === raizEncosto) for (let k = 0; k < 3; k++) {
+    const i = an.idx[t * 3 + k]; if (vistos.has(i)) continue; vistos.add(i);
+    const y = pos.getY(i), z = pos.getZ(i); n++; sy += y; sz += z; syy += y * y; syz += y * z;
+  }
+  const incl = Math.atan((n * syz - sy * sz) / Math.max(1e-9, n * syy - sy * sy));   // inclinação para trás
+  // Medidas tiradas das fotos reais: moldura de cantos arredondados, travessa de baixo mais alta,
+  // palha aplicada NA FRENTE da moldura (não embutida), também de cantos arredondados e com vivo em volta.
+  // A moldura copia o encosto estofado: mesma largura, altura, espessura, posição e arredondamento.
+  // As medidas saem do próprio estofado, visto de frente (sem a inclinação).
+  const Q = QUADRO, c0 = new THREE.Vector3(...cx.centro), desfaz = new THREE.Matrix4().makeRotationX(-incl), pl = [], v3 = new THREE.Vector3();
+  const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9];
+  for (const i of vistos) { v3.fromBufferAttribute(pos, i).sub(c0).applyMatrix4(desfaz); const p = [v3.x, v3.y, v3.z]; pl.push(p);
+    for (let a = 0; a < 3; a++) { if (p[a] < mn[a]) mn[a] = p[a]; if (p[a] > mx[a]) mx[a] = p[a]; } }
+  // espessura: a do estofado, limitada a 3,5 cm (decisão do Matheus; a moldura real é mais fina que a almofada)
+  const w = mx[0] - mn[0], h = mx[1] - mn[1], fundo = Math.min(mx[2] - mn[2], Q.fundoMax), meio = [0, 1, 2].map(a => (mx[a] + mn[a]) / 2);
+  // num canto arredondado de raio r, o ponto mais próximo da quina da caixa fica a r·(√2−1) dela
+  const raioDe = (a, b) => { let d = 1e9; for (const p of pl) for (const sa of [mn[a], mx[a]]) for (const sb of [mn[b], mx[b]]) d = Math.min(d, Math.hypot(p[a] - sa, p[b] - sb)); return d / (Math.SQRT2 - 1); };
+  const raio = Math.min(Math.max(raioDe(0, 1), 0.004), Math.min(w, h) / 3);
+  const chanfro = Math.min(Math.max(Math.min(raioDe(0, 2), raioDe(1, 2)), 0.002), fundo / 2 - 0.002);
+  const ret = (alvo, x0, y0, x1, y1, r) => {   // retângulo de cantos arredondados
+    alvo.moveTo(x0 + r, y0); alvo.lineTo(x1 - r, y0); alvo.quadraticCurveTo(x1, y0, x1, y0 + r);
+    alvo.lineTo(x1, y1 - r); alvo.quadraticCurveTo(x1, y1, x1 - r, y1);
+    alvo.lineTo(x0 + r, y1); alvo.quadraticCurveTo(x0, y1, x0, y1 - r);
+    alvo.lineTo(x0, y0 + r); alvo.quadraticCurveTo(x0, y0, x0 + r, y0); return alvo;
+  };
+  const X = w / 2, Y = h / 2;
+  // moldura: anel extrudado com as arestas suavizadas
+  const anel = ret(new THREE.Shape(), -X, -Y, X, Y, raio);
+  anel.holes.push(ret(new THREE.Path(), -X + Q.lado, -Y + Q.baixo, X - Q.lado, Y - Q.cima, Q.raioFuro));
+  // bevelOffset negativo: o arredondamento da aresta não aumenta o tamanho de fora
+  const gAnel = new THREE.ExtrudeGeometry(anel, { depth: fundo - 2 * chanfro, bevelEnabled: true, bevelThickness: chanfro, bevelSize: chanfro, bevelOffset: -chanfro, bevelSegments: 5, curveSegments: 12 })
+    .translate(0, 0, -fundo / 2 + chanfro);
+  // veio: na vertical nas laterais, na horizontal nas travessas
+  const moldura = monta(gAnel, analisa(gAnel), 'madeira', null, x => Math.abs(x) > X - Q.lado ? 1 : 0);
+  // tela de palha na frente, com a borda de madeira aparecendo em volta (medida na foto frontal)
+  const bx = X - Q.borda, y0 = -Y + Q.bordaBaixo, y1 = Y - Q.borda, zf = fundo / 2 + 0.0012;
+  const tela = new THREE.ShapeGeometry(ret(new THREE.Shape(), -bx, y0, bx, y1, Q.raioTela), 10).toNonIndexed().translate(0, 0, zf);
+  const tp = tela.attributes.position, tuv = new Float32Array(tp.count * 2);
+  for (let i = 0; i < tp.count; i++) { tuv[i * 2] = tp.getX(i) / PALHA_TILE; tuv[i * 2 + 1] = tp.getY(i) / PALHA_TILE; }
+  tela.setAttribute('uv', new THREE.BufferAttribute(tuv, 2));
+  // vivo: o acabamento trançado que contorna a palha
+  const v2 = Q.vivo / 2, fita = ret(new THREE.Shape(), -bx - v2, y0 - v2, bx + v2, y1 + v2, Q.raioTela + v2);
+  fita.holes.push(ret(new THREE.Path(), -bx + v2, y0 + v2, bx - v2, y1 - v2, Math.max(0.0015, Q.raioTela - v2)));
+  const vivo = new THREE.ExtrudeGeometry(fita, { depth: 0.002, bevelEnabled: true, bevelThickness: 0.001, bevelSize: 0.001, bevelOffset: -0.001, bevelSegments: 2, curveSegments: 10 }).translate(0, 0, zf);
+  vivo.deleteAttribute('uv');
+  // volta para o lugar exato do estofado (mesmo centro, mesma inclinação)
+  const M = new THREE.Matrix4().makeRotationX(incl).multiply(new THREE.Matrix4().makeTranslation(meio[0], meio[1], meio[2])).premultiply(new THREE.Matrix4().makeTranslation(c0.x, c0.y, c0.z));
+  console.info('[encosto palha] largura', w.toFixed(3), 'altura', h.toFixed(3), 'espessura', fundo.toFixed(3), 'raio do canto', raio.toFixed(4), 'aresta', chanfro.toFixed(4));
+  moldura.applyMatrix4(M); tela.applyMatrix4(M); vivo.applyMatrix4(M);
+  return { moldura, tela, vivo };
+}
+
+async function prepararModelos() {
+  const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
+  const gltf = await new GLTFLoader().setDRACOLoader(draco).loadAsync(GLB);
+  gltf.scene.updateMatrixWorld(true);
+  const partes = {};
+  gltf.scene.traverse(o => { if (!o.isMesh) return; const nome = (o.material.name || o.name || '').toLowerCase();
+    for (const k of ['madeira', 'tecido', 'latao']) if (nome.includes(k)) partes[k] = o.geometry.clone().applyMatrix4(o.matrixWorld); });
+
+  const mMadeira = new THREE.MeshStandardMaterial({ name: 'madeira', color: 0xffffff, roughness: 0.5, metalness: 0 });
+  // tecido ganha "sheen": o brilho aveludado suave que estofado tem nas bordas
+  const mTecido = new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.55, sheenColor: new THREE.Color(0.16, 0.16, 0.16) });
+  const mLatao = new THREE.MeshStandardMaterial({ name: 'latao', color: 0xCFA65F, roughness: 0.3, metalness: 0.9 });
+  const mPalha = new THREE.MeshStandardMaterial({ name: 'palha', color: 0xffffff, roughness: 0.7, metalness: 0, side: THREE.DoubleSide, alphaTest: 0.5 });
+
+  const anM = analisa(partes.madeira), anT = analisa(partes.tecido);
+  const gMadeira = monta(partes.madeira, anM, 'madeira');
+  // a peça de tecido mais alta é o encosto; o resto é o assento
+  let raizEncosto = null, topo = -1e9;
+  for (const [r, c] of anT.caixas) if (c.tris > 20 && c.centro[1] > topo) { topo = c.centro[1]; raizEncosto = r; }
+  const temDois = anT.caixas.size > 1;
+
+  const exporta = async malhas => {
+    const cena = new THREE.Scene(); malhas.forEach(([g, m, nome]) => { const x = new THREE.Mesh(g, m); x.name = nome; cena.add(x); });
+    return URL.createObjectURL(new Blob([await new GLTFExporter().parseAsync(cena, { binary: true })], { type: 'model/gltf-binary' }));
+  };
+  const base = [[gMadeira, mMadeira, 'madeira']]; if (partes.latao) base.push([partes.latao, mLatao, 'latao']);
+  const estofado = await exporta([...base, [monta(partes.tecido, anT, 'tecido'), mTecido, 'tecido']]);
+  let palha = null;
+  if (temDois) {
+    const { moldura, tela, vivo } = encostoPalha(partes.tecido, anT, raizEncosto);
+    const mVivo = new THREE.MeshStandardMaterial({ name: 'vivo', color: 0xD9BE8A, roughness: 0.7, metalness: 0 });
+    palha = await exporta([...base, [monta(partes.tecido, anT, 'tecido', r => r !== raizEncosto), mTecido, 'tecido'], [moldura, mMadeira, 'moldura'], [tela, mPalha, 'palha'], [vivo, mVivo, 'vivo']]);
+  }
+  return { estofado, palha };
+}
+
+/* ---------- 2. Texturas ---------- */
+const carregaImg = url => new Promise((ok, erro) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => ok(i); i.onerror = erro; i.src = url; });
+
+// Mapa de relevo calculado a partir da própria foto (as fotos já repetem sem emenda)
+async function relevoDe(url, forca, W, H) {
+  const img = await carregaImg(url);
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d', { willReadFrequently: true });
+  x.drawImage(img, 0, 0, W, H);
+  const d = x.getImageData(0, 0, W, H).data, h = new Float32Array(W * H);
+  for (let p = 0; p < W * H; p++) h[p] = (d[p * 4] * 0.299 + d[p * 4 + 1] * 0.587 + d[p * 4 + 2] * 0.114) / 255;
+  const out = x.createImageData(W, H);
+  for (let py = 0; py < H; py++) { const ya = ((py - 1 + H) % H) * W, yb = ((py + 1) % H) * W, y0 = py * W;
+    for (let px = 0; px < W; px++) {
+      const dx = (h[y0 + (px + 1) % W] - h[y0 + (px - 1 + W) % W]) * forca, dy = (h[yb + px] - h[ya + px]) * forca;
+      const inv = 1 / Math.hypot(dx, dy, 1), o = (y0 + px) * 4;
+      out.data[o] = (-dx * inv * 0.5 + 0.5) * 255; out.data[o + 1] = (dy * inv * 0.5 + 0.5) * 255; out.data[o + 2] = (inv * 0.5 + 0.5) * 255; out.data[o + 3] = 255;
+    } }
+  x.putImageData(out, 0, 0);
+  return new Promise(ok => c.toBlob(b => ok(URL.createObjectURL(b)), 'image/jpeg', 0.92));
+}
+
+const cache = new Map();
+function textura(chave, uri, tipo) {
+  if (!cache.has(chave)) cache.set(chave, (async () => {
+    const t = await mv.createTexture(await uri, tipo);
+    t.sampler.setWrapS(10497); t.sampler.setWrapT(10497);
+    return t;
+  })());
+  return cache.get(chave);
+}
+const mat = nome => mv.model?.materials.find(m => m.name === nome);
+
+/* ---------- 3. Estado e aplicação ---------- */
+const par = new URLSearchParams(location.search);
+const num = (k, max, padrao) => { const v = parseInt(par.get(k), 10); return Number.isInteger(v) && v >= 0 && v <= max ? v : padrao; };
+const estado = { m: num('m', MADEIRAS.length - 1, 0), e: num('e', ENCOSTOS.length - 1, 0), t: MIDIA[par.get('t')] ? +par.get('t') : 501 };
+let urls = null, modeloAtual = null, vez = 0;
+// Modo pop-up (dentro do site): ?embed=1 mostra preço e o botão "Usar esta configuração"; ?enc=palha tira o encosto estofado
+const EMBED = par.get('embed') === '1', SO_PALHA = par.get('enc') === 'palha';
+if (SO_PALHA && estado.e === 0) estado.e = 1;
+let precos = null;
+const grupoDe = c => GRUPOS.find(([, cs]) => cs.includes(c));
+const LINHA_SITE = { 'Tecido Essencial': 'Essencial', 'Tecido Premium': 'Premium', 'Couro': 'Couro legítimo' };
+const linhaDe = c => LINHA_SITE[grupoDe(c)?.[0]] || '';
+const valorSite = c => `${grupoDe(c)?.[0]} - TC ${c}`;     // texto exato da opção na página do produto
+const nomeTecido = c => { const g = GRUPOS.find(([, cs]) => cs.includes(c)); return `${g ? g[0] : 'Acabamento'} · TC ${c}`; };
+const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
+
+async function aplica() {
+  const minha = ++vez, [nomeM, arqM, roughM] = MADEIRAS[estado.m], [nomeE, arqE] = ENCOSTOS[estado.e];
+  $('nm-madeira').textContent = nomeM; $('nm-encosto').textContent = nomeE; $('nm-tecido').textContent = nomeTecido(estado.t);
+  $('escolhido').firstElementChild.style.backgroundImage = `url("${urlTecido(estado.t)}")`;
+  if (EMBED) { const l = linhaDe(estado.t); $('b-linha').textContent = 'Linha ' + l; $('b-preco').textContent = (precos && precos[l]) || ''; }
+  const quer = arqE && urls.palha ? 'palha' : 'estofado';
+  if (quer !== modeloAtual) { modeloAtual = quer; mv.src = urls[quer]; return; }   // o evento "load" chama aplica() de novo
+  if (!mv.model) return;
+  const urlM = CDN + 'madeiras-v2/' + arqM, [forca, rough] = TIPO[TIPO_DE[estado.t] || 'medio'];
+  const pedidos = [
+    textura('mc:' + arqM, urlM, 'image/jpeg'), textura('mn:' + arqM, relevoDe(urlM, 0.9, 512, 1024), 'image/jpeg'),
+    textura('tc:' + estado.t, urlTecido(estado.t), 'image/jpeg'), textura('tn:' + estado.t, relevoDe(urlTecido(estado.t), forca, 1024, 1024), 'image/jpeg')
+  ];
+  if (quer === 'palha') pedidos.push(textura('p:' + arqE, CDN + 'palhas-v2/' + arqE, 'image/png'));
+  const [mc, mn, tc, tn, pc] = await Promise.all(pedidos);
+  if (minha !== vez) return;
+  const m = mat('madeira'), t = mat('tecido'), p = mat('palha');
+  if (m) { m.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); m.pbrMetallicRoughness.baseColorTexture.setTexture(mc); m.normalTexture.setTexture(mn); m.pbrMetallicRoughness.setRoughnessFactor(roughM); }
+  if (t) { t.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); t.pbrMetallicRoughness.baseColorTexture.setTexture(tc); t.normalTexture.setTexture(tn); t.pbrMetallicRoughness.setRoughnessFactor(rough); }
+  if (p && pc) { p.pbrMetallicRoughness.baseColorTexture.setTexture(pc); p.setAlphaMode('MASK'); p.setAlphaCutoff(0.5); p.setDoubleSided(true); }
+  const v = mat('vivo'); if (v && ENCOSTOS[estado.e][3]) v.pbrMetallicRoughness.setBaseColorFactor(ENCOSTOS[estado.e][3]);
+}
+
+/* ---------- 4. Interface ---------- */
+function marca(caixa, botao) { caixa.querySelectorAll('[aria-pressed]').forEach(s => s.setAttribute('aria-pressed', 'false')); botao.setAttribute('aria-pressed', 'true'); }
+function amostra(rotulo, img, ativo, aoEscolher, caixa, chave) {
+  const b = document.createElement('button'); b.dataset.k = chave;
+  b.className = 'sw'; b.type = 'button'; b.title = rotulo; b.setAttribute('aria-label', rotulo); b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+  b.style.backgroundImage = `url("${img}")`;
+  b.addEventListener('click', () => { marca(caixa, b); aoEscolher(); aplica(); });
+  return b;
+}
+const boxM = $('madeiras');
+MADEIRAS.forEach(([nome, arq], i) => boxM.appendChild(amostra(nome, CDN + 'madeiras-v2/' + arq, i === estado.m, () => estado.m = i, boxM, i)));
+const boxE = $('encostos');
+ENCOSTOS.forEach(([nome, arq, mini], i) => {
+  if (SO_PALHA && i === 0) return;
+  const b = document.createElement('button'); b.className = 'pilula'; b.type = 'button'; b.dataset.k = i; b.setAttribute('aria-pressed', i === estado.e ? 'true' : 'false');
+  const bola = document.createElement('i'); if (mini) bola.style.backgroundImage = `url("${LOJA}${mini}?ims=fit-in/96x96")`;
+  b.append(bola, nome.replace(/ PN\d+$/, ''));
+  b.addEventListener('click', () => { marca(boxE, b); estado.e = i; aplica(); });
+  boxE.appendChild(b);
+});
+const boxT = $('tecidos');
+GRUPOS.forEach(([titulo, codigos]) => {
+  const g = document.createElement('div'); g.className = 'linha'; g.textContent = titulo; boxT.appendChild(g);
+  const linha = document.createElement('div'); linha.className = 'amostras'; boxT.appendChild(linha);
+  codigos.forEach(c => linha.appendChild(amostra(nomeTecido(c), `${LOJA}2026/09/produto/${MIDIA[c]}/crn-tc${c}.jpg?ims=fit-in/96x96`, c === estado.t, () => estado.t = c, boxT, c)));
+});
+
+// ----- conversa com a página do produto (só no modo pop-up) -----
+if (EMBED) {
+  document.body.classList.add('embed'); $('barra').hidden = false;
+  const SITES = ['https://www.sanfranciscocenter.com.br', 'https://sanfranciscocenter.com.br'];
+  const marcaTudo = () => {
+    for (const [caixa, k] of [[boxM, estado.m], [boxE, estado.e], [boxT, estado.t]])
+      caixa.querySelectorAll('[data-k]').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === String(k) ? 'true' : 'false'));
+  };
+  window.addEventListener('message', ev => {
+    if (!SITES.includes(ev.origin) || !ev.data || ev.data.sfc3d !== 'estado') return;
+    const d = ev.data;
+    if (d.precos && typeof d.precos === 'object') precos = d.precos;
+    const m = MADEIRAS.findIndex(x => x[0] === d.madeira); if (m >= 0) estado.m = m;
+    const e = ENCOSTOS.findIndex(x => x[0] === 'Palha ' + d.tela); if (e >= 0) estado.e = e;
+    const c = +(/TC\s*(\d+)/.exec(d.acabamento || '') || [])[1]; if (MIDIA[c]) estado.t = c;
+    marcaTudo(); if (urls) aplica();
+  });
+  $('usar').addEventListener('click', () => parent.postMessage({
+    sfc3d: 'usar', madeira: MADEIRAS[estado.m][0], encosto: ENCOSTOS[estado.e][0], tela: ENCOSTOS[estado.e][0].replace(/^Palha /, ''),
+    acabamento: valorSite(estado.t), linha: linhaDe(estado.t)
+  }, '*'));
+  parent.postMessage({ sfc3d: 'pronto' }, '*');
+}
+
+// vistas prontas
+const boxV = $('vistas');
+boxV.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+  marca(boxV, b); mv.cameraTarget = b.dataset.alvo || 'auto auto auto'; mv.fieldOfView = b.dataset.fov || 'auto'; mv.cameraOrbit = b.dataset.o;
+}));
+
+// amostra ampliada
+const lupa = $('lupa');
+$('escolhido').addEventListener('click', () => { $('lupa-img').src = urlTecido(estado.t); $('lupa-img').alt = nomeTecido(estado.t); $('lupa-nome').textContent = nomeTecido(estado.t); lupa.hidden = false; $('lupa-fechar').focus(); });
+const fechaLupa = () => { lupa.hidden = true; $('escolhido').focus(); };
+$('lupa-fechar').addEventListener('click', fechaLupa);
+lupa.addEventListener('click', e => { if (e.target === lupa) fechaLupa(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lupa.hidden) fechaLupa(); });
+
+// compartilhar
+$('compartilhar').addEventListener('click', async () => {
+  const url = `${location.origin}${location.pathname}?m=${estado.m}&e=${estado.e}&t=${estado.t}`;
+  const texto = `Cadeira Pivot: ${MADEIRAS[estado.m][0]}, ${ENCOSTOS[estado.e][0]}, ${nomeTecido(estado.t)}`;
+  try {
+    if (navigator.share) await navigator.share({ title: 'Cadeira Pivot', text: texto, url });
+    else { await navigator.clipboard.writeText(url); $('aviso').textContent = 'Link copiado'; setTimeout(() => $('aviso').textContent = '', 2500); }
+  } catch (e) { if (e.name !== 'AbortError') $('aviso').textContent = 'Não foi possível compartilhar'; }
+});
+
+mv.addEventListener('load', () => { statusEl.hidden = true; boxV.hidden = false; aplica(); });
+try {
+  await customElements.whenDefined('model-viewer');
+  mv.environmentImage = CDN + 'luz/estudio.hdr';
+  urls = await prepararModelos();
+  if (!urls.palha) boxE.closest('.grupo').hidden = true;
+  aplica();
+} catch (e) { statusEl.textContent = 'Não foi possível carregar o modelo'; console.error(e); }
+</script>
+</body>
+</html>

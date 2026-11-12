@@ -53,6 +53,15 @@
   .acao { border:1px solid var(--base); background:#fff; color:var(--base); border-radius:999px; padding:10px 18px; font-size:14px; font-weight:500; cursor:pointer; }
   .acao:hover { background:var(--base); color:#fff; }
   .aviso { font-size:12px; color:var(--apoio); }
+  .barra { position:sticky; bottom:0; z-index:5; display:flex; align-items:center; justify-content:space-between; gap:12px; margin:16px -4px 0; padding:12px 16px; background:rgba(255,255,255,.96); border:1px solid var(--borda); border-radius:20px; backdrop-filter:blur(8px); }
+  .barra small { display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--base); font-weight:700; }
+  .barra strong { font-family:var(--serif); font-weight:400; font-size:26px; line-height:1.1; }
+  .usar { border:0; border-radius:999px; background:var(--base); color:#fff; padding:13px 22px; font-size:15px; font-weight:500; cursor:pointer; white-space:nowrap; }
+  .usar:hover { background:var(--base-escuro); }
+  .usar:focus-visible { outline:2px solid var(--base); outline-offset:3px; }
+  body.embed .pagina { padding:12px; }
+  body.embed #compartilhar { display:none; }
+  body.embed h1 { font-size:clamp(28px,4vw,40px); }
   .lupa { position:fixed; inset:0; z-index:20; background:rgba(27,31,23,.72); display:grid; place-items:center; padding:16px; }
   .lupa[hidden] { display:none; }
   .lupa figure { margin:0; background:#fff; border-radius:24px; overflow:hidden; width:min(92vw,560px); }
@@ -109,6 +118,10 @@
     <div class="acoes">
       <button class="acao" id="compartilhar" type="button">Compartilhar esta configuração</button>
       <span class="aviso" id="aviso" role="status"></span>
+    </div>
+    <div class="barra" id="barra" hidden>
+      <div><small id="b-linha"></small><strong id="b-preco"></strong></div>
+      <button class="usar" id="usar" type="button">Usar esta configuração</button>
     </div>
   </div>
 </main>
@@ -367,6 +380,14 @@ const par = new URLSearchParams(location.search);
 const num = (k, max, padrao) => { const v = parseInt(par.get(k), 10); return Number.isInteger(v) && v >= 0 && v <= max ? v : padrao; };
 const estado = { m: num('m', MADEIRAS.length - 1, 0), e: num('e', ENCOSTOS.length - 1, 0), t: MIDIA[par.get('t')] ? +par.get('t') : 501 };
 let urls = null, modeloAtual = null, vez = 0;
+// Modo pop-up (dentro do site): ?embed=1 mostra preço e o botão "Usar esta configuração"; ?enc=palha tira o encosto estofado
+const EMBED = par.get('embed') === '1', SO_PALHA = par.get('enc') === 'palha';
+if (SO_PALHA && estado.e === 0) estado.e = 1;
+let precos = null;
+const grupoDe = c => GRUPOS.find(([, cs]) => cs.includes(c));
+const LINHA_SITE = { 'Tecido Essencial': 'Essencial', 'Tecido Premium': 'Premium', 'Couro': 'Couro legítimo' };
+const linhaDe = c => LINHA_SITE[grupoDe(c)?.[0]] || '';
+const valorSite = c => `${grupoDe(c)?.[0]} - TC ${c}`;     // texto exato da opção na página do produto
 const nomeTecido = c => { const g = GRUPOS.find(([, cs]) => cs.includes(c)); return `${g ? g[0] : 'Acabamento'} · TC ${c}`; };
 const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
 
@@ -374,6 +395,7 @@ async function aplica() {
   const minha = ++vez, [nomeM, arqM, roughM] = MADEIRAS[estado.m], [nomeE, arqE] = ENCOSTOS[estado.e];
   $('nm-madeira').textContent = nomeM; $('nm-encosto').textContent = nomeE; $('nm-tecido').textContent = nomeTecido(estado.t);
   $('escolhido').firstElementChild.style.backgroundImage = `url("${urlTecido(estado.t)}")`;
+  if (EMBED) { const l = linhaDe(estado.t); $('b-linha').textContent = 'Linha ' + l; $('b-preco').textContent = (precos && precos[l]) || ''; }
   const quer = arqE && urls.palha ? 'palha' : 'estofado';
   if (quer !== modeloAtual) { modeloAtual = quer; mv.src = urls[quer]; return; }   // o evento "load" chama aplica() de novo
   if (!mv.model) return;
@@ -394,18 +416,19 @@ async function aplica() {
 
 /* ---------- 4. Interface ---------- */
 function marca(caixa, botao) { caixa.querySelectorAll('[aria-pressed]').forEach(s => s.setAttribute('aria-pressed', 'false')); botao.setAttribute('aria-pressed', 'true'); }
-function amostra(rotulo, img, ativo, aoEscolher, caixa) {
-  const b = document.createElement('button');
+function amostra(rotulo, img, ativo, aoEscolher, caixa, chave) {
+  const b = document.createElement('button'); b.dataset.k = chave;
   b.className = 'sw'; b.type = 'button'; b.title = rotulo; b.setAttribute('aria-label', rotulo); b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
   b.style.backgroundImage = `url("${img}")`;
   b.addEventListener('click', () => { marca(caixa, b); aoEscolher(); aplica(); });
   return b;
 }
 const boxM = $('madeiras');
-MADEIRAS.forEach(([nome, arq], i) => boxM.appendChild(amostra(nome, CDN + 'madeiras-v2/' + arq, i === estado.m, () => estado.m = i, boxM)));
+MADEIRAS.forEach(([nome, arq], i) => boxM.appendChild(amostra(nome, CDN + 'madeiras-v2/' + arq, i === estado.m, () => estado.m = i, boxM, i)));
 const boxE = $('encostos');
 ENCOSTOS.forEach(([nome, arq, mini], i) => {
-  const b = document.createElement('button'); b.className = 'pilula'; b.type = 'button'; b.setAttribute('aria-pressed', i === estado.e ? 'true' : 'false');
+  if (SO_PALHA && i === 0) return;
+  const b = document.createElement('button'); b.className = 'pilula'; b.type = 'button'; b.dataset.k = i; b.setAttribute('aria-pressed', i === estado.e ? 'true' : 'false');
   const bola = document.createElement('i'); if (mini) bola.style.backgroundImage = `url("${LOJA}${mini}?ims=fit-in/96x96")`;
   b.append(bola, nome.replace(/ PN\d+$/, ''));
   b.addEventListener('click', () => { marca(boxE, b); estado.e = i; aplica(); });
@@ -415,8 +438,32 @@ const boxT = $('tecidos');
 GRUPOS.forEach(([titulo, codigos]) => {
   const g = document.createElement('div'); g.className = 'linha'; g.textContent = titulo; boxT.appendChild(g);
   const linha = document.createElement('div'); linha.className = 'amostras'; boxT.appendChild(linha);
-  codigos.forEach(c => linha.appendChild(amostra(nomeTecido(c), `${LOJA}2026/09/produto/${MIDIA[c]}/crn-tc${c}.jpg?ims=fit-in/96x96`, c === estado.t, () => estado.t = c, boxT)));
+  codigos.forEach(c => linha.appendChild(amostra(nomeTecido(c), `${LOJA}2026/09/produto/${MIDIA[c]}/crn-tc${c}.jpg?ims=fit-in/96x96`, c === estado.t, () => estado.t = c, boxT, c)));
 });
+
+// ----- conversa com a página do produto (só no modo pop-up) -----
+if (EMBED) {
+  document.body.classList.add('embed'); $('barra').hidden = false;
+  const SITES = ['https://www.sanfranciscocenter.com.br', 'https://sanfranciscocenter.com.br'];
+  const marcaTudo = () => {
+    for (const [caixa, k] of [[boxM, estado.m], [boxE, estado.e], [boxT, estado.t]])
+      caixa.querySelectorAll('[data-k]').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === String(k) ? 'true' : 'false'));
+  };
+  window.addEventListener('message', ev => {
+    if (!SITES.includes(ev.origin) || !ev.data || ev.data.sfc3d !== 'estado') return;
+    const d = ev.data;
+    if (d.precos && typeof d.precos === 'object') precos = d.precos;
+    const m = MADEIRAS.findIndex(x => x[0] === d.madeira); if (m >= 0) estado.m = m;
+    const e = ENCOSTOS.findIndex(x => x[0] === 'Palha ' + d.tela); if (e >= 0) estado.e = e;
+    const c = +(/TC\s*(\d+)/.exec(d.acabamento || '') || [])[1]; if (MIDIA[c]) estado.t = c;
+    marcaTudo(); if (urls) aplica();
+  });
+  $('usar').addEventListener('click', () => parent.postMessage({
+    sfc3d: 'usar', madeira: MADEIRAS[estado.m][0], encosto: ENCOSTOS[estado.e][0], tela: ENCOSTOS[estado.e][0].replace(/^Palha /, ''),
+    acabamento: valorSite(estado.t), linha: linhaDe(estado.t)
+  }, '*'));
+  parent.postMessage({ sfc3d: 'pronto' }, '*');
+}
 
 // vistas prontas
 const boxV = $('vistas');
