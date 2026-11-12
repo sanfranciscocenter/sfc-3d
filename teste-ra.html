@@ -136,7 +136,7 @@ const MADEIRA_U = 0.045, MADEIRA_V = 0.16;   // largura x comprimento da tábua 
 const PALHA_TILE = 0.054;                    // 4 células de palha
 // Encosto em palha (metros). Tamanho, espessura e arredondamento vêm do encosto estofado do próprio modelo.
 // Abaixo, só o que foi medido na foto frontal do produto (786 px = 38,8 cm de largura).
-const QUADRO = { lado: 0.031, cima: 0.034, baixo: 0.083, raioFuro: 0.008, borda: 0.0165, bordaBaixo: 0.03, vivo: 0.006, raioTela: 0.005 };
+const QUADRO = { fundoMax: 0.035, lado: 0.031, cima: 0.034, baixo: 0.083, raioFuro: 0.008, borda: 0.0165, bordaBaixo: 0.03, vivo: 0.006, raioTela: 0.005 };
 
 const MADEIRAS = [
   ['Avelã M01','m01-avela.jpg',0.48],
@@ -255,7 +255,8 @@ function encostoPalha(geoTecido, an, raizEncosto) {
   const mn = [1e9, 1e9, 1e9], mx = [-1e9, -1e9, -1e9];
   for (const i of vistos) { v3.fromBufferAttribute(pos, i).sub(c0).applyMatrix4(desfaz); const p = [v3.x, v3.y, v3.z]; pl.push(p);
     for (let a = 0; a < 3; a++) { if (p[a] < mn[a]) mn[a] = p[a]; if (p[a] > mx[a]) mx[a] = p[a]; } }
-  const w = mx[0] - mn[0], h = mx[1] - mn[1], fundo = mx[2] - mn[2], meio = [0, 1, 2].map(a => (mx[a] + mn[a]) / 2);
+  // espessura: a do estofado, limitada a 3,5 cm (decisão do Matheus; a moldura real é mais fina que a almofada)
+  const w = mx[0] - mn[0], h = mx[1] - mn[1], fundo = Math.min(mx[2] - mn[2], Q.fundoMax), meio = [0, 1, 2].map(a => (mx[a] + mn[a]) / 2);
   // num canto arredondado de raio r, o ponto mais próximo da quina da caixa fica a r·(√2−1) dela
   const raioDe = (a, b) => { let d = 1e9; for (const p of pl) for (const sa of [mn[a], mx[a]]) for (const sb of [mn[b], mx[b]]) d = Math.min(d, Math.hypot(p[a] - sa, p[b] - sb)); return d / (Math.SQRT2 - 1); };
   const raio = Math.min(Math.max(raioDe(0, 1), 0.004), Math.min(w, h) / 3);
