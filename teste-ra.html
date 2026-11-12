@@ -175,13 +175,19 @@ async function texturasTecido(url, forca) {
   // nivela a luz da foto (tira manchas claras/escuras grandes) para a repetição não aparecer
   const f = document.createElement('canvas'); f.width = f.height = Q; const xf = f.getContext('2d', { willReadFrequently: true });
   xf.drawImage(img, 0, 0, Q, Q); const orig = xf.getImageData(0, 0, Q, Q);
-  const p8 = document.createElement('canvas'); p8.width = p8.height = 6; p8.getContext('2d').drawImage(img, 0, 0, 6, 6);
-  const bl = document.createElement('canvas'); bl.width = bl.height = Q; const xb = bl.getContext('2d', { willReadFrequently: true });
-  xb.imageSmoothingEnabled = true; xb.imageSmoothingQuality = 'high'; xb.drawImage(p8, -Q / 12, -Q / 12, Q + Q / 6, Q + Q / 6);
-  const borr = xb.getImageData(0, 0, Q, Q).data, med = [0, 0, 0];
-  for (let p = 0; p < Q * Q; p++) for (let k = 0; k < 3; k++) med[k] += orig.data[p * 4 + k];
-  for (let k = 0; k < 3; k++) med[k] /= Q * Q;
-  for (let p = 0; p < Q * Q; p++) for (let k = 0; k < 3; k++) orig.data[p * 4 + k] = Math.min(255, orig.data[p * 4 + k] * med[k] / Math.max(8, borr[p * 4 + k]));
+  {
+    const od = orig.data, W1 = Q + 1, I = new Float64Array(W1 * W1), R = Q >> 3; let soma = 0;
+    for (let yy = 0; yy < Q; yy++) { let linha = 0; for (let xx = 0; xx < Q; xx++) {
+      const p = (yy * Q + xx) * 4, l = od[p] * 0.299 + od[p + 1] * 0.587 + od[p + 2] * 0.114; linha += l; soma += l;
+      I[(yy + 1) * W1 + xx + 1] = I[yy * W1 + xx + 1] + linha; } }
+    const media = soma / (Q * Q);
+    for (let yy = 0; yy < Q; yy++) for (let xx = 0; xx < Q; xx++) {
+      const xa = Math.max(0, xx - R), xb2 = Math.min(Q, xx + R + 1), ya = Math.max(0, yy - R), yb = Math.min(Q, yy + R + 1);
+      const loc = (I[yb * W1 + xb2] - I[ya * W1 + xb2] - I[yb * W1 + xa] + I[ya * W1 + xa]) / ((xb2 - xa) * (yb - ya));
+      const fator = media / Math.max(4, loc), p = (yy * Q + xx) * 4;
+      od[p] = Math.min(255, od[p] * fator); od[p + 1] = Math.min(255, od[p + 1] * fator); od[p + 2] = Math.min(255, od[p + 2] * fator);
+    }
+  }
   xf.putImageData(orig, 0, 0);
   const c = document.createElement('canvas'); c.width = c.height = S; const x = c.getContext('2d', { willReadFrequently: true });
   for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) {
