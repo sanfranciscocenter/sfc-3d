@@ -69,12 +69,12 @@
   .lupa figcaption { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; font-family:var(--serif); font-size:20px; }
   .lupa button { border:0; background:var(--neutro); border-radius:999px; padding:8px 14px; font-size:13px; cursor:pointer; color:var(--tinta); }
   @media (max-width:899px) {
-    /* celular: o 3D fica preso no topo e encolhe quando a pessoa rola para escolher as opções */
-    .pagina { padding-top:0; }
-    .palco { position:sticky; top:0; z-index:6; margin:0 -16px; border-radius:0 0 22px 22px; box-shadow:0 6px 18px rgba(27,31,23,.08); }
-    body.embed .palco { margin:0 -12px; }
-    model-viewer { height:var(--alt, 56vh); min-height:0; }
-    body.compacto .vistas { display:none; }
+    /* celular: ao rolar para as opções, o 3D vira uma janelinha flutuante (arrastável; um toque volta ao topo) */
+    body.mini .palco { position:fixed; z-index:30; width:136px; height:136px; right:12px; bottom:96px; border-radius:18px; box-shadow:0 8px 28px rgba(27,31,23,.28); border:1px solid var(--borda); touch-action:none; }
+    body.mini .palco model-viewer { height:100%; min-height:0; pointer-events:none; }
+    body.mini .palco .vistas, body.mini .palco .ra, body.mini .palco .status { display:none; }
+    .mini-toque { display:none; position:absolute; inset:0; z-index:2; cursor:grab; touch-action:none; }
+    body.mini .mini-toque { display:block; }
   }
   @media (min-width:900px) {
     .pagina { grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:28px; padding:28px; align-items:start; }
@@ -501,15 +501,39 @@ $('compartilhar').addEventListener('click', async () => {
   } catch (e) { if (e.name !== 'AbortError') $('aviso').textContent = 'Não foi possível compartilhar'; }
 });
 
-// Celular: o palco 3D fica fixo no topo e vai de 56% para 34% da altura da tela conforme a rolagem
-const telaPequena = matchMedia('(max-width:899px)');
-function ajustaPalco() {
-  if (!telaPequena.matches) { mv.style.removeProperty('--alt'); document.body.classList.remove('compacto'); return; }
-  const cheia = innerHeight * 0.56, minima = innerHeight * 0.34, alt = Math.max(minima, cheia - scrollY);
-  mv.style.setProperty('--alt', alt + 'px'); document.body.classList.toggle('compacto', alt < cheia - 40);
-}
-addEventListener('scroll', ajustaPalco, { passive: true }); addEventListener('resize', ajustaPalco); ajustaPalco();
-
+// Celular: quando o 3D sai da tela ao rolar, ele vira uma janelinha flutuante no canto (como o vídeo minimizado
+// do YouTube): dá para arrastar, e um toque volta ao topo. Um espaço reserva guarda a altura original, então a
+// página não pula (a versão anterior mudava a altura durante a rolagem e travava tudo).
+(() => {
+  const palco = document.querySelector('.palco'), tela = matchMedia('(max-width:899px)');
+  const lugar = document.createElement('div'); lugar.hidden = true; palco.parentNode.insertBefore(lugar, palco);
+  const toque = document.createElement('div'); toque.className = 'mini-toque'; toque.setAttribute('role', 'button'); toque.setAttribute('aria-label', 'Voltar ao produto em 3D'); palco.appendChild(toque);
+  let mini = false, ini = null;
+  function liga(v) {
+    if (v === mini) return; mini = v;
+    if (v) { lugar.style.height = palco.offsetHeight + 'px'; lugar.hidden = false; }
+    else { lugar.hidden = true; palco.style.left = palco.style.top = palco.style.right = palco.style.bottom = ''; }
+    document.body.classList.toggle('mini', v);
+  }
+  function confere() {
+    if (!tela.matches) return liga(false);
+    const r = (mini ? lugar : palco).getBoundingClientRect();
+    liga(r.bottom < Math.min(140, r.height * 0.35));
+  }
+  addEventListener('scroll', confere, { passive: true }); addEventListener('resize', confere);
+  toque.addEventListener('pointerdown', e => { const r = palco.getBoundingClientRect(); ini = { x: e.clientX, y: e.clientY, l: r.left, t: r.top, andou: false }; try { toque.setPointerCapture(e.pointerId); } catch (err) {} });
+  toque.addEventListener('pointermove', e => {
+    if (!ini) return; const dx = e.clientX - ini.x, dy = e.clientY - ini.y; if (Math.hypot(dx, dy) > 6) ini.andou = true; if (!ini.andou) return;
+    const w = palco.offsetWidth, h = palco.offsetHeight; palco.style.right = palco.style.bottom = 'auto';
+    palco.style.left = Math.max(6, Math.min(innerWidth - w - 6, ini.l + dx)) + 'px'; palco.style.top = Math.max(6, Math.min(innerHeight - h - 6, ini.t + dy)) + 'px';
+  });
+  toque.addEventListener('pointerup', () => {
+    if (!ini) return; const foi = ini.andou; ini = null;
+    if (!foi) return scrollTo({ top: 0, behavior: 'smooth' });
+    const r = palco.getBoundingClientRect(); palco.style.left = (r.left + r.width / 2 < innerWidth / 2 ? 8 : innerWidth - r.width - 8) + 'px';   // encosta na lateral mais próxima
+  });
+  toque.addEventListener('pointercancel', () => { ini = null; });
+})();
 // Dentro de aplicativos (janela embutida) o componente esconde o botão de realidade aumentada.
 // Nesse caso entra um botão próprio: no iPhone tenta abrir o visualizador da Apple; se não abrir (ou no Android),
 // leva o cliente ao navegador do aparelho com a mesma configuração.
