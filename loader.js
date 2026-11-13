@@ -333,7 +333,7 @@
     await zz(700);   // confere de novo: o tema refaz o bloco depois de trocar a linha
     const firmes = pares.filter(([n, v]) => sel(n)?.value === v || grava(n, v)).length;
     const tudo = okTam && okLinha && firmes === pares.length;
-    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.cartoes && d.cartoes ? d.cartoes.join(', ') : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela ? (/VND/.test(cfg.sel.tela) ? 'tela ' : /SUP/.test(cfg.sel.tela) ? 'recouro ' : 'palha ') + d.tela : '', d.acabamento, cfg.sel.metal ? 'metal ' + d.metal : ''].filter(Boolean).join(', ');
+    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.cartoes && d.cartoes ? d.cartoes.join(', ') : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela && d.tela ? (/VND/.test(cfg.sel.tela) ? 'tela ' : /SUP/.test(cfg.sel.tela) ? 'recouro ' : 'palha ') + d.tela : '', d.acabamento, cfg.sel.metal && d.metal ? 'metal ' + d.metal : ''].filter(Boolean).join(', ');
     avisa(tudo ? 'Configuração aplicada: ' + resumo : 'Não consegui marcar todas as opções. Confira a seleção abaixo.');
     const alvo = document.querySelector('.sfc-linhas') || sel(cfg.sel.acabamento || cfg.sel.madeira);
     if (alvo && alvo.scrollIntoView) alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
