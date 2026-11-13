@@ -68,6 +68,14 @@
   .lupa img { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
   .lupa figcaption { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; font-family:var(--serif); font-size:20px; }
   .lupa button { border:0; background:var(--neutro); border-radius:999px; padding:8px 14px; font-size:13px; cursor:pointer; color:var(--tinta); }
+  @media (max-width:899px) {
+    /* celular: o 3D fica preso no topo e encolhe quando a pessoa rola para escolher as opções */
+    .pagina { padding-top:0; }
+    .palco { position:sticky; top:0; z-index:6; margin:0 -16px; border-radius:0 0 22px 22px; box-shadow:0 6px 18px rgba(27,31,23,.08); }
+    body.embed .palco { margin:0 -12px; }
+    model-viewer { height:var(--alt, 56vh); min-height:0; }
+    body.compacto .vistas { display:none; }
+  }
   @media (min-width:900px) {
     .pagina { grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:28px; padding:28px; align-items:start; }
     .palco { position:sticky; top:28px; border-radius:36px; }
@@ -115,6 +123,14 @@
       <button class="escolhido" id="escolhido" type="button" aria-label="Ampliar a amostra do acabamento"><i></i><span>Toque para ver a amostra de perto</span></button>
       <div id="tecidos"></div>
     </section>
+    <section class="grupo" id="g-metal" hidden>
+      <h2>Metal <b id="nm-metal"></b></h2>
+      <div class="pilulas" id="metais"></div>
+    </section>
+    <section class="grupo" id="g-tamanho" hidden>
+      <h2>Tamanho <b id="nm-tamanho"></b></h2>
+      <div class="pilulas" id="tamanhos"></div>
+    </section>
     <div class="acoes">
       <button class="acao" id="compartilhar" type="button">Compartilhar esta configuração</button>
       <span class="aviso" id="aviso" role="status"></span>
@@ -139,6 +155,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { PRODUTOS } from './alma/produtos.js';
+import { KF } from './kf/catalogo.js';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d@main/pivot/';
 const LOJA = 'https://sanfranciscocenter.cdn.magazord.com.br/img/';
@@ -148,12 +165,13 @@ const TECIDO_TILE = 0.18;
 const MADEIRA_U = 0.045, MADEIRA_V = 0.16;
 const PALHA_TILE = 0.054;
 
+// madeira mais fosca e com o veio mais marcado (pedido de Matheus, 12/11/2026): rugosidade maior e relevo 1,7
 const MADEIRAS = [
-  ['Avelã M01','m01-avela.jpg',0.48],
-  ['Castanho M02','m02-castanho.jpg',0.48],
-  ['Mocca M03','m03-mocca.jpg',0.48],
-  ['Nero Fosco M04','m04-nero-b.jpg',0.85],
-  ['Nero Fosco Semibrilho M05','m05-nero-semibrilho-b.jpg',0.3]
+  ['Avelã M01','m01-avela.jpg',0.74],
+  ['Castanho M02','m02-castanho.jpg',0.74],
+  ['Mocca M03','m03-mocca.jpg',0.74],
+  ['Nero Fosco M04','m04-nero-b.jpg',0.92],
+  ['Nero Fosco Semibrilho M05','m05-nero-semibrilho-b.jpg',0.52]
 ];
 const PALHAS = [
   ['Natural PN01', 'pn01-natural.png', '2025/05/produto/25389/natural-pn-01.jpg', '#D6C296', '#D8C08E'],
@@ -165,7 +183,9 @@ const GRUPOS = [
   ['Tecido Premium',   [502,503,504,505,507,538,540,541,544]],
   ['Couro',            [534,535,537,551,552,553,554,555,556]]
 ];
-const TIPO = { grosso: [3.4, 1.0], medio: [2.7, 1.0], fino: [1.9, 1.0], liso: [1.0, 0.6], couro: [1.4, 0.5] };
+const TIPO = { grosso: [3.4, 1.0], medio: [2.7, 1.0], fino: [1.9, 1.0], liso: [0.8, 0.95], couro: [0.8, 0.88],   // opacos em todo o plugin (pedido de Matheus, 12/11/2026)
+  // KF: couro e camurça opacos e suaves (Matheus achou o produto espelhado demais em 12/11/2026)
+  camurca: [0.7, 1.0], couroFosco: [0.75, 0.88] };
 const TIPO_DE = {};
 [502,503,504,505,507,530,538,540,541].forEach(c => TIPO_DE[c] = 'grosso');
 [501,539,542,543].forEach(c => TIPO_DE[c] = 'medio');
@@ -211,7 +231,7 @@ function monta(geo, an, modo) {
   const pos = geo.attributes.position, nor = geo.attributes.normal, { idx, nt, raiz, caixas } = an;
   const P3 = [], N = [], UV = [];
   const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), fn = new THREE.Vector3();
-  const lado = modo === 'palha' ? (P.palhaTile || PALHA_TILE) : TECIDO_TILE;
+  const lado = modo === 'palha' ? (P.palhaTile || PALHA_TILE) : CAT.tile;
   // Correção de bloco: peça fechada com as faces viradas para dentro (aparece "furada", dá para ver através dela).
   // O volume assinado de cada peça solta diz se está do avesso; nesse caso a ordem dos vértices é invertida.
   const vol = new Map();
@@ -347,9 +367,24 @@ function contorno(g, recuo, raio, yMin = -1e9) {
 const CORES_DEBUG =['#e6194b','#3cb44b','#4363d8','#f58231','#911eb4','#42d4f4','#f032e6','#bfef45','#fabed4','#469990','#9a6324','#800000','#808000','#000075','#a9a9a9','#ffe119'];
 let papeis = new Set();
 
-async function prepararModelo() {
+// Sofá em outra largura: o bloco vem numa medida só. Estica só o miolo; cada braço (faixa "braco" em cada ponta)
+// mantém a largura, e as peças pequenas (pés, botões) são só deslocadas, sem deformar.
+function estica(geo, c, largura) {
+  const pos = geo.attributes.position, meia = c.base / 2, hi = meia - c.braco, hi2 = largura / 2 - c.braco; if (hi <= 0 || Math.abs(hi2 - hi) < 1e-4) return;
+  const mapa = x => { const a = Math.abs(x), s = x < 0 ? -1 : 1; return a <= hi ? x * hi2 / hi : s * (hi2 + (a - hi)); };
+  const an = analisa(geo), raizDe = new Int32Array(pos.count).fill(-1);
+  for (let t = 0; t < an.nt; t++) { const r = an.raiz(t); for (let k = 0; k < 3; k++) raizDe[an.idx[t * 3 + k]] = r; }
+  for (let i = 0; i < pos.count; i++) {
+    const cx = an.caixas.get(raizDe[i]), x = pos.getX(i);
+    if (cx && cx.tam[0] < (c.rigido || 0.3)) pos.setX(i, x + mapa(cx.centro[0]) - cx.centro[0]); else pos.setX(i, mapa(x));
+  }
+  pos.needsUpdate = true; geo.computeBoundingBox();
+}
+
+let gltfCache = null;
+async function prepararModelo(largura) {
   const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
-  const gltf = await new GLTFLoader().setDRACOLoader(draco).loadAsync(P.glb);
+  const gltf = gltfCache || (gltfCache = await new GLTFLoader().setDRACOLoader(draco).loadAsync(P.glb));
   gltf.scene.updateMatrixWorld(true);
   // cada malha do arquivo, já na posição e escala finais (metros)
   const pecas = []; let n = 0;
@@ -367,6 +402,7 @@ async function prepararModelo() {
   pecas.forEach(p => { p.geo.translate(dx, dy, dz); p.geo.computeBoundingBox(); });
   // correções do bloco em relação à peça real (ver produtos.js)
   if (P.encostoReto) pecas.forEach(p => { if (P.encostoReto.pecas.includes('#' + p.i)) endireita(p.geo, P.encostoReto); });
+  if (P.estica && largura) pecas.forEach(p => estica(p.geo, P.estica, largura));
 
   const cena = new THREE.Scene();
   if (DEBUG) {
@@ -381,7 +417,7 @@ async function prepararModelo() {
   } else {
     const mats = {
       madeira: new THREE.MeshStandardMaterial({ name: 'madeira', color: 0xffffff, roughness: 0.5, metalness: 0 }),
-      tecido: new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.55, sheenColor: new THREE.Color(0.16, 0.16, 0.16), side: THREE.DoubleSide }),   // dois lados: alguns blocos trazem o tampo como uma folha aberta
+      tecido: new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.8, sheenColor: new THREE.Color(0.05, 0.05, 0.05), side: THREE.DoubleSide }),   // dois lados: alguns blocos trazem o tampo como uma folha aberta
       palha: new THREE.MeshStandardMaterial({ name: 'palha', color: 0xffffff, roughness: 0.7, metalness: 0, side: THREE.DoubleSide, alphaTest: 0.5 }),
       metal: new THREE.MeshStandardMaterial({ name: 'metal', color: new THREE.Color(P.corMetal || '#B9B6AE'), roughness: 0.32, metalness: 1 }),
       preto: new THREE.MeshStandardMaterial({ name: 'preto', color: 0x1c1b1a, roughness: 0.6, metalness: 0 }),
@@ -442,10 +478,11 @@ async function palhaLimpa(url) {
   return new Promise(ok => c.toBlob(bl => ok(URL.createObjectURL(bl)), 'image/png'));
 }
 const cache = new Map();
-function textura(chave, uri, tipo) {
+function textura(chave, uri, tipo, escala) {
   if (!cache.has(chave)) cache.set(chave, (async () => {
     const t = await mv.createTexture(await uri, tipo);
     t.sampler.setWrapS(10497); t.sampler.setWrapT(10497);
+    if (escala && escala !== 1 && t.sampler.setScale) t.sampler.setScale({ u: escala, v: escala });
     return t;
   })());
   return cache.get(chave);
@@ -454,7 +491,7 @@ const mat = nome => mv.model?.materials.find(m => m.name === nome);
 
 /* ---------- 3. Estado e aplicação ---------- */
 const num = (k, max, padrao) => { const v = parseInt(par.get(k), 10); return Number.isInteger(v) && v >= 0 && v <= max ? v : padrao; };
-const estado = { m: num('m', MADEIRAS.length - 1, 0), e: num('e', PALHAS.length - 1, 0), t: MIDIA[par.get('t')] ? +par.get('t') : 501 };
+const estado = { m: num('m', MADEIRAS.length - 1, 0), e: num('e', PALHAS.length - 1, 0), t: MIDIA[par.get('t')] ? +par.get('t') : 501, x: 0, z: 0 };
 let pronto = false, vez = 0;
 const EMBED = par.get('embed') === '1';
 let precos = null;
@@ -466,26 +503,55 @@ const nomeTecido = c => { const g = grupoDe(c); return `${g ? g[0] : 'Acabamento
 const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
 const tem = papel => papeis.has(papel);
 
+// Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
+const EH_KF = !!P && P.marca === 'kf';
+const codKF = v => (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
+const TIPO_KF = { 'Bouclé': 'grosso', 'Linho': 'medio', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
+const CAT = EH_KF ? {
+  grupos: KF.linhas, tile: KF.tile, valido: k => KF.linhas.some(([, v]) => v.includes(k)),
+  nome: k => k, url: k => codKF(k) ? `kf/tecidos/${codKF(k)}.jpg` : null, mini: k => { const i = KF.mini.ordem.indexOf(codKF(k)); return i < 0 ? null : { folha: KF.mini.arquivo, col: i % KF.mini.colunas, lin: Math.floor(i / KF.mini.colunas), cols: KF.mini.colunas, lins: KF.mini.linhas }; },
+  cor: () => null, escala: k => /^Couro leg/.test(k) ? KF.tile / KF.tileCouro : 1,   // a foto do couro cobre uma área menor
+  tipo: k => /^Couro leg/.test(k) ? 'couroFosco' : (TIPO_KF[k.replace(/\s*\d+$/, '')] || 'medio'),
+  linha: k => (KF.linhas.find(([, v]) => v.includes(k)) || [''])[0], valorSite: k => k, deSite: v => v
+} : {
+  grupos: GRUPOS, tile: TECIDO_TILE, valido: k => !!MIDIA[k],
+  nome: nomeTecido, url: urlTecido, mini: k => `${LOJA}2026/09/produto/${MIDIA[k]}/crn-tc${k}.jpg?ims=fit-in/96x96`, cor: () => null,
+  escala: () => 1, tipo: k => TIPO_DE[k] || 'medio', linha: linhaDe, valorSite, deSite: v => +(/TC\s*(\d+)/.exec(v || '') || [])[1]
+};
+const METAIS = EH_KF ? KF.metais : [];
+const TAMANHOS = (P && P.tamanhos) || [];
+if (EH_KF) {
+  estado.t = CAT.valido(par.get('t')) ? par.get('t') : KF.linhas[0][1][0];
+  estado.x = num('x', METAIS.length - 1, 0);
+  estado.z = num('z', TAMANHOS.length - 1, Math.max(0, TAMANHOS.indexOf(P.tamanhoBloco)));
+}
+const larguraAtual = () => TAMANHOS.length ? TAMANHOS[estado.z] / 100 : 0;
+
 async function aplica() {
   const minha = ++vez, [nomeM, arqM, roughM] = MADEIRAS[estado.m], [nomeE, arqE] = PALHAS[estado.e];
-  $('nm-madeira').textContent = nomeM; $('nm-encosto').textContent = 'Palha ' + nomeE.replace(/ PN\d+$/, ''); $('nm-tecido').textContent = nomeTecido(estado.t);
-  $('escolhido').firstElementChild.style.backgroundImage = `url("${urlTecido(estado.t)}")`;
+  $('nm-madeira').textContent = nomeM; $('nm-encosto').textContent = 'Palha ' + nomeE.replace(/ PN\d+$/, ''); $('nm-tecido').textContent = CAT.nome(estado.t);
+  const urlT = CAT.url(estado.t), corT = CAT.cor(estado.t), amo = $('escolhido').firstElementChild;
+  amo.style.backgroundImage = urlT ? `url("${urlT}")` : 'none'; amo.style.backgroundColor = corT || '';
+  if (METAIS.length) $('nm-metal').textContent = METAIS[estado.x][0];
+  if (TAMANHOS.length) $('nm-tamanho').textContent = TAMANHOS[estado.z] + ' cm de largura';
   if (EMBED) {
-    const l = tem('tecido') ? linhaDe(estado.t) : '';
+    const l = tem('tecido') ? CAT.linha(estado.t) : '';
     $('b-linha').textContent = l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[l] || Object.values(precos)[0])) || '';
   }
   if (!pronto || !mv.model || DEBUG) return;
-  const urlM = CDN + 'madeiras-v2/' + arqM, [forca, rough] = TIPO[TIPO_DE[estado.t] || 'medio'];
-  const nada = Promise.resolve(null);
+  const urlM = CDN + 'madeiras-v2/' + arqM, [forca, rough] = TIPO[CAT.tipo(estado.t)];
+  const nada = Promise.resolve(null), comTextura = tem('tecido') && urlT;
   const [mc, mn, tc, tn, pc] = await Promise.all([
-    tem('madeira') ? textura('mc:' + arqM, urlM, 'image/jpeg') : nada, tem('madeira') ? textura('mn:' + arqM, relevoDe(urlM, 0.9, 512, 1024), 'image/jpeg') : nada,
-    tem('tecido') ? textura('tc:' + estado.t, urlTecido(estado.t), 'image/jpeg') : nada, tem('tecido') ? textura('tn:' + estado.t, relevoDe(urlTecido(estado.t), forca, 1024, 1024), 'image/jpeg') : nada,
+    tem('madeira') ? textura('mc:' + arqM, urlM, 'image/jpeg') : nada, tem('madeira') ? textura('mn:' + arqM, relevoDe(urlM, 1.7, 512, 1024), 'image/jpeg') : nada,
+    comTextura ? textura('tc:' + estado.t, urlT, 'image/jpeg', CAT.escala(estado.t)) : nada, comTextura ? textura('tn:' + estado.t, relevoDe(urlT, forca, 1024, 1024), 'image/jpeg', CAT.escala(estado.t)) : nada,
     tem('palha') ? textura('p:' + arqE, palhaLimpa(CDN + 'palhas-v2/' + arqE), 'image/png') : nada
   ]);
   if (minha !== vez) return;
   const m = mat('madeira'), t = mat('tecido'), p = mat('palha');
   if (m && mc) { m.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); m.pbrMetallicRoughness.baseColorTexture.setTexture(mc); m.normalTexture.setTexture(mn); m.pbrMetallicRoughness.setRoughnessFactor(roughM); }
   if (t && tc) { t.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); t.pbrMetallicRoughness.baseColorTexture.setTexture(tc); t.normalTexture.setTexture(tn); t.pbrMetallicRoughness.setRoughnessFactor(rough); }
+  if (t && corT) { t.pbrMetallicRoughness.baseColorTexture.setTexture(null); t.normalTexture.setTexture(null); t.pbrMetallicRoughness.setBaseColorFactor(corT); t.pbrMetallicRoughness.setRoughnessFactor(rough); }
+  const mt = mat('metal'); if (mt && METAIS.length) { mt.pbrMetallicRoughness.setBaseColorFactor(METAIS[estado.x][1]); mt.pbrMetallicRoughness.setMetallicFactor(0.55); mt.pbrMetallicRoughness.setRoughnessFactor(0.45); }
   if (p && pc) { p.pbrMetallicRoughness.baseColorTexture.setTexture(pc); p.setAlphaMode('MASK'); p.setAlphaCutoff(0.5); p.setDoubleSided(true); }
   const f = mat('forro'); if (f) f.pbrMetallicRoughness.setBaseColorFactor(PALHAS[estado.e][3]);
   const v = mat('vivo'); if (v) v.pbrMetallicRoughness.setBaseColorFactor(PALHAS[estado.e][4]);
@@ -496,11 +562,27 @@ function marca(caixa, botao) { caixa.querySelectorAll('[aria-pressed]').forEach(
 function amostra(rotulo, img, ativo, aoEscolher, caixa, chave) {
   const b = document.createElement('button'); b.dataset.k = chave;
   b.className = 'sw'; b.type = 'button'; b.title = rotulo; b.setAttribute('aria-label', rotulo); b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
-  b.style.backgroundImage = `url("${img}")`;
+  if (img && img.folha) { b.style.backgroundImage = `url("${img.folha}")`; b.style.backgroundSize = `${img.cols * 100}% ${img.lins * 100}%`; b.style.backgroundPosition = `${img.col / (img.cols - 1) * 100}% ${img.lin / Math.max(1, img.lins - 1) * 100}%`; }
+  else if (img && img[0] === '#') b.style.backgroundColor = img; else if (img) b.style.backgroundImage = `url("${img}")`;
   b.addEventListener('click', () => { marca(caixa, b); aoEscolher(); aplica(); });
   return b;
 }
-const boxM = $('madeiras'), boxE = $('encostos'), boxT = $('tecidos'), boxV = $('vistas');
+function pilula(caixa, rotulo, cor, ativo, aoEscolher, chave) {
+  const b = document.createElement('button'); b.className = 'pilula'; b.type = 'button'; b.dataset.k = chave; b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+  if (cor) { const bola = document.createElement('i'); bola.style.backgroundColor = cor; b.append(bola); } else b.style.paddingLeft = '14px';
+  b.append(rotulo);
+  b.addEventListener('click', () => { marca(caixa, b); aoEscolher(); });
+  caixa.appendChild(b);
+}
+// troca de tamanho: o modelo é refeito na nova largura (o evento "load" reaplica os materiais)
+const modelos = new Map();
+async function trocaModelo() {
+  const L = larguraAtual(), k = String(L);
+  if (!modelos.has(k)) modelos.set(k, prepararModelo(L));
+  const url = await modelos.get(k); if (k !== String(larguraAtual())) return;
+  if (mv.src !== url) { pronto = false; mv.src = url; } else aplica();
+}
+const boxM = $('madeiras'), boxE = $('encostos'), boxT = $('tecidos'), boxV = $('vistas'), boxX = $('metais'), boxZ = $('tamanhos');
 function montaInterface() {
   MADEIRAS.forEach(([nome, arq], i) => boxM.appendChild(amostra(nome, CDN + 'madeiras-v2/' + arq, i === estado.m, () => estado.m = i, boxM, i)));
   PALHAS.forEach(([nome, arq, mini], i) => {
@@ -510,17 +592,21 @@ function montaInterface() {
     b.addEventListener('click', () => { marca(boxE, b); estado.e = i; aplica(); });
     boxE.appendChild(b);
   });
-  GRUPOS.forEach(([titulo, codigos]) => {
+  CAT.grupos.forEach(([titulo, codigos]) => {
     const g = document.createElement('div'); g.className = 'linha'; g.textContent = titulo; boxT.appendChild(g);
     const linha = document.createElement('div'); linha.className = 'amostras'; boxT.appendChild(linha);
-    codigos.forEach(c => linha.appendChild(amostra(nomeTecido(c), `${LOJA}2026/09/produto/${MIDIA[c]}/crn-tc${c}.jpg?ims=fit-in/96x96`, c === estado.t, () => estado.t = c, boxT, c)));
+    codigos.forEach(c => linha.appendChild(amostra(CAT.nome(c), CAT.mini(c) || CAT.cor(c), c === estado.t, () => estado.t = c, boxT, c)));
   });
+  METAIS.forEach(([nome, cor], i) => pilula(boxX, nome, cor, i === estado.x, () => { estado.x = i; aplica(); }, i));
+  TAMANHOS.forEach((cm, i) => pilula(boxZ, cm + ' cm', null, i === estado.z, () => { estado.z = i; aplica(); trocaModelo(); }, i));
 }
 function ajustaGrupos() {   // só aparecem os grupos de opção que este produto tem
   boxM.closest('.grupo').hidden = !tem('madeira'); boxE.closest('.grupo').hidden = !tem('palha'); boxT.closest('.grupo').hidden = !tem('tecido');
-  const itens = [tem('madeira') && 'a madeira', tem('palha') && 'a palha', tem('tecido') && 'o acabamento'].filter(Boolean);
+  $('g-metal').hidden = !(METAIS.length && tem('metal')); $('g-tamanho').hidden = !TAMANHOS.length;
+  if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = 'Tecido ';
+  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && 'a madeira', tem('palha') && 'a palha', tem('tecido') && (EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
   const lista = itens.length > 1 ? itens.slice(0, -1).join(', ') + ' e ' + itens.at(-1) : itens[0] || 'as opções';
-  const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : 'a cadeira';
+  const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : 'a cadeira';
   document.querySelector('.texto').textContent = `Escolha ${lista} e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar ${peca} na sua sala.`;
 }
 
@@ -528,7 +614,7 @@ if (EMBED) {
   document.body.classList.add('embed'); $('barra').hidden = false;
   const SITES = ['https://www.sanfranciscocenter.com.br', 'https://sanfranciscocenter.com.br'];
   const marcaTudo = () => {
-    for (const [caixa, k] of [[boxM, estado.m], [boxE, estado.e], [boxT, estado.t]])
+    for (const [caixa, k] of [[boxM, estado.m], [boxE, estado.e], [boxT, estado.t], [boxX, estado.x], [boxZ, estado.z]])
       caixa.querySelectorAll('[data-k]').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === String(k) ? 'true' : 'false'));
   };
   window.addEventListener('message', ev => {
@@ -537,12 +623,15 @@ if (EMBED) {
     if (d.precos && typeof d.precos === 'object') precos = d.precos;
     const m = MADEIRAS.findIndex(x => x[0] === d.madeira); if (m >= 0) estado.m = m;
     const e = PALHAS.findIndex(x => x[0] === d.tela); if (e >= 0) estado.e = e;
-    const c = +(/TC\s*(\d+)/.exec(d.acabamento || '') || [])[1]; if (MIDIA[c]) estado.t = c;
+    const c = CAT.deSite(d.acabamento); if (CAT.valido(c)) estado.t = c;
+    const x = METAIS.findIndex(q => q[0] === d.metal); if (x >= 0) estado.x = x;
+    const z = TAMANHOS.indexOf(parseInt(d.tamanho, 10)); if (z >= 0 && z !== estado.z) { estado.z = z; trocaModelo(); }
     marcaTudo(); aplica();
   });
   $('usar').addEventListener('click', () => parent.postMessage({
     sfc3d: 'usar', madeira: MADEIRAS[estado.m][0], tela: tem('palha') ? PALHAS[estado.e][0] : '',
-    acabamento: tem('tecido') ? valorSite(estado.t) : '', linha: tem('tecido') ? linhaDe(estado.t) : ''
+    acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: tem('tecido') ? CAT.linha(estado.t) : '',
+    metal: METAIS.length ? METAIS[estado.x][0] : '', tamanho: TAMANHOS.length ? TAMANHOS[estado.z] : ''
   }, '*'));
 }
 
@@ -551,20 +640,29 @@ boxV.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
 }));
 
 const lupa = $('lupa');
-$('escolhido').addEventListener('click', () => { $('lupa-img').src = urlTecido(estado.t); $('lupa-img').alt = nomeTecido(estado.t); $('lupa-nome').textContent = nomeTecido(estado.t); lupa.hidden = false; $('lupa-fechar').focus(); });
+$('escolhido').addEventListener('click', () => { if (!CAT.url(estado.t)) return; $('lupa-img').src = CAT.url(estado.t); $('lupa-img').alt = CAT.nome(estado.t); $('lupa-nome').textContent = CAT.nome(estado.t); lupa.hidden = false; $('lupa-fechar').focus(); });
 const fechaLupa = () => { lupa.hidden = true; $('escolhido').focus(); };
 $('lupa-fechar').addEventListener('click', fechaLupa);
 lupa.addEventListener('click', e => { if (e.target === lupa) fechaLupa(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lupa.hidden) fechaLupa(); });
 
 $('compartilhar').addEventListener('click', async () => {
-  const url = `${location.origin}${location.pathname}?p=${encodeURIComponent(CHAVE)}&m=${estado.m}&e=${estado.e}&t=${estado.t}`;
-  const texto = [P.nome + ': ' + MADEIRAS[estado.m][0], tem('palha') && 'palha ' + PALHAS[estado.e][0], tem('tecido') && nomeTecido(estado.t)].filter(Boolean).join(', ');
+  const url = `${location.origin}${location.pathname}?p=${encodeURIComponent(CHAVE)}&m=${estado.m}&e=${estado.e}&t=${encodeURIComponent(estado.t)}&x=${estado.x}&z=${estado.z}`;
+  const texto = [P.nome + ': ' + MADEIRAS[estado.m][0], tem('palha') && 'palha ' + PALHAS[estado.e][0], tem('tecido') && CAT.nome(estado.t), METAIS.length && 'metal ' + METAIS[estado.x][0], TAMANHOS.length && TAMANHOS[estado.z] + ' cm'].filter(Boolean).join(', ');
   try {
     if (navigator.share) await navigator.share({ title: P.nome, text: texto, url });
     else { await navigator.clipboard.writeText(url); $('aviso').textContent = 'Link copiado'; setTimeout(() => $('aviso').textContent = '', 2500); }
   } catch (e) { if (e.name !== 'AbortError') $('aviso').textContent = 'Não foi possível compartilhar'; }
 });
+
+// Celular: o palco 3D fica fixo no topo e vai de 56% para 34% da altura da tela conforme a rolagem
+const telaPequena = matchMedia('(max-width:899px)');
+function ajustaPalco() {
+  if (!telaPequena.matches) { mv.style.removeProperty('--alt'); document.body.classList.remove('compacto'); return; }
+  const cheia = innerHeight * 0.56, minima = innerHeight * 0.34, alt = Math.max(minima, cheia - scrollY);
+  mv.style.setProperty('--alt', alt + 'px'); document.body.classList.toggle('compacto', alt < cheia - 40);
+}
+addEventListener('scroll', ajustaPalco, { passive: true }); addEventListener('resize', ajustaPalco); ajustaPalco();
 
 // Dentro de aplicativos (janela embutida) o componente esconde o botão de realidade aumentada.
 // Nesse caso entra um botão próprio: no iPhone tenta abrir o visualizador da Apple; se não abrir (ou no Android),
@@ -574,7 +672,7 @@ function arAlternativo() {
   const ua = navigator.userAgent, ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), android = /Android/.test(ua);
   if (!ios && !android) return;
   const fora = () => {
-    const q = new URLSearchParams(location.search); q.delete('embed'); q.set('m', estado.m); q.set('e', estado.e); q.set('t', estado.t);
+    const q = new URLSearchParams(location.search); q.delete('embed'); q.set('m', estado.m); q.set('e', estado.e); q.set('t', estado.t); q.set('x', estado.x); q.set('z', estado.z);
     const resto = location.host + location.pathname + '?' + q;
     const a = document.createElement('a'); a.target = '_top';
     a.href = ios ? 'x-safari-https://' + resto : 'intent://' + resto + '#Intent;scheme=https;action=android.intent.action.VIEW;end';
@@ -601,10 +699,11 @@ try {
   $('sobre').textContent = P.sobre || 'Alma Mobília'; $('titulo').firstChild.textContent = P.nome + ', ';
   await customElements.whenDefined('model-viewer');
   mv.environmentImage = CDN + 'luz/estudio.hdr';
-  const url = await prepararModelo();
+  const k0 = String(larguraAtual()); modelos.set(k0, prepararModelo(larguraAtual()));
+  const url = await modelos.get(k0);
   montaInterface(); ajustaGrupos();
   if (EMBED) parent.postMessage({ sfc3d: 'pronto' }, '*');
-  mv.src = url;
+  if (String(larguraAtual()) === k0) mv.src = url; else trocaModelo();
 } catch (e) { statusEl.textContent = 'Não foi possível carregar o modelo'; console.error(e); }
 </script>
 </body>

@@ -68,6 +68,14 @@
   .lupa img { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
   .lupa figcaption { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; font-family:var(--serif); font-size:20px; }
   .lupa button { border:0; background:var(--neutro); border-radius:999px; padding:8px 14px; font-size:13px; cursor:pointer; color:var(--tinta); }
+  @media (max-width:899px) {
+    /* celular: o 3D fica preso no topo e encolhe quando a pessoa rola para escolher as opções */
+    .pagina { padding-top:0; }
+    .palco { position:sticky; top:0; z-index:6; margin:0 -16px; border-radius:0 0 22px 22px; box-shadow:0 6px 18px rgba(27,31,23,.08); }
+    body.embed .palco { margin:0 -12px; }
+    model-viewer { height:var(--alt, 56vh); min-height:0; }
+    body.compacto .vistas { display:none; }
+  }
   @media (min-width:900px) {
     .pagina { grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:28px; padding:28px; align-items:start; }
     .palco { position:sticky; top:28px; border-radius:36px; }
@@ -151,12 +159,13 @@ const PALHA_TILE = 0.054;                    // 4 células de palha
 // Abaixo, só o que foi medido na foto frontal do produto (786 px = 38,8 cm de largura).
 const QUADRO = { fundoMax: 0.035, lado: 0.031, cima: 0.034, baixo: 0.083, raioFuro: 0.008, borda: 0.0165, bordaBaixo: 0.03, vivo: 0.006, raioTela: 0.005 };
 
+// madeira mais fosca e com o veio mais marcado (pedido de Matheus, 12/11/2026): rugosidade maior e relevo 1,7
 const MADEIRAS = [
-  ['Avelã M01','m01-avela.jpg',0.48],
-  ['Castanho M02','m02-castanho.jpg',0.48],
-  ['Mocca M03','m03-mocca.jpg',0.48],
-  ['Nero Fosco M04','m04-nero-b.jpg',0.85],
-  ['Nero Fosco Semibrilho M05','m05-nero-semibrilho-b.jpg',0.3]
+  ['Avelã M01','m01-avela.jpg',0.74],
+  ['Castanho M02','m02-castanho.jpg',0.74],
+  ['Mocca M03','m03-mocca.jpg',0.74],
+  ['Nero Fosco M04','m04-nero-b.jpg',0.92],
+  ['Nero Fosco Semibrilho M05','m05-nero-semibrilho-b.jpg',0.52]
 ];
 const ENCOSTOS = [
   ['Estofado', null, null, null],
@@ -170,7 +179,7 @@ const GRUPOS = [
   ['Couro',            [534,535,537,551,552,553,554,555,556]]
 ];
 // Relevo e brilho por tipo de material: [força do relevo, rugosidade]
-const TIPO = { grosso: [3.4, 1.0], medio: [2.7, 1.0], fino: [1.9, 1.0], liso: [1.0, 0.6], couro: [1.4, 0.5] };
+const TIPO = { grosso: [3.4, 1.0], medio: [2.7, 1.0], fino: [1.9, 1.0], liso: [0.8, 0.95], couro: [0.8, 0.88] };   // opacos em todo o plugin (pedido de Matheus, 12/11/2026)
 const TIPO_DE = {};
 [502,503,504,505,507,530,538,540,541].forEach(c => TIPO_DE[c] = 'grosso');
 [501,539,542,543].forEach(c => TIPO_DE[c] = 'medio');
@@ -317,7 +326,7 @@ async function prepararModelos() {
 
   const mMadeira = new THREE.MeshStandardMaterial({ name: 'madeira', color: 0xffffff, roughness: 0.5, metalness: 0 });
   // tecido ganha "sheen": o brilho aveludado suave que estofado tem nas bordas
-  const mTecido = new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.55, sheenColor: new THREE.Color(0.16, 0.16, 0.16) });
+  const mTecido = new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.8, sheenColor: new THREE.Color(0.05, 0.05, 0.05) });
   const mLatao = new THREE.MeshStandardMaterial({ name: 'latao', color: 0xCFA65F, roughness: 0.3, metalness: 0.9 });
   const mPalha = new THREE.MeshStandardMaterial({ name: 'palha', color: 0xffffff, roughness: 0.7, metalness: 0, side: THREE.DoubleSide, alphaTest: 0.5 });
 
@@ -403,7 +412,7 @@ async function aplica() {
   if (!mv.model) return;
   const urlM = CDN + 'madeiras-v2/' + arqM, [forca, rough] = TIPO[TIPO_DE[estado.t] || 'medio'];
   const pedidos = [
-    textura('mc:' + arqM, urlM, 'image/jpeg'), textura('mn:' + arqM, relevoDe(urlM, 0.9, 512, 1024), 'image/jpeg'),
+    textura('mc:' + arqM, urlM, 'image/jpeg'), textura('mn:' + arqM, relevoDe(urlM, 1.7, 512, 1024), 'image/jpeg'),
     textura('tc:' + estado.t, urlTecido(estado.t), 'image/jpeg'), textura('tn:' + estado.t, relevoDe(urlTecido(estado.t), forca, 1024, 1024), 'image/jpeg')
   ];
   if (quer === 'palha') pedidos.push(textura('p:' + arqE, CDN + 'palhas-v2/' + arqE, 'image/png'));
@@ -491,6 +500,15 @@ $('compartilhar').addEventListener('click', async () => {
     else { await navigator.clipboard.writeText(url); $('aviso').textContent = 'Link copiado'; setTimeout(() => $('aviso').textContent = '', 2500); }
   } catch (e) { if (e.name !== 'AbortError') $('aviso').textContent = 'Não foi possível compartilhar'; }
 });
+
+// Celular: o palco 3D fica fixo no topo e vai de 56% para 34% da altura da tela conforme a rolagem
+const telaPequena = matchMedia('(max-width:899px)');
+function ajustaPalco() {
+  if (!telaPequena.matches) { mv.style.removeProperty('--alt'); document.body.classList.remove('compacto'); return; }
+  const cheia = innerHeight * 0.56, minima = innerHeight * 0.34, alt = Math.max(minima, cheia - scrollY);
+  mv.style.setProperty('--alt', alt + 'px'); document.body.classList.toggle('compacto', alt < cheia - 40);
+}
+addEventListener('scroll', ajustaPalco, { passive: true }); addEventListener('resize', ajustaPalco); ajustaPalco();
 
 // Dentro de aplicativos (janela embutida) o componente esconde o botão de realidade aumentada.
 // Nesse caso entra um botão próprio: no iPhone tenta abrir o visualizador da Apple; se não abrir (ou no Android),
