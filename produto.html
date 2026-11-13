@@ -162,6 +162,7 @@ import { SER } from './ser/catalogo.js';
 import { BUR } from './bur/catalogo.js';
 import { IPE } from './ipe/catalogo.js';
 import { VND } from './vnd/catalogo.js';
+import { CMB } from './cmb/catalogo.js';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d@main/pivot/';
 const LOJA = 'https://sanfranciscocenter.cdn.magazord.com.br/img/';
@@ -207,8 +208,8 @@ const mv = $('mv'), statusEl = $('status');
 const par = new URLSearchParams(location.search);
 const CHAVE = par.get('p') || '', P = PRODUTOS[CHAVE];
 const DEBUG = par.get('debug') === '1';
-const EH_VND = !!P && P.marca === 'vnd';   // Vindima: telas próprias (foto opaca), madeiras por produto, tamanhos com nome
-const PALHAS = EH_VND ? VND.telas : PALHAS_ALMA;
+const EH_CMB = !!P && P.marca === 'cmb', EH_VND = !!P && (P.marca === 'vnd' || EH_CMB);   // marcas com 'telas' próprias no catálogo (Combinare: recouro)   // Vindima: telas próprias (foto opaca), madeiras por produto, tamanhos com nome
+const PALHAS = EH_VND ? (EH_CMB ? CMB : VND).telas : PALHAS_ALMA;
 
 /* ---------- 1. Modelo ---------- */
 function analisa(geo) {
@@ -241,7 +242,7 @@ function monta(geo, an, modo) {
   const pos = geo.attributes.position, nor = geo.attributes.normal, { idx, nt, raiz, caixas } = an;
   const P3 = [], N = [], UV = [];
   const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), fn = new THREE.Vector3();
-  const lado = modo === 'palha' ? (P.palhaTile || (EH_VND && VND.telaTile) || PALHA_TILE) : CAT.tile;
+  const lado = modo === 'palha' ? (P.palhaTile || (EH_VND && (EH_CMB ? CMB : VND).telaTile) || PALHA_TILE) : CAT.tile;
   // Correção de bloco: peça fechada com as faces viradas para dentro (aparece "furada", dá para ver através dela).
   // O volume assinado de cada peça solta diz se está do avesso; nesse caso a ordem dos vértices é invertida.
   const vol = new Map();
@@ -496,8 +497,10 @@ async function prepararModelo(largura) {
   const dx = -(cx.min.x + cx.max.x) / 2, dy = -cx.min.y, dz = -(cx.min.z + cx.max.z) / 2;
   pecas.forEach(p => { p.geo.translate(dx, dy, dz); p.geo.computeBoundingBox(); });
   // bloco com objetos a mais (outra peça, sobras longe): ficam só as malhas com o centro dentro da faixa; centraliza de novo
-  if (P.recorta) {
-    const [xa, xb] = P.recorta.x, ficam = pecas.filter(p => { const c = (p.geo.boundingBox.min.x + p.geo.boundingBox.max.x) / 2; return c >= xa && c <= xb; });
+  // recortaTam: bloco que traz todos os tamanhos lado a lado — cada tamanho do anúncio tem a sua faixa
+  const RC = (largura && P.recortaTam && P.recortaTam[Math.round(largura * 100)]) || P.recorta;
+  if (RC) {
+    const [xa, xb] = RC.x || [-1e9, 1e9], [za, zb] = RC.z || [-1e9, 1e9], ficam = pecas.filter(p => { const b = p.geo.boundingBox, c = (b.min.x + b.max.x) / 2, cz = (b.min.z + b.max.z) / 2; return c >= xa && c <= xb && cz >= za && cz <= zb; });
     pecas.length = 0; pecas.push(...ficam);
     const c4 = new THREE.Box3(); pecas.forEach(p => c4.union(p.geo.boundingBox)); const e = [-(c4.min.x + c4.max.x) / 2, -c4.min.y, -(c4.min.z + c4.max.z) / 2]; pecas.forEach(p => { p.geo.translate(e[0], e[1], e[2]); p.geo.computeBoundingBox(); });
   }
@@ -578,7 +581,7 @@ async function prepararModelo(largura) {
     for (const p of pecas) {
       const f = P.separa['#' + p.i] || P.separa[p.nomeMat] || P.separa['*']; if (!f || p.papel) { novas.push(p); continue; }
       const an = analisa(p.geo), pos = p.geo.attributes.position, nor = p.geo.attributes.normal, grupos = {};
-      for (let t = 0; t < an.nt; t++) { const papel = f(an.caixas.get(an.raiz(t))); (grupos[papel] = grupos[papel] || []).push(t); }
+      for (let t = 0; t < an.nt; t++) { const papel = f(an.caixas.get(an.raiz(t)), largura); (grupos[papel] = grupos[papel] || []).push(t); }
       for (const [papel, ts] of Object.entries(grupos)) {
         const P3 = new Float32Array(ts.length * 9), N3 = nor ? new Float32Array(ts.length * 9) : null;
         ts.forEach((t, k) => { for (let v = 0; v < 3; v++) { const i = an.idx[t * 3 + v], o = k * 9 + v * 3; P3[o] = pos.getX(i); P3[o + 1] = pos.getY(i); P3[o + 2] = pos.getZ(i); if (N3) { N3[o] = nor.getX(i); N3[o + 1] = nor.getY(i); N3[o + 2] = nor.getZ(i); } } });
@@ -586,7 +589,10 @@ async function prepararModelo(largura) {
         novas.push({ ...p, geo: g, papel });
       }
     }
-    pecas.length = 0; pecas.push(...novas);
+    pecas.length = 0; pecas.push(...novas.filter(p => p.papel !== 'oculto'));
+    if (novas.some(p => p.papel === 'oculto')) {   // partes retiradas (outras cópias da peça na mesma malha): centraliza de novo
+      const c5 = new THREE.Box3(); pecas.forEach(p => c5.union(p.geo.boundingBox)); const e5 = [-(c5.min.x + c5.max.x) / 2, -c5.min.y, -(c5.min.z + c5.max.z) / 2]; pecas.forEach(p => { p.geo.translate(e5[0], e5[1], e5[2]); p.geo.computeBoundingBox(); });
+    }
   }
 
   const cena = new THREE.Scene();
@@ -715,8 +721,8 @@ const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
 const tem = papel => papeis.has(papel);
 
 // Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
-const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
-const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : EH_VND ? VND : KF0, PASTA = KF.pasta || 'kf';
+const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd', 'cmb'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
+const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : EH_CMB ? CMB : EH_VND ? VND : KF0, PASTA = KF.pasta || 'kf';
 const codKF = v => P.prefixoTecido ? P.prefixoTecido + KF.sem(v) : KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
 const LINHAS = P && P.linhas === 'tecidos+telas' ? [...KF.linhas, ...KF.linhasTela] : (P && P.linhas) || KF.linhas;   // produto com lista própria (ex.: poltrona só em couro soleta)
 const TIPO_KF = { 'Bouclé': 'boucle', 'Linho': 'linhoKF', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
@@ -825,8 +831,8 @@ function ajustaGrupos() {   // só aparecem os grupos de opção que este produt
   boxM.closest('.grupo').hidden = !tem('madeira') || (EH_KF && MADS.length < 2); /* marca sem escolha de madeira: grupo some */ boxE.closest('.grupo').hidden = !tem('palha'); boxT.closest('.grupo').hidden = !tem('tecido');
   $('g-metal').hidden = !(METAIS.length && tem('metal')); $('g-tamanho').hidden = !TAMANHOS.length;
   if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = P.tituloTecido || 'Tecido ';
-  if (EH_VND) boxE.closest('.grupo').querySelector('h2').firstChild.textContent = 'Tela ';
-  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && (EH_VND ? 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
+  if (EH_VND) boxE.closest('.grupo').querySelector('h2').firstChild.textContent = KF.tituloTela || 'Tela ';
+  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && (EH_VND ? KF.artigoTela || 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
   const lista = itens.length > 1 ? itens.slice(0, -1).join(', ') + ' e ' + itens.at(-1) : itens[0] || 'as opções';
   const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : /^cama/i.test(P.nome) ? 'a cama' : /^(mesa|c.moda|estante|escrivaninha|cristaleira|lumin)/i.test(P.nome) ? 'a peça' : /^(aparador|buffet|espelho|cabideiro)/i.test(P.nome) ? 'o móvel' : /^recamier/i.test(P.nome) ? 'o recamier' : 'a cadeira';
   document.querySelector('.texto').textContent = `Escolha ${lista} e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar ${peca} na sua sala.`;
