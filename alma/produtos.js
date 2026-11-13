@@ -38,6 +38,9 @@ export const PRODUTOS = {
     // SEM anúncio no site em 13/11/2026. O bloco divide as faces de cada peça em duas malhas (parecem duplicadas, mas
     // são metades complementares): usar todas. #2 a #5 = pés; o resto é estofado
     partes: { 'default_face_material': 'tecido', '#2': 'madeira', '#3': 'madeira', '#4': 'madeira', '#5': 'madeira' } },
+  // Sofá Pulso: bloco "KF. PULSO" (29122080…), 258 cm, uma malha só em tecido. O anúncio vende de 220 a 360 cm (profundidade 120 fixa):
+  // estica só o miolo; as pontas arredondadas (45 cm de cada lado) e as almofadas mantêm o tamanho.
+  'kf-pulso': { nome: 'Sofá Pulso', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/pulso.glb', partes: { '*': 'tecido' }, tamanhos: [220, 240, 260, 280, 300, 320, 340, 360], tamanhoBloco: 260, estica: { base: 2.58, braco: 0.45, rigido: 0.7 } },
   'kf-moss-chaise': { nome: 'Sofá Moss com Chaise Curva', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/moss-chaise.glb',
     // Bloco "KF - Sofá MOSS" (77fb8bbd…): sofá + mesinha lateral + chaise redonda, 426 cm no bloco. Confere com as fotos.
     // O anúncio vende 340 e 380 cm: encolhe só a parte reta (entre o braço e a mesinha); a chaise não muda.
