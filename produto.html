@@ -161,6 +161,7 @@ import { KF as KF0 } from './kf/catalogo.js';
 import { SER } from './ser/catalogo.js';
 import { BUR } from './bur/catalogo.js';
 import { IPE } from './ipe/catalogo.js';
+import { VND } from './vnd/catalogo.js';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d@main/pivot/';
 const LOJA = 'https://sanfranciscocenter.cdn.magazord.com.br/img/';
@@ -178,7 +179,7 @@ const MADEIRAS = [
   ['Nero Fosco M04','m04-nero-b.jpg',0.92],
   ['Nero Fosco Semibrilho M05','m05-nero-semibrilho-b.jpg',0.52]
 ];
-const PALHAS = [
+const PALHAS_ALMA = [
   ['Natural PN01', 'pn01-natural.png', '2025/05/produto/25389/natural-pn-01.jpg', '#D6C296', '#D8C08E'],
   ['Bronze PN02', 'pn02-bronze.png', '2025/05/produto/25388/bronze-pn02.jpg', '#A87A42', '#B27C3E'],
   ['Preta PN03', 'pn03-preta.png', '2025/05/produto/25390/preta-pn03.jpg', '#262321', '#2B2826']
@@ -206,6 +207,8 @@ const mv = $('mv'), statusEl = $('status');
 const par = new URLSearchParams(location.search);
 const CHAVE = par.get('p') || '', P = PRODUTOS[CHAVE];
 const DEBUG = par.get('debug') === '1';
+const EH_VND = !!P && P.marca === 'vnd';   // Vindima: telas próprias (foto opaca), madeiras por produto, tamanhos com nome
+const PALHAS = EH_VND ? VND.telas : PALHAS_ALMA;
 
 /* ---------- 1. Modelo ---------- */
 function analisa(geo) {
@@ -238,7 +241,7 @@ function monta(geo, an, modo) {
   const pos = geo.attributes.position, nor = geo.attributes.normal, { idx, nt, raiz, caixas } = an;
   const P3 = [], N = [], UV = [];
   const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3(), fn = new THREE.Vector3();
-  const lado = modo === 'palha' ? (P.palhaTile || PALHA_TILE) : CAT.tile;
+  const lado = modo === 'palha' ? (P.palhaTile || (EH_VND && VND.telaTile) || PALHA_TILE) : CAT.tile;
   // Correção de bloco: peça fechada com as faces viradas para dentro (aparece "furada", dá para ver através dela).
   // O volume assinado de cada peça solta diz se está do avesso; nesse caso a ordem dos vértices é invertida.
   const vol = new Map();
@@ -561,8 +564,26 @@ async function prepararModelo(largura) {
     }
   }
 
+  // peça que no bloco é uma malha só e na peça real tem mais de um material (pés de madeira + corpo estofado):
+  // cada parte solta da malha recebe o papel pela sua caixa — separa: { '#i' | nome do material | '*': caixa => papel }
+  if (P.separa) {
+    const novas = [];
+    for (const p of pecas) {
+      const f = P.separa['#' + p.i] || P.separa[p.nomeMat] || P.separa['*']; if (!f || p.papel) { novas.push(p); continue; }
+      const an = analisa(p.geo), pos = p.geo.attributes.position, nor = p.geo.attributes.normal, grupos = {};
+      for (let t = 0; t < an.nt; t++) { const papel = f(an.caixas.get(an.raiz(t))); (grupos[papel] = grupos[papel] || []).push(t); }
+      for (const [papel, ts] of Object.entries(grupos)) {
+        const P3 = new Float32Array(ts.length * 9), N3 = nor ? new Float32Array(ts.length * 9) : null;
+        ts.forEach((t, k) => { for (let v = 0; v < 3; v++) { const i = an.idx[t * 3 + v], o = k * 9 + v * 3; P3[o] = pos.getX(i); P3[o + 1] = pos.getY(i); P3[o + 2] = pos.getZ(i); if (N3) { N3[o] = nor.getX(i); N3[o + 1] = nor.getY(i); N3[o + 2] = nor.getZ(i); } } });
+        const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(P3, 3)); if (N3) g.setAttribute('normal', new THREE.BufferAttribute(N3, 3)); else g.computeVertexNormals(); g.computeBoundingBox();
+        novas.push({ ...p, geo: g, papel });
+      }
+    }
+    pecas.length = 0; pecas.push(...novas);
+  }
+
   const cena = new THREE.Scene();
-  if (DEBUG) window._pecas = pecas;
+  if (DEBUG) { window._pecas = pecas; window._analisa = analisa; }
   if (DEBUG) {
     const linhas = [];
     pecas.forEach(p => {
@@ -574,11 +595,15 @@ async function prepararModelo(largura) {
     $('debug').innerHTML = linhas.join(''); $('debug').hidden = false;
   } else {
     const mats = {
-      madeira: new THREE.MeshStandardMaterial({ name: 'madeira', color: 0xffffff, roughness: 0.5, metalness: 0 }),
+      madeira: new THREE.MeshStandardMaterial({ name: 'madeira', color: 0xffffff, roughness: 0.5, metalness: 0, side: EH_VND ? THREE.DoubleSide : THREE.FrontSide }),   // Vindima: blocos com faces viradas ao contrário
       tecido: new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.8, sheenColor: new THREE.Color(0.05, 0.05, 0.05), side: THREE.DoubleSide }),   // dois lados: alguns blocos trazem o tampo como uma folha aberta
       palha: new THREE.MeshStandardMaterial({ name: 'palha', color: 0xffffff, roughness: 0.7, metalness: 0, side: THREE.DoubleSide, alphaTest: 0.5 }),
       metal: new THREE.MeshStandardMaterial({ name: 'metal', color: new THREE.Color(P.corMetal || '#B9B6AE'), roughness: 0.32, metalness: 1 }),
       preto: new THREE.MeshStandardMaterial({ name: 'preto', color: 0x1c1b1a, roughness: 0.6, metalness: 0 }),
+      // camas: colchão e roupa de cama do bloco, em tons neutros (não mudam com as escolhas)
+      couro: new THREE.MeshStandardMaterial({ name: 'couro', color: 0x7A4A2E, roughness: 0.6, metalness: 0, side: THREE.DoubleSide }),   // detalhe em couro, fixo
+      branco: new THREE.MeshStandardMaterial({ name: 'branco', color: 0xF3F0EA, roughness: 0.95, metalness: 0, side: THREE.DoubleSide }),
+      roupa: new THREE.MeshStandardMaterial({ name: 'roupa', color: 0xD8D2C6, roughness: 1, metalness: 0, side: THREE.DoubleSide }),
       // forro: fundo liso logo atrás da palha (o vão dos furos), na cor da palha escolhida
       vivo: new THREE.MeshStandardMaterial({ name: 'vivo', color: 0xD8C08E, roughness: 0.75, metalness: 0 }),
       forro: new THREE.MeshStandardMaterial({ name: 'forro', color: 0xB9A273, roughness: 0.9, metalness: 0, side: THREE.DoubleSide })
@@ -588,7 +613,7 @@ async function prepararModelo(largura) {
       const papel = p.papel || P.partes['#' + p.i] || P.partes[p.nomeMat] || ((P.regras || []).find(([re]) => re.test(p.nomeMat)) || [])[1] || P.partes['*'] || 'original';   // regras = [expressão, papel] para nomes de material parecidos
       if (papel === 'oculto') continue;
       if (papel === 'original') { const m = new THREE.Mesh(p.geo, p.original); m.name = 'original' + p.i; cena.add(m); continue; }
-      if (papel !== 'palha') { (porPapel[papel] = porPapel[papel] || []).push(p.geo); continue; }
+      if (papel !== 'palha' || EH_VND) { (porPapel[papel] = porPapel[papel] || []).push(p.geo); continue; }
       const face = cortaAbaixo(umaFace(p.geo), (P.corteY || {})['#' + p.i]); (porPapel.palha = porPapel.palha || []).push(face);
       if ((P.vivo || []).includes('#' + p.i)) { const v = contorno(face, 0.002, 0.004, P.vivoMinY); if (v) (porPapel.vivo = porPapel.vivo || []).push(v); }
       if ((P.forro || []).includes('#' + p.i)) {   // fundo liso 3 mm atrás da palha
@@ -679,49 +704,51 @@ const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
 const tem = papel => papeis.has(papel);
 
 // Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
-const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
-const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : KF0, PASTA = KF.pasta || 'kf';
+const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
+const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : EH_VND ? VND : KF0, PASTA = KF.pasta || 'kf';
 const codKF = v => KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
+const LINHAS = P && P.linhas === 'tecidos+telas' ? [...KF.linhas, ...KF.linhasTela] : (P && P.linhas) || KF.linhas;   // produto com lista própria (ex.: poltrona só em couro soleta)
 const TIPO_KF = { 'Bouclé': 'boucle', 'Linho': 'linhoKF', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
 const CAT = EH_KF ? {
-  grupos: KF.linhas, tile: KF.tile, valido: k => KF.linhas.some(([, v]) => v.includes(k)),
+  grupos: LINHAS, tile: KF.tile, valido: k => LINHAS.some(([, v]) => v.includes(k)),
   nome: k => k, url: k => codKF(k) ? `${PASTA}/tecidos/${codKF(k)}.jpg?v=2` : null, mini: k => { const i = KF.mini.ordem.indexOf(codKF(k)); return i < 0 ? null : { folha: KF.mini.arquivo + '?v=2', col: i % KF.mini.colunas, lin: Math.floor(i / KF.mini.colunas), cols: KF.mini.colunas, lins: KF.mini.linhas }; },
   cor: () => null, escala: k => KF.escala ? KF.escala(k) : /^Couro leg/.test(k) ? KF.tile / KF.tileCouro : 1,   // a foto do couro cobre uma área menor
   tipo: k => KF.tipo ? KF.tipo(k) : /^Couro leg/.test(k) ? 'couroFosco' : (TIPO_KF[k.replace(/\s*\d+$/, '')] || 'medio'),
-  linha: k => (KF.linhas.find(([, v]) => v.includes(k)) || [''])[0], valorSite: k => k, deSite: v => v
+  linha: k => (LINHAS.find(([, v]) => v.includes(k)) || [''])[0], valorSite: k => k, deSite: v => v
 } : {
   grupos: GRUPOS, tile: TECIDO_TILE, valido: k => !!MIDIA[k],
   nome: nomeTecido, url: urlTecido, mini: k => `${LOJA}2026/09/produto/${MIDIA[k]}/crn-tc${k}.jpg?ims=fit-in/96x96`, cor: () => null,
   escala: () => 1, tipo: k => TIPO_DE[k] || 'medio', linha: linhaDe, valorSite, deSite: v => +(/TC\s*(\d+)/.exec(v || '') || [])[1]
 };
 const METAIS = EH_KF ? KF.metais : [];
-const MADS = EH_KF ? KF.madeiras : MADEIRAS;   // KF: [nome, cor]; Alma: [nome, arquivo, rugosidade]
-const TAMANHOS = (P && P.tamanhos) || [];
+const MADS = EH_KF ? (P.madeiras ? KF.madeiras.filter(m => P.madeiras.includes(m[0])) : KF.madeiras) : MADEIRAS;   // KF: [nome, cor]; Alma: [nome, arquivo, rugosidade]
+const TAMANHOS = (P && P.tamanhos) || [], TAM_NOMES = (P && P.tamanhoNomes) || null;   // camas: Solteiro, Casal, Queen, King
+const telaTipo = () => /^Sint/.test(PALHAS[estado.e][0]) ? 'sintética' : 'natural';
 if (EH_KF) {
-  estado.t = CAT.valido(par.get('t')) ? par.get('t') : KF.linhas[0][1][0];
-  estado.x = num('x', METAIS.length - 1, 0); estado.m = num('m', KF.madeiras.length - 1, 0);
+  estado.t = CAT.valido(par.get('t')) ? par.get('t') : LINHAS[0][1][0];
+  estado.x = num('x', METAIS.length - 1, 0); estado.m = num('m', MADS.length - 1, 0);
   estado.z = num('z', TAMANHOS.length - 1, Math.max(0, TAMANHOS.indexOf(P.tamanhoBloco)));
 }
 const larguraAtual = () => TAMANHOS.length ? TAMANHOS[estado.z] / 100 : 0;
 
 async function aplica() {
   const minha = ++vez, [nomeM, arqM, roughM] = MADEIRAS[estado.m] || MADEIRAS[0], [nomeE, arqE] = PALHAS[estado.e];
-  $('nm-madeira').textContent = MADS[estado.m][0]; $('nm-encosto').textContent = 'Palha ' + nomeE.replace(/ PN\d+$/, ''); $('nm-tecido').textContent = CAT.nome(estado.t);
+  $('nm-madeira').textContent = MADS[estado.m][0]; $('nm-encosto').textContent = EH_VND ? nomeE : 'Palha ' + nomeE.replace(/ PN\d+$/, ''); $('nm-tecido').textContent = CAT.nome(estado.t);
   const urlT = CAT.url(estado.t), corT = CAT.cor(estado.t), amo = $('escolhido').firstElementChild;
   amo.style.backgroundImage = urlT ? `url("${urlT}")` : 'none'; amo.style.backgroundColor = corT || '';
   if (METAIS.length) $('nm-metal').textContent = METAIS[estado.x][0];
-  if (TAMANHOS.length) $('nm-tamanho').textContent = TAMANHOS[estado.z] + ' cm de largura';
+  if (TAMANHOS.length) $('nm-tamanho').textContent = TAM_NOMES ? TAM_NOMES[estado.z] : TAMANHOS[estado.z] + ' cm de largura';
   if (EMBED) {
     const l = tem('tecido') ? CAT.linha(estado.t) : '';
     $('b-linha').textContent = l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[l] || Object.values(precos)[0])) || '';
   }
   if (!pronto || !mv.model || DEBUG) return;
-  const urlM = P.texMadeira ? P.texMadeira : EH_KF ? PASTA + '/madeiras/' + KF.madeiras[estado.m][2] : CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
+  const urlM = P.texMadeira ? P.texMadeira : EH_KF ? PASTA + '/madeiras/' + MADS[estado.m][2] : CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
   const nada = Promise.resolve(null), comTextura = tem('tecido') && urlT;
   const [mc, mn, tc, tn, pc] = await Promise.all([
     tem('madeira') ? textura('mc:' + urlM, urlM, 'image/jpeg') : nada, tem('madeira') ? textura('mn:' + urlM, relevoDe(urlM, 1.7, 512, 1024), 'image/jpeg') : nada,
     comTextura ? textura('tc:' + estado.t, urlT, 'image/jpeg', CAT.escala(estado.t)) : nada, comTextura ? textura('tn:' + estado.t, relevoDe(urlT, forca, 1024, 1024, volume), 'image/jpeg', CAT.escala(estado.t)) : nada,
-    tem('palha') ? textura('p:' + arqE, palhaLimpa(CDN + 'palhas-v2/' + arqE), 'image/png') : nada
+    tem('palha') ? (EH_VND ? textura('p:' + arqE, PASTA + '/telas/' + arqE, 'image/jpeg') : textura('p:' + arqE, palhaLimpa(CDN + 'palhas-v2/' + arqE), 'image/png')) : nada
   ]);
   if (minha !== vez) return;
   const m = mat('madeira'), t = mat('tecido'), p = mat('palha');
@@ -764,11 +791,11 @@ async function trocaModelo() {
 }
 const boxM = $('madeiras'), boxE = $('encostos'), boxT = $('tecidos'), boxV = $('vistas'), boxX = $('metais'), boxZ = $('tamanhos');
 function montaInterface() {
-  if (EH_KF) KF.madeiras.forEach(([nome, cor], i) => pilula(boxM, nome, cor, i === estado.m, () => { estado.m = i; aplica(); }, i));
+  if (EH_KF) MADS.forEach(([nome, cor], i) => pilula(boxM, nome, cor, i === estado.m, () => { estado.m = i; aplica(); }, i));
   else MADEIRAS.forEach(([nome, arq], i) => boxM.appendChild(amostra(nome, CDN + 'madeiras-v2/' + arq, i === estado.m, () => estado.m = i, boxM, i)));
   PALHAS.forEach(([nome, arq, mini], i) => {
     const b = document.createElement('button'); b.className = 'pilula'; b.type = 'button'; b.dataset.k = i; b.setAttribute('aria-pressed', i === estado.e ? 'true' : 'false');
-    const bola = document.createElement('i'); bola.style.backgroundImage = `url("${LOJA}${mini}?ims=fit-in/96x96")`;
+    const bola = document.createElement('i'); bola.style.backgroundImage = EH_VND ? `url("${PASTA}/telas/${arq}")` : `url("${LOJA}${mini}?ims=fit-in/96x96")`; if (EH_VND) bola.style.backgroundSize = '200%';
     b.append(bola, nome.replace(/ PN\d+$/, ''));
     b.addEventListener('click', () => { marca(boxE, b); estado.e = i; aplica(); });
     boxE.appendChild(b);
@@ -779,15 +806,16 @@ function montaInterface() {
     codigos.forEach(c => linha.appendChild(amostra(CAT.nome(c), CAT.mini(c) || CAT.cor(c), c === estado.t, () => estado.t = c, boxT, c)));
   });
   METAIS.forEach(([nome, cor], i) => pilula(boxX, nome, cor, i === estado.x, () => { estado.x = i; aplica(); }, i));
-  TAMANHOS.forEach((cm, i) => pilula(boxZ, cm + ' cm', null, i === estado.z, () => { estado.z = i; aplica(); trocaModelo(); }, i));
+  TAMANHOS.forEach((cm, i) => pilula(boxZ, TAM_NOMES ? TAM_NOMES[i] : cm + ' cm', null, i === estado.z, () => { estado.z = i; aplica(); trocaModelo(); }, i));
 }
 function ajustaGrupos() {   // só aparecem os grupos de opção que este produto tem
   boxM.closest('.grupo').hidden = !tem('madeira') || (EH_KF && MADS.length < 2); /* marca sem escolha de madeira: grupo some */ boxE.closest('.grupo').hidden = !tem('palha'); boxT.closest('.grupo').hidden = !tem('tecido');
   $('g-metal').hidden = !(METAIS.length && tem('metal')); $('g-tamanho').hidden = !TAMANHOS.length;
-  if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = 'Tecido ';
-  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && 'a palha', tem('tecido') && (EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
+  if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = P.tituloTecido || 'Tecido ';
+  if (EH_VND) boxE.closest('.grupo').querySelector('h2').firstChild.textContent = 'Tela ';
+  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && (EH_VND ? 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
   const lista = itens.length > 1 ? itens.slice(0, -1).join(', ') + ' e ' + itens.at(-1) : itens[0] || 'as opções';
-  const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : 'a cadeira';
+  const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : /^cama/i.test(P.nome) ? 'a cama' : /^recamier/i.test(P.nome) ? 'o recamier' : 'a cadeira';
   document.querySelector('.texto').textContent = `Escolha ${lista} e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar ${peca} na sua sala.`;
 }
 
@@ -806,13 +834,14 @@ if (EMBED) {
     const e = PALHAS.findIndex(x => x[0] === d.tela); if (e >= 0) estado.e = e;
     const c = CAT.deSite(d.acabamento); if (CAT.valido(c)) estado.t = c;
     const x = METAIS.findIndex(q => q[0] === d.metal); if (x >= 0) estado.x = x;
-    const z = TAMANHOS.indexOf(parseInt(d.tamanho, 10)); if (z >= 0 && z !== estado.z) { estado.z = z; trocaModelo(); }
+    let z = TAMANHOS.indexOf(parseInt(d.tamanho, 10)); if (z < 0 && TAM_NOMES) z = TAM_NOMES.findIndex(n => [].concat(d.cartoes || [], d.tamanho).includes(n)); if (z >= 0 && z !== estado.z) { estado.z = z; trocaModelo(); }
     marcaTudo(); aplica();
   });
   $('usar').addEventListener('click', () => parent.postMessage({
     sfc3d: 'usar', madeira: MADS[estado.m][0], tela: tem('palha') ? PALHAS[estado.e][0] : '',
-    acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: tem('tecido') ? CAT.linha(estado.t) : '',
-    metal: METAIS.length ? METAIS[estado.x][0] : '', tamanho: TAMANHOS.length ? TAMANHOS[estado.z] : ''
+    acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: tem('tecido') && !P.semLinha ? CAT.linha(estado.t) : P.linhaTela && tem('palha') ? 'Tela ' + telaTipo() : '',
+    cartoes: [TAM_NOMES && TAM_NOMES[estado.z], P.cartaoTela && tem('palha') && 'Encosto tela ' + telaTipo()].filter(Boolean),
+    metal: METAIS.length ? METAIS[estado.x][0] : '', tamanho: TAM_NOMES ? '' : TAMANHOS.length ? TAMANHOS[estado.z] : ''
   }, '*'));
 }
 
@@ -829,7 +858,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lupa.hidd
 
 $('compartilhar').addEventListener('click', async () => {
   const url = `${location.origin}${location.pathname}?p=${encodeURIComponent(CHAVE)}&m=${estado.m}&e=${estado.e}&t=${encodeURIComponent(estado.t)}&x=${estado.x}&z=${estado.z}`;
-  const texto = [P.nome + ': ' + MADS[estado.m][0], tem('palha') && 'palha ' + PALHAS[estado.e][0], tem('tecido') && CAT.nome(estado.t), METAIS.length && 'metal ' + METAIS[estado.x][0], TAMANHOS.length && TAMANHOS[estado.z] + ' cm'].filter(Boolean).join(', ');
+  const texto = [P.nome + ': ' + MADS[estado.m][0], tem('palha') && 'palha ' + PALHAS[estado.e][0], tem('tecido') && CAT.nome(estado.t), METAIS.length && 'metal ' + METAIS[estado.x][0], TAMANHOS.length && (TAM_NOMES ? TAM_NOMES[estado.z] : TAMANHOS[estado.z] + ' cm')].filter(Boolean).join(', ');
   try {
     if (navigator.share) await navigator.share({ title: P.nome, text: texto, url });
     else { await navigator.clipboard.writeText(url); $('aviso').textContent = 'Link copiado'; setTimeout(() => $('aviso').textContent = '', 2500); }
