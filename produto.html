@@ -185,7 +185,9 @@ const GRUPOS = [
 ];
 const TIPO = { grosso: [3.4, 1.0], medio: [2.7, 1.0], fino: [1.9, 1.0], liso: [0.8, 0.95], couro: [0.8, 0.88],   // opacos em todo o plugin (pedido de Matheus, 12/11/2026)
   // KF: couro e camurça opacos e suaves (Matheus achou o produto espelhado demais em 12/11/2026)
-  camurca: [0.7, 1.0], couroFosco: [0.75, 0.88] };
+  camurca: [0.7, 1.0], couroFosco: [0.75, 0.88],
+  // bouclé KF: terceiro valor = relevo de volume [raio px, força] para as bolinhas aparecerem em 3D
+  boucle: [2.2, 1.0, [5, 26]], linhoKF: [2.4, 1.0, [3, 9]] };
 const TIPO_DE = {};
 [502,503,504,505,507,530,538,540,541].forEach(c => TIPO_DE[c] = 'grosso');
 [501,539,542,543].forEach(c => TIPO_DE[c] = 'medio');
@@ -449,16 +451,33 @@ async function prepararModelo(largura) {
 
 /* ---------- 2. Texturas ---------- */
 const carregaImg = url => new Promise((ok, erro) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => ok(i); i.onerror = erro; i.src = url; });
-async function relevoDe(url, forca, W, H) {
+// forca: relevo do grão fino. volume (opcional) = [raio em px, força]: relevo extra na escala dos nós do tecido
+// (as "bolinhas" do bouclé), tirado da foto suavizada, para a luz desenhar cada nó em 3D.
+async function relevoDe(url, forca, W, H, volume) {
   const img = await carregaImg(url);
   const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d', { willReadFrequently: true });
   x.drawImage(img, 0, 0, W, H);
   const d = x.getImageData(0, 0, W, H).data, h = new Float32Array(W * H);
   for (let p = 0; p < W * H; p++) h[p] = (d[p * 4] * 0.299 + d[p * 4 + 1] * 0.587 + d[p * 4 + 2] * 0.114) / 255;
+  let g = null, fv = 0;
+  if (volume) {   // média móvel (duas passadas em cada direção, com volta nas bordas para não criar emenda)
+    const R = volume[0]; fv = volume[1]; g = h.slice(); const tmp = new Float32Array(W * H), n = 2 * R + 1;
+    for (let passo = 0; passo < 2; passo++) {
+      for (let py = 0; py < H; py++) { let s = 0; for (let k = -R; k <= R; k++) s += g[py * W + (k + W) % W];
+        for (let px = 0; px < W; px++) { tmp[py * W + px] = s / n; s += g[py * W + (px + R + 1) % W] - g[py * W + (px - R + W) % W]; } }
+      for (let px = 0; px < W; px++) { let s = 0; for (let k = -R; k <= R; k++) s += tmp[((k + H) % H) * W + px];
+        for (let py = 0; py < H; py++) { g[py * W + px] = s / n; s += tmp[((py + R + 1) % H) * W + px] - tmp[((py - R + H) % H) * W + px]; } }
+    }
+    // fotos de pouco contraste (tecidos claros) davam relevo fraco: a força é corrigida pelo contraste da própria foto
+    let m = 0, v = 0; for (let i = 0; i < g.length; i++) m += g[i]; m /= g.length;
+    for (let i = 0; i < g.length; i++) v += (g[i] - m) * (g[i] - m);
+    const desvio = Math.sqrt(v / g.length); fv *= Math.min(4, Math.max(0.6, 0.05 / Math.max(desvio, 1e-4)));
+  }
   const out = x.createImageData(W, H);
   for (let py = 0; py < H; py++) { const ya = ((py - 1 + H) % H) * W, yb = ((py + 1) % H) * W, y0 = py * W;
     for (let px = 0; px < W; px++) {
-      const dx = (h[y0 + (px + 1) % W] - h[y0 + (px - 1 + W) % W]) * forca, dy = (h[yb + px] - h[ya + px]) * forca;
+      let dx = (h[y0 + (px + 1) % W] - h[y0 + (px - 1 + W) % W]) * forca, dy = (h[yb + px] - h[ya + px]) * forca;
+      if (g) { dx += (g[y0 + (px + 1) % W] - g[y0 + (px - 1 + W) % W]) * fv; dy += (g[yb + px] - g[ya + px]) * fv; }
       const inv = 1 / Math.hypot(dx, dy, 1), o = (y0 + px) * 4;
       out.data[o] = (-dx * inv * 0.5 + 0.5) * 255; out.data[o + 1] = (dy * inv * 0.5 + 0.5) * 255; out.data[o + 2] = (inv * 0.5 + 0.5) * 255; out.data[o + 3] = 255;
     } }
@@ -506,7 +525,7 @@ const tem = papel => papeis.has(papel);
 // Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
 const EH_KF = !!P && P.marca === 'kf';
 const codKF = v => (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
-const TIPO_KF = { 'Bouclé': 'grosso', 'Linho': 'medio', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
+const TIPO_KF = { 'Bouclé': 'boucle', 'Linho': 'linhoKF', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
 const CAT = EH_KF ? {
   grupos: KF.linhas, tile: KF.tile, valido: k => KF.linhas.some(([, v]) => v.includes(k)),
   nome: k => k, url: k => codKF(k) ? `kf/tecidos/${codKF(k)}.jpg?v=2` : null, mini: k => { const i = KF.mini.ordem.indexOf(codKF(k)); return i < 0 ? null : { folha: KF.mini.arquivo + '?v=2', col: i % KF.mini.colunas, lin: Math.floor(i / KF.mini.colunas), cols: KF.mini.colunas, lins: KF.mini.linhas }; },
@@ -539,11 +558,11 @@ async function aplica() {
     $('b-linha').textContent = l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[l] || Object.values(precos)[0])) || '';
   }
   if (!pronto || !mv.model || DEBUG) return;
-  const urlM = CDN + 'madeiras-v2/' + arqM, [forca, rough] = TIPO[CAT.tipo(estado.t)];
+  const urlM = CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
   const nada = Promise.resolve(null), comTextura = tem('tecido') && urlT;
   const [mc, mn, tc, tn, pc] = await Promise.all([
     tem('madeira') ? textura('mc:' + arqM, urlM, 'image/jpeg') : nada, tem('madeira') ? textura('mn:' + arqM, relevoDe(urlM, 1.7, 512, 1024), 'image/jpeg') : nada,
-    comTextura ? textura('tc:' + estado.t, urlT, 'image/jpeg', CAT.escala(estado.t)) : nada, comTextura ? textura('tn:' + estado.t, relevoDe(urlT, forca, 1024, 1024), 'image/jpeg', CAT.escala(estado.t)) : nada,
+    comTextura ? textura('tc:' + estado.t, urlT, 'image/jpeg', CAT.escala(estado.t)) : nada, comTextura ? textura('tn:' + estado.t, relevoDe(urlT, forca, 1024, 1024, volume), 'image/jpeg', CAT.escala(estado.t)) : nada,
     tem('palha') ? textura('p:' + arqE, palhaLimpa(CDN + 'palhas-v2/' + arqE), 'image/png') : nada
   ]);
   if (minha !== vez) return;
