@@ -425,6 +425,24 @@ function espelha(geo, corte, zMax) {
   return [faz(P3, N3), faz(Q3, M3)];   // o módulo e a sua cópia espelhada, como peças separadas
 }
 
+// Sofá modular montado a partir de outro: tira um módulo (faixa [xa, xb] some e o resto encosta) ou repete um módulo
+// (a faixa é copiada ao lado e o resto se afasta). Peça solta inteira dentro da faixa sai ou é copiada; estrutura
+// que atravessa a faixa (base, encosto corrido) é encolhida ou esticada só nesse trecho.
+function recompoe(geo, op) {
+  const [xa, xb] = op.tira || op.repete, w = xb - xa, tira = !!op.tira, an = analisa(geo), pos = geo.attributes.position, nor = geo.attributes.normal, P3 = [], N3 = [];
+  const poe = (k, x) => { P3.push(x, pos.getY(k), pos.getZ(k)); if (nor) N3.push(nor.getX(k), nor.getY(k), nor.getZ(k)); };
+  const mapa = x => x <= xa ? x : x >= xb ? (tira ? x - w : x + w) : (tira ? xa : xa + (x - xa) * 2);
+  for (let t = 0; t < an.nt; t++) {
+    const cx = an.caixas.get(an.raiz(t)), v = [an.idx[t * 3], an.idx[t * 3 + 1], an.idx[t * 3 + 2]];
+    const dentro = cx && cx.centro[0] > xa && cx.centro[0] < xb && cx.tam[0] <= w * 1.15;
+    if (dentro) { if (tira) continue; for (const k of v) poe(k, pos.getX(k)); for (const k of v) poe(k, pos.getX(k) + w); }
+    else for (const k of v) poe(k, mapa(pos.getX(k)));
+  }
+  if (!P3.length) return null;
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(P3, 3));
+  if (nor) g.setAttribute('normal', new THREE.Float32BufferAttribute(N3, 3)); else g.computeVertexNormals();
+  g.computeBoundingBox(); return g;
+}
 // Almofada solta (largura × altura × espessura), de pé no plano XY: duas faces abauladas que se fecham na costura,
 // com as pontas dos cantos levemente esticadas como numa almofada de verdade.
 function almofada(W, H, T, N = 22) {
@@ -473,6 +491,11 @@ async function prepararModelo(largura) {
   const cx = new THREE.Box3(); pecas.forEach(p => { p.geo.computeBoundingBox(); cx.union(p.geo.boundingBox); });
   const dx = -(cx.min.x + cx.max.x) / 2, dy = -cx.min.y, dz = -(cx.min.z + cx.max.z) / 2;
   pecas.forEach(p => { p.geo.translate(dx, dy, dz); p.geo.computeBoundingBox(); });
+  if (P.recompoe) for (const op of [].concat(P.recompoe)) {
+    const ficam = []; for (const p of pecas) { const g = recompoe(p.geo, op); if (g) { p.geo = g; ficam.push(p); } }
+    pecas.length = 0; pecas.push(...ficam);
+    const c3 = new THREE.Box3(); pecas.forEach(p => c3.union(p.geo.boundingBox)); const d3 = -(c3.min.x + c3.max.x) / 2; pecas.forEach(p => { p.geo.translate(d3, 0, 0); p.geo.computeBoundingBox(); });
+  }
   // almofada que no bloco é uma peça só e na peça real são várias (assento inteiro × dois assentos): vira n almofadas
   // iguais, lado a lado, cada uma com as bordas arredondadas da original
   if (P.divide) {
