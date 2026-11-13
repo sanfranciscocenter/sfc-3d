@@ -38,7 +38,7 @@ export const VND = {
     laca: { linha: 'Laca', sel: 'Escolha a laca (VND):' }
   },
   // tela: [nome igual à opção do site, textura]
-  telas: [['Sintética sextavada creme', 'sintetica-sextavada-creme.jpg'], ['Sintética quadriculada creme', 'sintetica-quadriculada-creme.jpg'], ['Natural Vanilla', 'natural-vanilla.jpg'], ['Natural Cappuccino', 'natural-cappuccino.jpg']],
+  telas: [['Sintética sextavada creme', 'sintetica-sextavada-creme.png'], ['Sintética quadriculada creme', 'sintetica-quadriculada-creme.png'], ['Natural Vanilla', 'natural-vanilla.png'], ['Natural Cappuccino', 'natural-cappuccino.png']],
   // metal: [nome igual à opção de "Escolha a cor do metal (VND):", cor]
   metais: [['Preto', '#232323'], ['Dourado', '#B08D4C'], ['Champagne', '#C7B08A'], ['Pérola', '#D9D3C6']]
 };
