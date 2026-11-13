@@ -160,6 +160,7 @@ import { PRODUTOS } from './alma/produtos.js';
 import { KF as KF0 } from './kf/catalogo.js';
 import { SER } from './ser/catalogo.js';
 import { BUR } from './bur/catalogo.js';
+import { IPE } from './ipe/catalogo.js';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d@main/pivot/';
 const LOJA = 'https://sanfranciscocenter.cdn.magazord.com.br/img/';
@@ -465,7 +466,7 @@ async function prepararModelo(largura) {
     if (P.escala) g.scale(P.escala, P.escala, P.escala);   // bloco que veio na unidade errada
     if (o.matrixWorld.determinant() < 0 && g.index) { const a = g.index.array; for (let i = 0; i < a.length; i += 3) { const t = a[i]; a[i] = a[i + 2]; a[i + 2] = t; } }
     const fora = largura && P.ocultaEm && (P.ocultaEm[Math.round(largura * 100)] || []).includes('#' + n);   // peça que não existe neste tamanho
-    if (fora || P.partes['#' + n] === 'oculto') { n++; return; }   // peça oculta não entra nem na centralização
+    if (fora || (P.partes['#' + n] || P.partes[mats[0]?.name || '']) === 'oculto') { n++; return; }   // peça oculta não entra nem na centralização
     pecas.push({ i: n++, geo: g, nomeMat: mats[0]?.name || '', original: mats[0] });
   });
   // centraliza no chão
@@ -655,8 +656,8 @@ const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
 const tem = papel => papeis.has(papel);
 
 // Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
-const EH_KF = !!P && ['kf', 'ser', 'bur'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
-const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : KF0, PASTA = KF.pasta || 'kf';
+const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
+const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : KF0, PASTA = KF.pasta || 'kf';
 const codKF = v => KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
 const TIPO_KF = { 'Bouclé': 'boucle', 'Linho': 'linhoKF', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
 const CAT = EH_KF ? {

@@ -68,6 +68,9 @@
     // Buriti: poltronas, pufes e chaise — só tecido/couro (uma personalização), linhas de preço na derivação 208
     ...Object.fromEntries([['poltrona-giratoria-omen', 'poltrona-olden'], ['poltrona-amora', 'poltrona-aurora'], ['poltrona-lauren', 'poltrona-lauren'], ['poltrona-vicenzo', 'poltrona-vicenzo'], ['poltrona-zoe', 'poltrona-zoe'], ['chaise-luna', 'chaise-luna'], ['pufe-luna-chaise', 'pufe-luna-chaise'], ['poltrona-melissa', 'poltrona-melissa'], ['poltrona-lucy', 'poltrona-lucy'], ['pufe-olden', 'pufe-olden'], ['poltrona-luna-antigo', 'poltrona-luna'], ['poltrona-donatella', 'poltrona-donatella'], ['poltrona-costela', 'poltrona-costela'], ['pufe-costela', 'pufe-costela'], ['poltrona-mirela', 'poltrona-mirela'], ['poltrona-bela', 'poltrona-bela'], ['pufe-zoe', 'pufe-zoe'], ['pufe-albany', 'pufe-albany'], ['pufe-target', 'pufe-target'], ['recamier-target', 'recamier-target'], ['pufe-paleta', 'pufe-paleta']]
       .map(([url, chave]) => ['/' + url, { pagina: 'produto.html', params: 'p=bur-' + chave, derivacao: 208, sel: { acabamento: 'Escolha o tecido: (BUR)' } }])),
+    // Ateliê Ipê: tecido + cor da madeira, linhas de preço na derivação 208
+    ...Object.fromEntries(['cadeira-calice', 'cadeira-folhagem', 'poltrona-bruma', 'poltrona-talhe']
+      .map(u => ['/' + u, { pagina: 'produto.html', params: 'p=ipe-' + u, derivacao: 208, sel: { acabamento: 'Escolha o tecido (IPE):', madeira: 'Escolha a cor da madeira (IPE):' } }])),
     // Share: tecido + madeira, três linhas de preço (derivação 208), sem tamanhos
     '/cadeira-tainhas': { pagina: 'produto.html', params: 'p=ser-cadeira-tainhas', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/cadeira-bento': { pagina: 'produto.html', params: 'p=ser-cadeira-bento', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
