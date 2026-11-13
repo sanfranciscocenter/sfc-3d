@@ -95,6 +95,32 @@
         ['cama-teroldego', { cartoes: true, sel: { madeira: J } }]
       ].map(([u, c]) => ['/' + u, { pagina: 'produto.html', params: 'p=vnd-' + u, ...c }]);
     })()),
+    // Vindima, fase 2 (mesas, aparadores, cômodas, luminárias…): L = móvel em lâmina (a madeira é um cartão e cada madeira tem
+    // a sua personalização de cor; o 3D manda o nome da personalização), J/M = madeira maciça, X = metal, TL = tela
+    ...Object.fromEntries((() => {
+      const J = 'Escolha o acabamento do jequitibá (VND):', M = 'Escolha o acabamento da madeira (VND):', X = 'Escolha a cor do metal (VND):', TL = 'Escolha a tela (VND):', L = 'Escolha a cor da lâmina de cinamomo (VND):';
+      const lam = 'mesa-auxiliar-glera aparador-sagrantino mesa-auxiliar-fiano aparador-pecorino mesa-de-centro-zinfandel mesa-de-centro-tempranillo mesa-auxiliar-tempranillo mesa-de-cabeceira-alvarinho mesa-auxiliar-semillon mesa-auxiliar-lambrusco mesa-de-centro-pinot-com-tampo-de-espelho mesa-auxiliar-pinot mesa-de-cabeceira-marselan comoda-marselan'.split(' ').map(u => [u, { cartoes: true, sel: { madeira: L, metal: X } }]);
+      const lamSemMetal = 'mesa-de-jantar-gamay-com-tampo-macico mesa-de-jantar-gamay-com-tampo-laminado mesa-de-centro-sangiovese mesa-de-jantar-moscato espelho-greco comoda-tannat'.split(' ').map(u => [u, { cartoes: true, sel: { madeira: L } }]);
+      const jeq = 'escrivaninha-albarino mesa-de-cabeceira-saperavi comoda-saperavi cristaleira-kerner mesa-de-cabeceira-viognier mesa-de-cabeceira-verdicchio comoda-verdicchio mesa-de-cabeceira-mencia'.split(' ').map(u => [u, { sel: { madeira: J } }]);
+      const mad = 'luminaria-de-chao-bonarda estante-chardonnay cabideiro-ciliegiolo cabideiro-monastrell'.split(' ').map(u => [u, { sel: { madeira: M } }]);
+      return [...lam, ...lamSemMetal, ...jeq, ...mad,
+        ['mesa-auxiliar-cesanese', { cartoes: true, sel: { acabamento: 'Escolha o couro (VND):', madeira: L, metal: X } }],
+        ['mesa-de-centro-corvina', { sel: { madeira: M } }],
+        ['mesa-de-centro-negroamaro', { sel: { madeira: J, metal: X } }],
+        ['buffet-bual', { sel: { madeira: J, metal: X } }],
+        ['aparador-parellada', { sel: { madeira: M, metal: X } }],
+        ['aparador-sercial', { sel: { madeira: M, metal: X } }],
+        ['mesa-de-jogos-nerello', { sel: { madeira: J, acabamento: 'Escolha a cor do feltro (VND):' } }],
+        ['estante-freisa', { cartoes: true, sel: { madeira: J } }],
+        // com tela: a linha de preço (derivação 208) é o tipo de tela
+        ['mesa-de-cabeceira-riesling', { derivacao: 208, cartoes: true, sel: { tela: TL, madeira: J } }],
+        ['luminaria-de-chao-zweigelt', { derivacao: 208, cartoes: true, sel: { tela: TL, madeira: M } }],
+        ['luminaria-de-chao-furmint', { derivacao: 208, cartoes: true, sel: { tela: TL, madeira: M } }],
+        ['mesa-de-centro-chenin', { derivacao: 208, cartoes: true, sel: { tela: TL, madeira: J } }],
+        ['mesa-auxiliar-carmenere', { derivacao: 208, cartoes: true, sel: { tela: TL, madeira: J } }],
+        ['buffet-moscato', { derivacao: 208, cartoes: true, sel: { tela: TL, madeira: L } }]
+      ].map(([u, c]) => ['/' + u, { pagina: 'produto.html', params: 'p=vnd-' + u, ...c }]);
+    })()),
     // Share: tecido + madeira, três linhas de preço (derivação 208), sem tamanhos    '/cadeira-tainhas': { pagina: 'produto.html', params: 'p=ser-cadeira-tainhas', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/cadeira-bento': { pagina: 'produto.html', params: 'p=ser-cadeira-bento', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/poltrona-canela': { pagina: 'produto.html', params: 'p=ser-poltrona-canela', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
@@ -191,14 +217,15 @@
     return false;
   }
   // cartões com nome (tamanho de cama, tipo de encosto): os marcados na página e a troca por nome
-  const cartoesAtuais = () => [...document.querySelectorAll('.sfc-tamc.is-on')].map(c => c.dataset.tam);
+  const nomeCartao = c => c.dataset.tam || c.dataset.linha, todosCartoes = () => [...document.querySelectorAll('.sfc-linha, .sfc-tamc')];   // linha antes: trocá-la desmarca o tamanho
+  const cartoesAtuais = () => todosCartoes().filter(c => c.classList.contains('is-on')).map(nomeCartao);
   async function trocaCartoes(nomes) {
     if (!cfg.cartoes || !nomes || !nomes.length) return true; let ok = true;
     for (const nome of nomes) {
-      const c = [...document.querySelectorAll('.sfc-tamc')].find(b => b.dataset.tam === nome); if (!c) { ok = false; continue; }
+      const c = todosCartoes().find(b => nomeCartao(b) === nome); if (!c) { ok = false; continue; }
       if (c.classList.contains('is-on')) continue;
       c.click(); let feito = false;
-      for (let i = 0; i < 25 && !feito; i++) { await zz(200); feito = !![...document.querySelectorAll('.sfc-tamc.is-on')].find(b => b.dataset.tam === nome); }
+      for (let i = 0; i < 25 && !feito; i++) { await zz(200); feito = cartoesAtuais().includes(nome); }
       if (feito) await zz(500); else ok = false;
     }
     return ok;
@@ -206,7 +233,7 @@
   // a personalização que guarda o acabamento depende da linha: couro e tela têm lista própria em alguns anúncios
   const selAcab = linha => linha === 'Couro legítimo' && cfg.sel.couro ? cfg.sel.couro : /^Tela/.test(linha || '') && cfg.sel.telaLinha ? cfg.sel.telaLinha : cfg.sel.acabamento;
   const estadoDaPagina = () => ({
-    sfc3d: 'estado', precos: precosPorLinha(), cartoes: cfg.cartoes ? cartoesAtuais() : [],
+    sfc3d: 'estado', precos: precosPorLinha(), cartoes: cfg.cartoes ? cartoesAtuais() : [], todos: Object.fromEntries([...document.querySelectorAll('select.select-personaliza')].map(s => [s.name, s.value])),
     madeira: (cfg.sel.madeira && sel(cfg.sel.madeira)?.value) || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: (cfg.sel.acabamento && sel(selAcab(linhaAtual()))?.value) || '',
     metal: (cfg.sel.metal && sel(cfg.sel.metal)?.value) || '', tamanho: tamanhoAtual()
   });
@@ -284,7 +311,7 @@
       if (okLinha && okTam && (!d.linha || linhaAtual() === d.linha)) break;
     }
     // só as personalizações que este anúncio tem (o estofado não tem tela)
-    const pares = ['acabamento', 'tela', 'madeira', 'metal'].filter(k => cfg.sel[k]).map(k => [k === 'acabamento' ? selAcab(d.linha) : cfg.sel[k], d[k]]);
+    const pares = ['acabamento', 'tela', 'madeira', 'metal'].filter(k => cfg.sel[k] && d[k]).map(k => [k === 'acabamento' ? selAcab(d.linha) : k === 'madeira' && d.selMadeira ? d.selMadeira : cfg.sel[k], d[k]]);
     let ok = 0;
     for (let tentativa = 0; tentativa < 3 && ok < pares.length; tentativa++) {
       ok = pares.filter(([n, v]) => grava(n, v)).length;
