@@ -23,6 +23,11 @@ const CMB_SOFA = [150, 180, 210, 230, 260, 280, 300];
 const IPE_BASE = { '*': 'tecido', 'Acabamento champagne': 'madeira', 'Acabamento champagne 1': 'madeira', 'Nogueira': 'madeira', '*1': 'madeira', '*2': 'madeira', 'Material-4': 'oculto', 'Material-6': 'oculto', 'Material-8': 'oculto' };
 // Buriti, sofás: [expressão do nome do material, papel]; o que não casar é tecido
 const BUR_REGRAS = [[/iron|glass|acrylic|black|roda|metal.?standard|mat_padrao|^p.{1,3}s$|anod/i, 'preto'], [/wenge|cherry|walnut|leather pull up/i, 'madeira'], [/alumin|chrome/i, 'metal']];
+// ── Marcobin (marca real). Regras pelos nomes de material dos blocos da fábrica (vários vêm só com o código interno do desenho).
+// O casco de trás das giratórias ("tecido das costas" no site) usa o mesmo tecido do assento no 3D.
+const MCB_R = metal => [[/^$/, 'oculto'], [/madeira|tauari|^acad4fa2c9e$|^acad7301/i, 'madeira'], [/tecido|linho|linha|couro|^acadfb1cf241$/i, 'tecido'], [/^acad(2a8b0ced|fa90ccd9)$/, metal], [/^acad(11917b7a|866a941c)$/, 'palha'], [/cromad|^acad60adb84$/i, 'aco'], [/metal|material #|0\.00/i, 'preto']];
+const MCB_P = (nome, arq, o = {}) => ({ nome, sobre: 'Marcobin', marca: 'mcb', glb: 'mcb/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...MCB_R(o.metal ? 'metal' : 'aco')], partes: { '*': 'madeira', ...(o.partes || {}) } });
+const MCB_T = re => ({ mais: [[re, 'tecido']] });   // bloco sem nome de material: o que casar com a expressão é o estofado
 export const PRODUTOS = {
   // KF Mobiliário (T-118): catálogo próprio em kf/catalogo.js. Piloto: Sofá Portos.
   // O bloco "KF - Sofá Alva" da Warehouse NÃO é o do anúncio (Matheus, 12/11/2026) — não usar.
@@ -256,6 +261,8 @@ export const PRODUTOS = {
   'bur-sofa-antares-super-modulo': { nome: 'Sofá Retrátil Antares Super Módulo', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-antares.glb', texMadeira: 'kf/madeiras/imbuia.jpg', inverteX: true, partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [210,230,250,270,290], tamanhoBloco: 290, estica: { base: 2.9, braco: 0.25, rigido: 0.5, porMalha: true } },
   'bur-sofa-austin-2-modulos': { nome: 'Sofá Retrátil Austin 2 Módulos', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-austin.glb', texMadeira: 'kf/madeiras/imbuia.jpg', inverteX: true, partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [190,210,230,250,270,290], tamanhoBloco: 290, estica: { base: 2.9, braco: 0.25, rigido: 0.5, porMalha: true } },
   'bur-sofa-valentina-2-modulos': { nome: 'Sofá Retrátil Valentina 2 Módulos', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-valentina.glb', texMadeira: 'kf/madeiras/imbuia.jpg', inverteX: true, partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [210,230,250,270,290], tamanhoBloco: 290, estica: { base: 2.9, braco: 0.25, rigido: 0.5, porMalha: true } },
+  // Cama Belluno: três tamanhos (colchão de 138, 158 e 193 cm) lado a lado no arquivo, nas medidas do desenho técnico da fábrica
+  'bur-cama-belluno': { nome: 'Cama Belluno', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/cama-belluno.glb', partes: { '*': 'tecido', 'Colchao': 'branco', 'Pe': 'preto' }, tamanhos: [138, 158, 193], tamanhoNomes: ['Para colchão de 138 cm', 'Para colchão de 158 cm', 'Para colchão de 193 cm'], tamanhoBloco: 158, recortaTam: { 138: { x: [-5.5, -2.5] }, 158: { x: [-1.5, 1.5] }, 193: { x: [2.5, 5.5] } } },
   'bur-sofa-duomo-3-modulos': { nome: 'Sofá Retrátil Duomo 3 Módulos', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-duomo.glb', escala: 0.01, texMadeira: 'kf/madeiras/imbuia.jpg', inverteX: true, partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [296,326,356,386,416], tamanhoBloco: 416, estica: { base: 4.21, braco: 0.25, rigido: 0.5, porMalha: true } },
   'bur-sofa-cartago-3-modulos': { nome: 'Sofá Retrátil Cartago 3 Módulos', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-cartago.glb', texMadeira: 'kf/madeiras/imbuia.jpg', inverteX: true, partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [296,326,356,386,416], tamanhoBloco: 416, estica: { base: 4.3, braco: 0.25, rigido: 0.5, porMalha: true } },
   'bur-sofa-madri-3-modulos': { nome: 'Sofá Retrátil Madri 3 Módulos', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-madri.glb', texMadeira: 'kf/madeiras/imbuia.jpg', partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [260,290,320,350,380,410], tamanhoBloco: 410, estica: { base: 4.1, braco: 0.25, rigido: 0.5, porMalha: true } },
@@ -381,5 +388,38 @@ export const PRODUTOS = {
     vivo: ['#4'],  // cordão de acabamento em volta da palha do encosto (não existe no bloco)
     // Correção do bloco: o encosto veio em arco; na peça real é um retângulo de cantos arredondados, um pouco mais largo em cima
     encostoReto: { pecas: ['#0', '#4'], yBase: 0.45, y0: 0.66, topo: 0.785, a: 0.203, n: 4.5, abre: 0.05 }
-  }
+  },
+  // Marcobin — chave = endereço do anúncio sem o "-marcobin"
+  'mcb-banqueta-bosque': MCB_P('Banqueta Bosque', 'banqueta-bosque', MCB_T(/^8207a903/)),
+  'mcb-cadeira-bosque': MCB_P('Cadeira Bosque', 'cadeira-bosque', MCB_T(/^8207a903/)),
+  'mcb-banqueta-moara-encosto-estofado': MCB_P('Banqueta Moara', 'banqueta-moara'),
+  'mcb-cadeira-moara-encosto-estofado': MCB_P('Cadeira Moara', 'cadeira-moara'),
+  'mcb-banqueta-natura-estofada': MCB_P('Banqueta Natura Estofada', 'banqueta-natura-estofada', { metal: true, giraY: 180 }),
+  'mcb-cadeira-natura-estofada': MCB_P('Cadeira Natura Estofada', 'cadeira-natura-estofada', { metal: true, giraY: 180 }),
+  'mcb-banqueta-natura-palha': MCB_P('Banqueta Natura Palha', 'banqueta-natura-palha', { metal: true }),
+  'mcb-cadeira-natura-palha': MCB_P('Cadeira Natura Palha', 'cadeira-natura-palha', { metal: true, giraY: 180 }),
+  'mcb-banqueta-nubia-giratoria': MCB_P('Banqueta Nubia Giratória', 'banqueta-nubia', MCB_T(/Material #27/)),
+  'mcb-banqueta-prince-giratoria': MCB_P('Banqueta Prince Giratória', 'banqueta-prince'),
+  'mcb-banqueta-sara-fixa': MCB_P('Banqueta Sara', 'banqueta-sara'),
+  'mcb-banqueta-tria': MCB_P('Banqueta Tria', 'banqueta-tria', MCB_T(/^150d292c/)),
+  'mcb-cadeira-tria': MCB_P('Cadeira Tria', 'cadeira-tria', MCB_T(/^6a1ac119/)),
+  'mcb-cadeira-tria-com-braco': MCB_P('Cadeira Tria com braço', 'cadeira-tria-braco', MCB_T(/^6a1ac119/)),
+  'mcb-cadeira-agata-encosto-estofado': MCB_P('Cadeira Ágata', 'cadeira-agata'),
+  'mcb-cadeira-aida-giratoria': MCB_P('Cadeira Aida Giratória', 'cadeira-aida-giratoria'),
+  'mcb-cadeira-anne-fixa': MCB_P('Cadeira Anne', 'cadeira-anne-fixa'),
+  'mcb-cadeira-anne-giratoria': MCB_P('Cadeira Anne Giratória', 'cadeira-anne-giratoria'),
+  'mcb-cadeira-atenas-com-braco': MCB_P('Cadeira Atenas com braço', 'cadeira-atenas'),
+  'mcb-cadeira-laura-encosto-estofado': MCB_P('Cadeira Laura', 'cadeira-laura'),
+  'mcb-cadeira-laura-com-braco-encosto-estofado': MCB_P('Cadeira Laura com braço', 'cadeira-laura-braco'),
+  'mcb-cadeira-quaddra': MCB_P('Cadeira Quaddra', 'cadeira-quaddra'),
+  'mcb-cadeira-quaddra-com-braco': MCB_P('Cadeira Quaddra com braço', 'cadeira-quaddra-braco'),
+  'mcb-cadeira-sofia-giratoria': MCB_P('Cadeira Sofia Giratória', 'cadeira-sofia'),
+  'mcb-poltrona-galho': MCB_P('Poltrona Galho', 'poltrona-galho', { giraY: 180 }),
+  'mcb-poltrona-oasis': MCB_P('Poltrona Oasis', 'poltrona-oasis', { ...MCB_T(/^x3gpl_default$/), giraY: 180 }),
+  'mcb-poltrona-oca': MCB_P('Poltrona Oca', 'poltrona-oca', MCB_T(/^835c9db6/)),
+  'mcb-puff-oasis': MCB_P('Puff Oasis', 'puff-oasis'),
+  'mcb-bistro-doha-tampo-em-lamina-de-madeira': MCB_P('Bistrô Doha', 'bistro-doha'),
+  'mcb-bistro-doha-tampo-em-vidro': MCB_P('Bistrô Doha tampo em vidro', 'bistro-doha', { separa: { 'Madeira': b => b.min[1] > 0.98 ? 'laca' : 'madeira' } }),
+  'mcb-mesa-de-centro-jaspe': MCB_P('Mesa de Centro Jaspe', 'mesa-centro-jaspe')
+  // fora: Bistrô Flux (3 anúncios) e Mesa Lateral Agave — anúncios sem personalização; blocos reduzidos em outputs/configurador3d-mcb/recebido
 };
