@@ -3,6 +3,8 @@
 // Papéis: madeira | tecido | palha | metal | preto | original | oculto
 // Linha Serra: materiais dos blocos que são madeira (o restante cai em '*' = tecido)
 const SER_MAD = { '*': 'tecido', 'Plywood_01_1K': 'madeira', 'Wood_Veneer': 'madeira', 'Wood_Veneer_15_1K': 'madeira', 'Verniz Jequitibá Natural': 'madeira', '[Wood Cherry Original]': 'madeira' };
+// Buriti: o que não for pé cai em '*' = tecido
+const BUR_BASE = { '*': 'tecido', 'Aluminium Black Anodized Fingerprints': 'preto', 'Aluminium_Black_Anodized': 'preto', 'Acrylic Opaque Black': 'preto', 'metal_standard': 'preto', 'Cherry Semigloss': 'madeira' };
 export const PRODUTOS = {
   // KF Mobiliário (T-118): catálogo próprio em kf/catalogo.js. Piloto: Sofá Portos.
   // O bloco "KF - Sofá Alva" da Warehouse NÃO é o do anúncio (Matheus, 12/11/2026) — não usar.
@@ -77,6 +79,29 @@ export const PRODUTOS = {
   'ser-cadeira-cambara': { nome: 'Cadeira Cambará', sobre: 'Share', marca: 'ser', glb: ['ser/modelos/cambara-1.glb', 'ser/modelos/cambara-2.glb'], partes: { ...SER_MAD } },
   'ser-banqueta-guapore': { nome: 'Banqueta Guaporé', sobre: 'Share', marca: 'ser', glb: 'ser/modelos/banqueta-guapore.glb', partes: { ...SER_MAD } },   // o bloco traz duas banquetas; o arquivo publicado ficou só com a primeira (#0 a #14)
   'ser-cadeira-taquara': { nome: 'Cadeira Taquara', sobre: 'Share', marca: 'ser', glb: 'ser/modelos/taquara.glb', partes: { ...SER_MAD } },
+  // ---------- Buriti: poltronas, pufes e chaise (blocos da Warehouse da fábrica, sem texturas, simplificados e
+  // compactados em meshopt; originais em outputs/configurador3d-buriti/originais). BUR_BASE = materiais dos pés.
+  'bur-poltrona-olden': { nome: 'Poltrona Olden', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/olden.glb', escala: 0.01, partes: { ...BUR_BASE } },
+  'bur-poltrona-aurora': { nome: 'Poltrona Aurora', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/aurora.glb', partes: { ...BUR_BASE } },
+  'bur-poltrona-lauren': { nome: 'Poltrona Lauren', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/lauren.glb', texMadeira: 'kf/madeiras/mel.jpg', partes: { ...BUR_BASE, 'Material #4': 'madeira', 'Material #2': 'madeira', 'Poliigon_FabricLeatherGenuine_9261_2K_CORONA': 'madeira' } },   // estrutura e ripas do encosto em madeira
+  'bur-poltrona-vicenzo': { nome: 'Poltrona Vicenzo', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/vicenzo.glb', giraY: 180, texMadeira: 'kf/madeiras/imbuia.jpg', partes: { ...BUR_BASE, 'Material #4': 'madeira', '#0': 'oculto', '#1': 'oculto', '#2': 'oculto', '#3': 'oculto', '#4': 'oculto', '#5': 'oculto', '#6': 'oculto', '#7': 'oculto', '#8': 'oculto', '#9': 'oculto', '#10': 'oculto', '#11': 'oculto', '#12': 'oculto', '#13': 'oculto' } },   // o bloco traz sofá (#0–#13) e poltrona (#14–#25)
+  'bur-poltrona-zoe': { nome: 'Poltrona Zoe', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/zoe.glb', partes: { ...BUR_BASE } },
+  'bur-chaise-luna': { nome: 'Chaise Luna', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/luna-chaise.glb', partes: { ...BUR_BASE, '#1': 'oculto' } },   // o bloco traz a chaise e o pufe meia-lua (#1)
+  'bur-pufe-luna-chaise': { nome: 'Pufe Luna Chaise', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/luna-chaise.glb', partes: { ...BUR_BASE, '#0': 'oculto', '#2': 'oculto', '#3': 'oculto' } },   // só o pufe meia-lua
+  'bur-poltrona-melissa': { nome: 'Poltrona Melissa', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/melissa.glb', partes: { ...BUR_BASE } },
+  'bur-poltrona-lucy': { nome: 'Poltrona Lucy', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/lucy.glb', partes: { ...BUR_BASE } },
+  'bur-pufe-olden': { nome: 'Pufe Olden', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-olden.glb', partes: { ...BUR_BASE } },
+  'bur-poltrona-luna': { nome: 'Poltrona Luna', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/luna.glb', partes: { ...BUR_BASE } },
+  'bur-poltrona-donatella': { nome: 'Poltrona Donatella', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/donatella.glb', texMadeira: 'kf/madeiras/imbuia.jpg', partes: { ...BUR_BASE, 'Leather Genuine Grey': 'madeira', 'Material #2': 'madeira' } },   // estrutura e tiras do encosto
+  'bur-poltrona-costela': { nome: 'Poltrona Costela', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/costela.glb', giraY: -90, texMadeira: 'kf/madeiras/imbuia.jpg', partes: { ...BUR_BASE, 'Material #207': 'madeira', '#7': 'oculto', '#8': 'oculto', '#9': 'oculto', '#10': 'oculto', '#13': 'oculto', '#30': 'oculto', '#31': 'oculto', '#32': 'oculto', '#33': 'oculto', '#34': 'oculto', '#35': 'oculto', '#36': 'oculto', '#37': 'oculto', '#48': 'oculto', '#16': 'oculto', '#49': 'oculto' } },   // o bloco traz poltrona e pufe; #207 = costelas de madeira
+  'bur-pufe-costela': { nome: 'Pufe Costela', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/costela.glb', texMadeira: 'kf/madeiras/imbuia.jpg', partes: { ...BUR_BASE, 'Material #207': 'madeira', '#0': 'oculto', '#1': 'oculto', '#2': 'oculto', '#3': 'oculto', '#4': 'oculto', '#5': 'oculto', '#6': 'oculto', '#14': 'oculto', '#19': 'oculto', '#11': 'oculto', '#12': 'oculto', '#15': 'oculto', '#17': 'oculto', '#18': 'oculto', '#20': 'oculto', '#21': 'oculto', '#22': 'oculto', '#23': 'oculto', '#24': 'oculto', '#25': 'oculto', '#26': 'oculto', '#27': 'oculto', '#28': 'oculto', '#29': 'oculto', '#38': 'oculto', '#39': 'oculto', '#40': 'oculto', '#41': 'oculto', '#42': 'oculto', '#43': 'oculto', '#44': 'oculto', '#45': 'oculto', '#46': 'oculto', '#47': 'oculto' } },   // só o pufe
+  'bur-poltrona-mirela': { nome: 'Poltrona Mirela', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/mirela.glb', escala: 0.01, texMadeira: 'kf/madeiras/imbuia.jpg', partes: { ...BUR_BASE, '#0': 'madeira', '#2': 'madeira' } },   // #0 estrutura, #2 travessa; #1 almofadas
+  'bur-poltrona-bela': { nome: 'Poltrona Bela', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/bela.glb', escala: 0.01, texMadeira: 'kf/madeiras/mel.jpg', partes: { ...BUR_BASE, 'Material__207': 'madeira' } },   // laterais em madeira clara
+  'bur-pufe-zoe': { nome: 'Pufe Zoe', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-zoe.glb', partes: { ...BUR_BASE } },
+  'bur-pufe-albany': { nome: 'Pufe Albany', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-albany.glb', partes: { ...BUR_BASE } },
+  'bur-pufe-target': { nome: 'Pufe Target', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-target.glb', partes: { ...BUR_BASE, '#0': 'oculto', '#1': 'oculto' } },   // o bloco traz o recamier (#0 #1) e o pufe (#2 #3)
+  'bur-recamier-target': { nome: 'Recamier Target', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-target.glb', partes: { ...BUR_BASE, '#2': 'oculto', '#3': 'oculto' } },
+  'bur-pufe-paleta': { nome: 'Pufe Paleta', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-paleta.glb', partes: { ...BUR_BASE } },
   'kf-jades-sofa': { nome: 'Sofá Jades', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/jades-sofa.glb',
     // Bloco "KF - Sofá Jades" (b487174c…): traz um módulo com braço + um módulo chaise. O anúncio é o sofá reto de
     // 2 módulos com braço: fica só o módulo com braço (x < 0,30 m), repetido espelhado do outro lado (Matheus, 13/11/2026).
