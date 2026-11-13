@@ -570,6 +570,8 @@ async function aplica() {
   const m = mat('madeira'), t = mat('tecido'), p = mat('palha');
   if (m && mc) { m.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); m.pbrMetallicRoughness.baseColorTexture.setTexture(mc); m.normalTexture.setTexture(mn); m.pbrMetallicRoughness.setRoughnessFactor(roughM); }
   if (t && tc) { t.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); t.pbrMetallicRoughness.baseColorTexture.setTexture(tc); t.normalTexture.setTexture(tn); t.pbrMetallicRoughness.setRoughnessFactor(rough); }
+  // escala própria do couro: tem de ser aplicada DEPOIS de pôr a textura no material (antes disso o visualizador descarta)
+  if (t && tc) { const e = CAT.escala(estado.t); for (const info of [t.pbrMetallicRoughness.baseColorTexture, t.normalTexture]) { const s = info && info.texture && info.texture.sampler; if (s && s.setScale) s.setScale({ u: e, v: e }); } }
   if (t && corT) { t.pbrMetallicRoughness.baseColorTexture.setTexture(null); t.normalTexture.setTexture(null); t.pbrMetallicRoughness.setBaseColorFactor(corT); t.pbrMetallicRoughness.setRoughnessFactor(rough); }
   const mt = mat('metal'); if (mt && METAIS.length) { mt.pbrMetallicRoughness.setBaseColorFactor(METAIS[estado.x][1]); mt.pbrMetallicRoughness.setMetallicFactor(0.55); mt.pbrMetallicRoughness.setRoughnessFactor(0.45); }
   if (p && pc) { p.pbrMetallicRoughness.baseColorTexture.setTexture(pc); p.setAlphaMode('MASK'); p.setAlphaCutoff(0.5); p.setDoubleSided(true); }
