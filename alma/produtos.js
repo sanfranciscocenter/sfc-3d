@@ -11,6 +11,43 @@ export const PRODUTOS = {
     // SEM anúncio no site em 13/11/2026. O bloco divide as faces de cada peça em duas malhas (parecem duplicadas, mas
     // são metades complementares): usar todas. #2 a #5 = pés; o resto é estofado
     partes: { 'default_face_material': 'tecido', '#2': 'madeira', '#3': 'madeira', '#4': 'madeira', '#5': 'madeira' } },
+  'kf-moss-chaise': { nome: 'Sofá Moss com Chaise Curva', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/moss-chaise.glb',
+    // Bloco "KF - Sofá MOSS" (77fb8bbd…): sofá + mesinha lateral + chaise redonda, 426 cm no bloco. Confere com as fotos.
+    // O anúncio vende 340 e 380 cm: encolhe só a parte reta (entre o braço e a mesinha); a chaise não muda.
+    // #1 mesinha (laca escura), #6 pés (pintura do metal), #2 #7 #4 almofadas do encosto, #0 almofada solta
+    partes: { 'SOFÁ MOSS_TECIDO': 'tecido', '#1': 'preto', '#6': 'metal' },
+    tamanhos: [340, 380], tamanhoBloco: 380,
+    estica: { base: 4.26, zona: [-1.89, 0.03], rigido: 0.7 },
+    ocultaEm: { 340: ['#7'] }   // no 340 cabem duas almofadas de encosto
+  },
+  'kf-base-sofa': { nome: 'Sofá Base', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/base-sofa.glb',
+    // Bloco "KF - Sofá Base" (a7c6c665…): sofá curvo, 248 cm no bloco; confere com as fotos. Faces em fragmentos soltos
+    // (metades complementares, como na Poltrona Base): usar todas as malhas. #21 a #24 = pés ovais laminados
+    // (da frente até atrás); #8 a #15 = as 4 almofadas soltas; #4 a #7 = acabamento da frente dos braços (tecido)
+    partes: { 'default_face_material': 'tecido', '#21': 'madeira', '#22': 'madeira', '#23': 'madeira', '#24': 'madeira' },
+    tamanhos: [200, 220, 240, 260], tamanhoBloco: 240,
+    estica: { base: 2.48, braco: 0.30, rigido: 0.6, porMalha: true }
+  },
+  'kf-base-a-sofa': { nome: 'Sofá Base A', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/base-sofa.glb',
+    // Mesmo corpo do Sofá Base. Diferenças (fotos do anúncio): 4 pés de madeira em esfera no lugar dos pés ovais
+    // e 5 almofadas (3 grandes de encosto + 2 menores viradas para dentro, junto aos braços). Pés e almofadas do
+    // bloco ficam ocultos e os novos são gerados na página (extras).
+    partes: { 'default_face_material': 'tecido', '#8': 'oculto', '#9': 'oculto', '#10': 'oculto', '#11': 'oculto', '#12': 'oculto', '#13': 'oculto', '#14': 'oculto', '#15': 'oculto', '#16': 'oculto',
+      '#21': 'oculto', '#22': 'oculto', '#23': 'oculto', '#24': 'oculto' },
+    tamanhos: [200, 220, 240, 260], tamanhoBloco: 240,
+    estica: { base: 2.48, braco: 0.30, rigido: 0.6, porMalha: true },
+    extras: [
+      { tipo: 'esfera', papel: 'madeira', r: [0.04, 0.052, 0.04], pos: [-0.86, 0.05, 0.13] },
+      { tipo: 'esfera', papel: 'madeira', r: [0.04, 0.052, 0.04], pos: [0.86, 0.05, 0.13] },
+      { tipo: 'esfera', papel: 'madeira', r: [0.04, 0.052, 0.04], pos: [-0.86, 0.05, -0.42] },
+      { tipo: 'esfera', papel: 'madeira', r: [0.04, 0.052, 0.04], pos: [0.86, 0.05, -0.42] },
+      { tipo: 'almofada', papel: 'tecido', encolhe: true, tam: [0.58, 0.50, 0.17], rot: [-0.30, 0.10, 0], pos: [-0.60, 0.70, -0.33] },
+      { tipo: 'almofada', papel: 'tecido', encolhe: true, tam: [0.58, 0.50, 0.17], rot: [-0.30, 0, 0], pos: [0, 0.70, -0.36] },
+      { tipo: 'almofada', papel: 'tecido', encolhe: true, tam: [0.58, 0.50, 0.17], rot: [-0.30, -0.10, 0], pos: [0.60, 0.70, -0.33] },
+      { tipo: 'almofada', papel: 'tecido', tam: [0.45, 0.45, 0.15], rot: [-0.28, 0.75, 0.10], pos: [-0.90, 0.67, -0.16] },
+      { tipo: 'almofada', papel: 'tecido', tam: [0.45, 0.45, 0.15], rot: [-0.28, -0.75, -0.10], pos: [0.90, 0.67, -0.16] }
+    ]
+  },
   'kf-portos-sofa': {
     nome: 'Sofá Portos', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/portos-sofa.glb',
     // bloco de 210 cm (um dos tamanhos do anúncio); Material.001 = estofado, Material.002 = pés
