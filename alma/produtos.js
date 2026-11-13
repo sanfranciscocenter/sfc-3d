@@ -5,6 +5,8 @@
 const SER_MAD = { '*': 'tecido', 'Plywood_01_1K': 'madeira', 'Wood_Veneer': 'madeira', 'Wood_Veneer_15_1K': 'madeira', 'Verniz Jequitibá Natural': 'madeira', '[Wood Cherry Original]': 'madeira' };
 // Buriti: o que não for pé cai em '*' = tecido
 const BUR_BASE = { '*': 'tecido', 'Aluminium Black Anodized Fingerprints': 'preto', 'Aluminium_Black_Anodized': 'preto', 'Acrylic Opaque Black': 'preto', 'metal_standard': 'preto', 'Cherry Semigloss': 'madeira' };
+// Ateliê Ipê: madeira = 'Acabamento champagne' / 'Nogueira' e miudezas; 'Material-N' é um plano de fundo do bloco (oculto); o resto é tecido
+const IPE_BASE = { '*': 'tecido', 'Acabamento champagne': 'madeira', 'Acabamento champagne 1': 'madeira', 'Nogueira': 'madeira', '*1': 'madeira', '*2': 'madeira', 'Material-4': 'oculto', 'Material-6': 'oculto', 'Material-8': 'oculto' };
 export const PRODUTOS = {
   // KF Mobiliário (T-118): catálogo próprio em kf/catalogo.js. Piloto: Sofá Portos.
   // O bloco "KF - Sofá Alva" da Warehouse NÃO é o do anúncio (Matheus, 12/11/2026) — não usar.
@@ -102,6 +104,12 @@ export const PRODUTOS = {
   'bur-pufe-target': { nome: 'Pufe Target', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-target.glb', partes: { ...BUR_BASE, '#0': 'oculto', '#1': 'oculto' } },   // o bloco traz o recamier (#0 #1) e o pufe (#2 #3)
   'bur-recamier-target': { nome: 'Recamier Target', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-target.glb', partes: { ...BUR_BASE, '#2': 'oculto', '#3': 'oculto' } },
   'bur-pufe-paleta': { nome: 'Pufe Paleta', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/pufe-paleta.glb', partes: { ...BUR_BASE } },
+  // ---------- Ateliê Ipê (blocos da Warehouse da fábrica, sem texturas, compactados em meshopt;
+  // originais em outputs/configurador3d-ipe/originais) ----------
+  'ipe-cadeira-calice': { nome: 'Cadeira Cálice', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/calice.glb', partes: { ...IPE_BASE } },
+  'ipe-cadeira-folhagem': { nome: 'Cadeira Folhagem', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/folhagem.glb', partes: { ...IPE_BASE } },
+  'ipe-poltrona-bruma': { nome: 'Poltrona Bruma', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/bruma.glb', partes: { ...IPE_BASE } },
+  'ipe-poltrona-talhe': { nome: 'Poltrona Talhe', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/talhe.glb', partes: { ...IPE_BASE } },
   'kf-jades-sofa': { nome: 'Sofá Jades', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/jades-sofa.glb',
     // Bloco "KF - Sofá Jades" (b487174c…): traz um módulo com braço + um módulo chaise. O anúncio é o sofá reto de
     // 2 módulos com braço: fica só o módulo com braço (x < 0,30 m), repetido espelhado do outro lado (Matheus, 13/11/2026).
