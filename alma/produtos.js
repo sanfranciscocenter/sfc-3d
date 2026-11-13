@@ -48,6 +48,26 @@ export const PRODUTOS = {
       { tipo: 'almofada', papel: 'tecido', tam: [0.45, 0.45, 0.15], rot: [-0.28, -0.75, -0.10], pos: [0.90, 0.67, -0.16] }
     ]
   },
+  'kf-jades-sofa': { nome: 'Sofá Jades', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/jades-sofa.glb',
+    // Bloco "KF - Sofá Jades" (b487174c…): traz um módulo com braço + um módulo chaise. O anúncio é o sofá reto de
+    // 2 módulos com braço: fica só o módulo com braço (x < 0,30 m), repetido espelhado do outro lado (Matheus, 13/11/2026).
+    partes: { 'SOFA DE CANTO PAGGINI_TECIDO_SOFA': 'tecido', '#8': 'metal', '#9': 'metal' },   // #8 #9 = base e pés de metal do módulo com braço
+    espelha: { corte: 0.30, zMax: 0.06 },
+    tamanhos: [220, 260, 300, 380, 420], tamanhoBloco: 260,
+    estica: { base: 2.68, braco: 0.12, rigido: 0.45, porMalha: true } },
+  'kf-aura-sofa': { nome: 'Sofá Retrátil Aura', sobre: 'KF Mobiliário', marca: 'kf', glb: ['kf/modelos/aura-sofa-1.glb', 'kf/modelos/aura-sofa-2.glb'],   // bloco de 15 MB regravado sem texturas e dividido em dois
+    // Bloco "KF - AURA" (27e73a58…): 3 módulos, um assento aberto, 322 cm de braço a braço; confere com a foto.
+    // #0 = rodapé (escuro); #10 = as duas almofadas soltas sobre os braços. O anúncio só tem tecido e tamanho.
+    partes: { '*': 'tecido', '#0': 'preto' },
+    tamanhos: [270, 300, 330, 360, 390], tamanhoBloco: 330,
+    estica: { base: 3.22, braco: 0.17, rigido: 0.6 } },
+  'kf-vitta-sofa': { nome: 'Sofá Retrátil Vitta', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/vitta-sofa.glb',
+    // Bloco "KF - VITTA" (89de285d…): 2 módulos, assentos abertos, 250 cm; confere com a foto. O bloco traz 6 almofadas
+    // soltas e a foto do anúncio mostra 2 (uma junto de cada braço): as 4 do meio ficam ocultas. #30 a #33 = pés.
+    partes: { '*': 'tecido', '#0': 'oculto', '#1': 'oculto', '#2': 'oculto', '#3': 'oculto', '#18': 'oculto', '#19': 'oculto', '#28': 'oculto', '#29': 'oculto',
+      '#30': 'metal', '#31': 'metal', '#32': 'metal', '#33': 'metal' },
+    tamanhos: [210, 230, 250, 270, 290], tamanhoBloco: 250,
+    estica: { base: 2.50, braco: 0.25, rigido: 0.6, porMalha: true } },
   'kf-portos-sofa': {
     nome: 'Sofá Portos', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/portos-sofa.glb',
     // bloco de 210 cm (um dos tamanhos do anúncio); Material.001 = estofado, Material.002 = pés
