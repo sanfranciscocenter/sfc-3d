@@ -56,7 +56,16 @@
       pagina: 'produto.html', params: 'p=kf-flow-poltrona', derivacao: 208,
       sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' }
     },
-    // Linha Serra (marca Share): tecido + madeira, três linhas de preço (derivação 208), sem tamanhos
+    // KF: sofás com tamanho (derivação 181) — ligados em 13/11/2026 a pedido de Matheus
+    '/sofa-moss-com-chaise-curva': { pagina: 'produto.html', params: 'p=kf-moss-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
+    '/sofa-base-kf-base2026': { pagina: 'produto.html', params: 'p=kf-base-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
+    '/sofa-base-a': { pagina: 'produto.html', params: 'p=kf-base-a-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },   // pés de madeira; o anúncio não tem escolha de madeira
+    '/sofa-jades-kf-jades': { pagina: 'produto.html', params: 'p=kf-jades-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
+    '/sofa-retratil-aura': { pagina: 'produto.html', params: 'p=kf-aura-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    '/sofa-retratil-vitta': { pagina: 'produto.html', params: 'p=kf-vitta-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
+    '/sofa-verona': { pagina: 'produto.html', params: 'p=kf-verona-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
+    '/sofa-flow-kf-flow': { pagina: 'produto.html', params: 'p=kf-flow-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
+    // Share: tecido + madeira, três linhas de preço (derivação 208), sem tamanhos
     '/cadeira-tainhas': { pagina: 'produto.html', params: 'p=ser-cadeira-tainhas', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/cadeira-bento': { pagina: 'produto.html', params: 'p=ser-cadeira-bento', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/poltrona-canela': { pagina: 'produto.html', params: 'p=ser-poltrona-canela', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
