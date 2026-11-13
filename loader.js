@@ -130,6 +130,19 @@
         ...'pufe-clubia-055cm pufe-hapera-048cm sofa-avana-reto-1-50-m sofa-mattea-reto-1-50-m sofa-mezzara-reto-1-50-m sofa-olvera-reto-1-50-m sofa-tamara-reto-1-50-m'.split(' ').map(u => [u, { tamanho: 2, sel: base }])
       ].map(([u, c]) => ['/' + u + '-essencial', { pagina: 'produto.html', params: 'p=cmb-' + u, derivacao: 208, ...c }]);
     })()),
+    // Marcobin: tecido (linhas Essencial/Premium na derivação 208), madeira e, nas Natura, metal do encosto.
+    // "Tecido das costas", altura do assento e cor do vidro continuam só na página (o 3D não mexe neles).
+    ...Object.fromEntries((() => {
+      const T = 'Escolha o tecido (MAR):', M = 'Escolha a madeira (MAR):', ME = 'Escolha o acabamento do metal (MAR):';
+      const est = { derivacao: 208, sel: { acabamento: T, madeira: M } };
+      return [
+        ...'banqueta-bosque poltrona-galho poltrona-oasis'.split(' ').map(u => [u, u, est]),
+        ...'cadeira-bosque banqueta-moara-encosto-estofado cadeira-moara-encosto-estofado banqueta-nubia-giratoria banqueta-prince-giratoria banqueta-sara-fixa banqueta-tria cadeira-tria cadeira-tria-com-braco cadeira-agata-encosto-estofado cadeira-aida-giratoria cadeira-anne-fixa cadeira-anne-giratoria cadeira-atenas-com-braco cadeira-laura-encosto-estofado cadeira-laura-com-braco-encosto-estofado cadeira-quaddra cadeira-quaddra-com-braco cadeira-sofia-giratoria poltrona-oca puff-oasis'.split(' ').map(u => [u + '-marcobin', u, est]),
+        ...'banqueta-natura-estofada cadeira-natura-estofada banqueta-natura-palha cadeira-natura-palha'.split(' ').map(u => [u, u, { derivacao: 208, sel: { acabamento: T, madeira: M, metal: ME } }]),
+        ['mesa-de-centro-jaspe', 'mesa-de-centro-jaspe', { sel: { madeira: M } }],
+        ...'bistro-doha-tampo-em-lamina-de-madeira bistro-doha-tampo-em-vidro'.split(' ').map(u => [u + '-marcobin', u, { sel: { madeira: M } }])
+      ].map(([url, u, c]) => ['/' + url, { pagina: 'produto.html', params: 'p=mcb-' + u, ...c }]);
+    })()),
     // Share: tecido + madeira, três linhas de preço (derivação 208), sem tamanhos
     '/cadeira-tainhas': { pagina: 'produto.html', params: 'p=ser-cadeira-tainhas', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/cadeira-bento': { pagina: 'produto.html', params: 'p=ser-cadeira-bento', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
