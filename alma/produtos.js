@@ -11,6 +11,10 @@ const VND_JEQ = ['In natura', 'Nogueira', 'Castanho', 'Envelhecido', 'Ebanizado'
 const VND_CAMA = ['Solteiro', 'Casal', 'Queen', 'King'];
 const VND_TELAS = [['Tela sintética', ['Sintética sextavada creme', 'Sintética quadriculada creme']], ['Tela natural', ['Natural Vanilla', 'Natural Cappuccino']]];
 const VND_REGRAS = [[/travesseiro|coberta|len.ol/i, 'oculto'], [/colch/i, 'branco']];
+// Vindima fase 2 (móveis sem estofado): papel pelo nome do material do bloco. "metal" = cor escolhida no anúncio; "aco" = metal fixo
+const VND_R2 = metal => [[/glass|vidro|resin/i, 'vidro'], [/mirror/i, 'espelho'], [/palhinha/i, 'palha'], [/^couro$/i, 'couro'], [/steel|metal|ferro|alum|goldenrod|0137_black|gdblack|dimgray|charcoal|^\[?color m0/i, metal]];
+const VND_JCV = ['jequitiba', 'cinamomo', 'carvalho'], VND_S9 = { selJequitiba: 'Escolha o acabamento (VND):', lacaNoJequitiba: true };
+const VND_F2 = (nome, arq, o = {}) => ({ nome, sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...VND_R2(o.metal ? 'metal' : 'aco')], partes: { '*': 'madeira', ...(o.partes || {}) } });
 const IPE_BASE = { '*': 'tecido', 'Acabamento champagne': 'madeira', 'Acabamento champagne 1': 'madeira', 'Nogueira': 'madeira', '*1': 'madeira', '*2': 'madeira', 'Material-4': 'oculto', 'Material-6': 'oculto', 'Material-8': 'oculto' };
 // Buriti, sofás: [expressão do nome do material, papel]; o que não casar é tecido
 const BUR_REGRAS = [[/iron|glass|acrylic|black|roda|metal.?standard|mat_padrao|^p.{1,3}s$|anod/i, 'preto'], [/wenge|cherry|walnut|leather pull up/i, 'madeira'], [/alumin|chrome/i, 'metal']];
@@ -153,6 +157,51 @@ export const PRODUTOS = {
   'vnd-cama-teroldego': { nome: 'Cama Teroldego', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/teroldego-cama.glb', madeiras: VND_JEQ, giraY: -90,
     partes: { '*': 'madeira', 'COLCHÃO': 'branco', 'Material3': 'oculto', 'Material4': 'oculto', 'Material14': 'oculto' },
     tamanhos: [98, 148, 168, 203], tamanhoNomes: VND_CAMA, tamanhoBloco: 98, estica: { base: 0.98, braco: 0.10, porMalha: true, rigido: 0.5 } },
+  // ---------- Vindima, fase 2: mesas, aparadores, cômodas, luminárias (tamanho não muda no 3D: o bloco vem numa medida) ----------
+  'vnd-mesa-auxiliar-glera': VND_F2('Mesa Auxiliar Glera', 'mesa-auxiliar-glera', { metal: true, laminas: VND_JCV }),
+  'vnd-aparador-sagrantino': VND_F2('Aparador Sagrantino', 'aparador-sagrantino', { mais: [[/#29/, 'metal']], metal: true, laminas: VND_JCV }),
+  'vnd-mesa-auxiliar-fiano': VND_F2('Mesa Auxiliar Fiano', 'mesa-auxiliar-fiano', { mais: [[/mirror/i, 'madeira']], metal: true, laminas: VND_JCV }),
+  'vnd-aparador-pecorino': VND_F2('Aparador Pecorino', 'aparador-pecorino', { giraY: 90, metal: true, laminas: VND_JCV }),
+  'vnd-mesa-de-centro-zinfandel': VND_F2('Mesa de Centro Zinfandel', 'mesa-de-centro-zinfandel', { mais: [[/0137_black/i, 'madeira'], [/goldenrod/i, 'metal']], metal: true, laminas: [...VND_JCV, 'laca'], ...VND_S9 }),
+  'vnd-mesa-de-centro-tempranillo': VND_F2('Mesa de Centro Tempranillo', 'mesa-de-centro-tempranillo', { metal: true, laminas: VND_JCV }),
+  'vnd-mesa-auxiliar-tempranillo': VND_F2('Mesa Auxiliar Tempranillo', 'mesa-auxiliar-tempranillo', { metal: true, laminas: VND_JCV }),
+  'vnd-mesa-de-cabeceira-alvarinho': VND_F2('Mesa de Cabeceira Alvarinho', 'mesa-de-cabeceira-alvarinho', { giraY: 180, metal: true, laminas: [...VND_JCV, 'laca'], ...VND_S9 }),
+  'vnd-mesa-auxiliar-semillon': VND_F2('Mesa Auxiliar Sémillon', 'mesa-auxiliar-semillon', { metal: true, laminas: VND_JCV }),
+  'vnd-mesa-auxiliar-lambrusco': VND_F2('Mesa Auxiliar Lambrusco', 'mesa-auxiliar-lambrusco', { metal: true, laminas: VND_JCV }),
+  'vnd-mesa-de-centro-pinot-com-tampo-de-espelho': VND_F2('Mesa de Centro Pinot', 'mesa-de-centro-pinot', { mais: [[/color m04/i, 'espelho']], metal: true, laminas: VND_JCV }),
+  'vnd-mesa-auxiliar-pinot': VND_F2('Mesa Auxiliar Pinot', 'mesa-auxiliar-pinot', { mais: [[/color m04/i, 'espelho']], metal: true, laminas: VND_JCV }),
+  'vnd-mesa-de-cabeceira-marselan': VND_F2('Mesa de Cabeceira Marselan', 'mesa-de-cabeceira-marselan', { metal: true, laminas: ['jequitiba', 'laca'] }),
+  'vnd-comoda-marselan': VND_F2('Cômoda Marselan', 'comoda-marselan', { metal: true, laminas: ['jequitiba', 'carvalho', 'laca'] }),
+  'vnd-mesa-de-jantar-gamay-com-tampo-macico': VND_F2('Mesa de Jantar Gamay', 'mesa-de-jantar-gamay', { laminas: ['cinamomo', 'carvalho'] }),
+  'vnd-mesa-de-jantar-gamay-com-tampo-laminado': VND_F2('Mesa de Jantar Gamay', 'mesa-de-jantar-gamay', { laminas: ['cinamomo', 'carvalho'] }),
+  'vnd-mesa-de-centro-sangiovese': VND_F2('Mesa de Centro Sangiovese', 'mesa-de-centro-sangiovese', { laminas: VND_JCV }),
+  'vnd-mesa-de-jantar-moscato': VND_F2('Mesa de Jantar Moscato', 'mesa-de-jantar-moscato', { mais: [[/steel|resin/i, 'madeira']], laminas: ['cinamomo', 'carvalho'] }),
+  'vnd-espelho-greco': VND_F2('Espelho Greco', 'espelho-greco', { giraX: 90, mais: [[/color m05/i, 'espelho']], laminas: VND_JCV }),
+  'vnd-comoda-tannat': VND_F2('Cômoda Tannat', 'comoda-tannat', { mais: [[/default_face/, 'oculto']], laminas: ['cinamomo', 'carvalho'] }),
+  'vnd-buffet-moscato': VND_F2('Buffet Moscato', 'buffet-moscato', { laminas: ['cinamomo', 'carvalho'], linhaTela: true }),
+  'vnd-escrivaninha-albarino': VND_F2('Escrivaninha Albariño', 'escrivaninha-albarino', { madeiras: VND_JEQ }),
+  'vnd-mesa-de-cabeceira-saperavi': VND_F2('Mesa de Cabeceira Saperavi', 'mesa-de-cabeceira-saperavi', { mais: [[/color m0[14]/i, 'laca']], madeiras: VND_JEQ }),
+  'vnd-comoda-saperavi': VND_F2('Cômoda Saperavi', 'comoda-saperavi', { mais: [[/color m0[14]|default_face/i, 'laca']], madeiras: VND_JEQ }),
+  'vnd-cristaleira-kerner': VND_F2('Cristaleira Kerner', 'cristaleira-kerner', { giraY: -90, madeiras: VND_JEQ }),
+  'vnd-mesa-de-cabeceira-viognier': VND_F2('Mesa de Cabeceira Viognier', 'mesa-de-cabeceira-viognier', { giraY: 180, madeiras: VND_JEQ }),
+  'vnd-mesa-de-cabeceira-verdicchio': VND_F2('Mesa de Cabeceira Verdicchio', 'mesa-de-cabeceira-verdicchio', { madeiras: VND_JEQ }),
+  'vnd-comoda-verdicchio': VND_F2('Cômoda Verdicchio', 'comoda-verdicchio', { giraY: -90, madeiras: VND_JEQ }),
+  'vnd-mesa-de-cabeceira-mencia': VND_F2('Mesa de Cabeceira Mencía', 'mesa-de-cabeceira-mencia', { madeiras: VND_JEQ }),
+  'vnd-mesa-de-centro-negroamaro': VND_F2('Mesa de Centro Negroamaro', 'mesa-de-centro-negroamaro', { metal: true, madeiras: VND_JEQ }),
+  'vnd-buffet-bual': VND_F2('Buffet Bual', 'buffet-bual', { giraY: -90, mais: [[/color m07/i, 'madeira'], [/color d07/i, 'metal']], metal: true, madeiras: VND_JEQ }),
+  'vnd-mesa-de-jogos-nerello': VND_F2('Mesa de Jogos Nerello', 'mesa-de-jogos-nerello', { mais: [[/color a06/i, 'tecido'], [/color m09/i, 'oculto'], [/a-11262/i, 'aco']], madeiras: VND_JEQ, linhas: [['Feltro', ['Verde', 'Azul', 'Preto', 'Vermelho']]], prefixoTecido: 'feltro-', tituloTecido: 'Feltro ', semLinha: true }),
+  'vnd-estante-freisa': VND_F2('Estante Freisa', 'estante-freisa', { giraY: 90, cartoesFixos: ['Prateleira em laca'], mais: [[/color c01/i, 'laca']], madeiras: VND_JEQ }),
+  'vnd-mesa-de-cabeceira-riesling': VND_F2('Mesa de Cabeceira Riesling', 'mesa-de-cabeceira-riesling', { madeiras: VND_JEQ, linhaTela: true }),
+  'vnd-mesa-de-centro-chenin': VND_F2('Mesa de Centro Chenin', 'mesa-de-centro-chenin', { recorta: { x: [-6.5, -4.5] }, mais: [[/^\*1/, 'palha']], madeiras: VND_JEQ, linhaTela: true }),
+  'vnd-mesa-auxiliar-carmenere': VND_F2('Mesa Auxiliar Carménère', 'mesa-auxiliar-carmenere', { mais: [[/glass/i, 'madeira']], madeiras: VND_JEQ, linhaTela: true }),
+  'vnd-estante-chardonnay': VND_F2('Estante Chardonnay', 'estante-chardonnay', { madeiras: VND_MAD }),
+  'vnd-cabideiro-ciliegiolo': VND_F2('Cabideiro Ciliegiolo', 'cabideiro-ciliegiolo', { madeiras: VND_MAD }),
+  'vnd-cabideiro-monastrell': VND_F2('Cabideiro Monastrell', 'cabideiro-monastrell', { madeiras: VND_MAD }),
+  'vnd-mesa-de-centro-corvina': VND_F2('Mesa de Centro Corvina', 'mesa-de-centro-corvina', { mais: [[/#28/, 'vidro'], [/#29/, 'oculto']], madeiras: VND_MAD }),
+  'vnd-aparador-parellada': VND_F2('Aparador Parellada', 'aparador-parellada', { giraY: 90, partes: { '#9': 'madeira' }, mais: [[/color (m05|d07)/i, 'metal']], metal: true, madeiras: VND_MAD }),
+  'vnd-aparador-sercial': VND_F2('Aparador Sercial', 'aparador-sercial', { metal: true, madeiras: VND_MAD }),
+  'vnd-luminaria-de-chao-zweigelt': VND_F2('Luminária de Chão Zweigelt', 'luminaria-de-chao-zweigelt', { partes: { '#19': 'palha', '#20': 'palha' }, mais: [[/l.mpada|lampada/i, 'oculto'], [/#58|#63/, 'palha']], madeiras: VND_MAD, linhaTela: true }),
+  'vnd-luminaria-de-chao-furmint': VND_F2('Luminária de Chão Furmint', 'luminaria-de-chao-furmint', { madeiras: VND_MAD, linhaTela: true }),
   // ---------- Buriti, sofás cujo bloco da fábrica é a mesma configuração do anúncio. Largura: o miolo estica entre os
   // braços (peças com menos de 50 cm, como almofadas e pés, só se deslocam). BUR_REGRAS classifica os materiais. ----------
   'bur-sofa-sonata': { nome: 'Sofá Sonata', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-sonata.glb', texMadeira: 'kf/madeiras/imbuia.jpg', partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [200,220,240,260,280], tamanhoBloco: 280, estica: { base: 2.78, braco: 0.25, rigido: 0.5, porMalha: true } },
