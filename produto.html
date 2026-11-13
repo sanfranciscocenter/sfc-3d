@@ -828,6 +828,8 @@ function montaInterface() {
   TAMANHOS.forEach((cm, i) => pilula(boxZ, TAM_NOMES ? TAM_NOMES[i] : cm + ' cm', null, i === estado.z, () => { estado.z = i; aplica(); trocaModelo(); }, i));
 }
 function ajustaGrupos() {   // só aparecem os grupos de opção que este produto tem
+  // tamanho primeiro (pedido de Matheus, 13/11/2026): no fim da lista o cliente não via que dava para trocar
+  if (TAMANHOS.length) { const gt = $('g-tamanho'), pai = gt.parentElement, primeiro = pai.querySelector('.grupo'); if (primeiro !== gt) pai.insertBefore(gt, primeiro); }
   boxM.closest('.grupo').hidden = !tem('madeira') || (EH_KF && MADS.length < 2); /* marca sem escolha de madeira: grupo some */ boxE.closest('.grupo').hidden = !tem('palha'); boxT.closest('.grupo').hidden = !tem('tecido');
   $('g-metal').hidden = !(METAIS.length && tem('metal')); $('g-tamanho').hidden = !TAMANHOS.length;
   if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = P.tituloTecido || 'Tecido ';
