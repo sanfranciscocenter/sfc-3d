@@ -120,7 +120,18 @@
         ['buffet-moscato', { derivacao: 208, cartoes: true, sel: { tela: TL, madeira: L } }]
       ].map(([u, c]) => ['/' + u, { pagina: 'produto.html', params: 'p=vnd-' + u, ...c }]);
     })()),
-    // Share: tecido + madeira, três linhas de preço (derivação 208), sem tamanhos    '/cadeira-tainhas': { pagina: 'produto.html', params: 'p=ser-cadeira-tainhas', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
+    // Combinare: tecido (linhas na derivação 208), madeira, pintura epóxi (metal) e recouro; sofás e alguns pufes com tamanho (derivação 2)
+    ...Object.fromEntries((() => {
+      const T = 'Escolha o tecido (SUP):', M = 'Escolha a madeira (SUP):', E = 'Escolha a pintura epóxi (SUP):', R = 'Escolha o recouro (SUP):';
+      const base = { acabamento: T, madeira: M, metal: E };
+      return [
+        ...'poltrona-avana poltrona-bethara poltrona-cloara poltrona-flexara poltrona-florena poltrona-gavena poltrona-jasvara poltrona-kairona-com-mesa-lateral poltrona-lorana poltrona-lucara poltrona-maisara poltrona-manira poltrona-marvella poltrona-melora poltrona-oxfel poltrona-perlina poltrona-unora poltrona-windara pufe-florena pufe-parina pufe-belara sofa-mondara-reto-1-50-m'.split(' ').map(u => [u, { sel: base }]),
+        ...'poltrona-galena poltrona-lizara poltrona-parina pufe-framera'.split(' ').map(u => [u, { sel: { ...base, tela: R } }]),
+        ...'pufe-clubia-055cm pufe-hapera-048cm sofa-avana-reto-1-50-m sofa-mattea-reto-1-50-m sofa-mezzara-reto-1-50-m sofa-olvera-reto-1-50-m sofa-tamara-reto-1-50-m'.split(' ').map(u => [u, { tamanho: 2, sel: base }])
+      ].map(([u, c]) => ['/' + u + '-essencial', { pagina: 'produto.html', params: 'p=cmb-' + u, derivacao: 208, ...c }]);
+    })()),
+    // Share: tecido + madeira, três linhas de preço (derivação 208), sem tamanhos
+    '/cadeira-tainhas': { pagina: 'produto.html', params: 'p=ser-cadeira-tainhas', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/cadeira-bento': { pagina: 'produto.html', params: 'p=ser-cadeira-bento', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/poltrona-canela': { pagina: 'produto.html', params: 'p=ser-poltrona-canela', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/poltrona-gramado': { pagina: 'produto.html', params: 'p=ser-poltrona-gramado', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
@@ -322,7 +333,7 @@
     await zz(700);   // confere de novo: o tema refaz o bloco depois de trocar a linha
     const firmes = pares.filter(([n, v]) => sel(n)?.value === v || grava(n, v)).length;
     const tudo = okTam && okLinha && firmes === pares.length;
-    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.cartoes && d.cartoes ? d.cartoes.join(', ') : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela ? (/VND/.test(cfg.sel.tela) ? 'tela ' : 'palha ') + d.tela : '', d.acabamento, cfg.sel.metal ? 'metal ' + d.metal : ''].filter(Boolean).join(', ');
+    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.cartoes && d.cartoes ? d.cartoes.join(', ') : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela ? (/VND/.test(cfg.sel.tela) ? 'tela ' : /SUP/.test(cfg.sel.tela) ? 'recouro ' : 'palha ') + d.tela : '', d.acabamento, cfg.sel.metal ? 'metal ' + d.metal : ''].filter(Boolean).join(', ');
     avisa(tudo ? 'Configuração aplicada: ' + resumo : 'Não consegui marcar todas as opções. Confira a seleção abaixo.');
     const alvo = document.querySelector('.sfc-linhas') || sel(cfg.sel.acabamento || cfg.sel.madeira);
     if (alvo && alvo.scrollIntoView) alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
