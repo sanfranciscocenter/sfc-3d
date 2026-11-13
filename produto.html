@@ -768,7 +768,7 @@ async function aplica() {
   const [mc, mn, tc, tn, pc] = await Promise.all([
     tem('madeira') ? textura('mc:' + urlM, urlM, 'image/jpeg') : nada, tem('madeira') ? textura('mn:' + urlM, relevoDe(urlM, 1.7, 512, 1024), 'image/jpeg') : nada,
     comTextura ? textura('tc:' + estado.t, urlT, 'image/jpeg', CAT.escala(estado.t)) : nada, comTextura ? textura('tn:' + estado.t, relevoDe(urlT, forca, 1024, 1024, volume), 'image/jpeg', CAT.escala(estado.t)) : nada,
-    tem('palha') ? (EH_VND && !/\.png$/.test(arqE) ? textura('p:' + arqE, PASTA + '/telas/' + arqE, 'image/jpeg') : textura('p:' + arqE, palhaLimpa(CDN + 'palhas-v2/' + arqE), 'image/png')) : nada
+    tem('palha') ? (EH_VND && !/\.png$/.test(arqE) ? textura('p:' + arqE, PASTA + '/telas/' + arqE, 'image/jpeg') : EH_VND && !/^pn0/.test(arqE) ? textura('p:' + arqE, PASTA + '/telas/' + arqE + '?v=2', 'image/png') : textura('p:' + arqE, palhaLimpa(CDN + 'palhas-v2/' + arqE), 'image/png')) : nada
   ]);
   if (minha !== vez) return;
   const m = mat('madeira'), t = mat('tecido'), p = mat('palha');

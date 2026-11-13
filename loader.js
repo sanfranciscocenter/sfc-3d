@@ -130,6 +130,8 @@
         ...'pufe-clubia-055cm pufe-hapera-048cm sofa-avana-reto-1-50-m sofa-mattea-reto-1-50-m sofa-mezzara-reto-1-50-m sofa-olvera-reto-1-50-m sofa-tamara-reto-1-50-m'.split(' ').map(u => [u, { tamanho: 2, sel: base }])
       ].map(([u, c]) => ['/' + u + '-essencial', { pagina: 'produto.html', params: 'p=cmb-' + u, derivacao: 208, ...c }]);
     })()),
+    // Buriti, Cama Belluno: tecido + tamanho em cartões com nome ("Para colchão de 138 cm"), derivação 186
+    '/cama-belluno': { pagina: 'produto.html', params: 'p=bur-cama-belluno', derivacao: 208, cartoes: true, sel: { acabamento: 'Escolha o tecido: (BUR)' } },
     // Marcobin: tecido (linhas Essencial/Premium na derivação 208), madeira e, nas Natura, metal do encosto.
     // "Tecido das costas", altura do assento e cor do vidro continuam só na página (o 3D não mexe neles).
     ...Object.fromEntries((() => {
