@@ -38,6 +38,9 @@ export const PRODUTOS = {
     // SEM anúncio no site em 13/11/2026. O bloco divide as faces de cada peça em duas malhas (parecem duplicadas, mas
     // são metades complementares): usar todas. #2 a #5 = pés; o resto é estofado
     partes: { 'default_face_material': 'tecido', '#2': 'madeira', '#3': 'madeira', '#4': 'madeira', '#5': 'madeira' } },
+  // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
+  // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
+  'kf-panna': { nome: 'Sofá Panna', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/panna.glb', partes: { '*': 'tecido', '#1': 'preto', '#2': 'metal' }, tamanhos: [210, 230, 250, 270, 290], tamanhoBloco: 270, estica: { base: 2.70, braco: 0.22, rigido: 0.3 } },
   // Sofá Pulso: bloco "KF. PULSO" (29122080…), 258 cm, uma malha só em tecido. O anúncio vende de 220 a 360 cm (profundidade 120 fixa):
   // estica só o miolo; as pontas arredondadas (45 cm de cada lado) e as almofadas mantêm o tamanho.
   'kf-pulso': { nome: 'Sofá Pulso', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/pulso.glb', partes: { '*': 'tecido' }, tamanhos: [220, 240, 260, 280, 300, 320, 340, 360], tamanhoBloco: 260, estica: { base: 2.58, braco: 0.45, rigido: 0.7 } },
