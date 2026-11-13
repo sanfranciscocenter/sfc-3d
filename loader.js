@@ -102,9 +102,8 @@
       const lam = 'mesa-auxiliar-glera aparador-sagrantino mesa-auxiliar-fiano aparador-pecorino mesa-de-centro-zinfandel mesa-de-centro-tempranillo mesa-auxiliar-tempranillo mesa-de-cabeceira-alvarinho mesa-auxiliar-semillon mesa-auxiliar-lambrusco mesa-de-centro-pinot-com-tampo-de-espelho mesa-auxiliar-pinot mesa-de-cabeceira-marselan comoda-marselan'.split(' ').map(u => [u, { cartoes: true, sel: { madeira: L, metal: X } }]);
       const lamSemMetal = 'mesa-de-jantar-gamay-com-tampo-macico mesa-de-jantar-gamay-com-tampo-laminado mesa-de-centro-sangiovese mesa-de-jantar-moscato espelho-greco comoda-tannat'.split(' ').map(u => [u, { cartoes: true, sel: { madeira: L } }]);
       const jeq = 'escrivaninha-albarino mesa-de-cabeceira-saperavi comoda-saperavi cristaleira-kerner mesa-de-cabeceira-viognier mesa-de-cabeceira-verdicchio comoda-verdicchio mesa-de-cabeceira-mencia'.split(' ').map(u => [u, { sel: { madeira: J } }]);
-      const mad = 'luminaria-de-chao-bonarda estante-chardonnay cabideiro-ciliegiolo cabideiro-monastrell'.split(' ').map(u => [u, { sel: { madeira: M } }]);
+      const mad = 'estante-chardonnay cabideiro-ciliegiolo cabideiro-monastrell'.split(' ').map(u => [u, { sel: { madeira: M } }]);
       return [...lam, ...lamSemMetal, ...jeq, ...mad,
-        ['mesa-auxiliar-cesanese', { cartoes: true, sel: { acabamento: 'Escolha o couro (VND):', madeira: L, metal: X } }],
         ['mesa-de-centro-corvina', { sel: { madeira: M } }],
         ['mesa-de-centro-negroamaro', { sel: { madeira: J, metal: X } }],
         ['buffet-bual', { sel: { madeira: J, metal: X } }],
