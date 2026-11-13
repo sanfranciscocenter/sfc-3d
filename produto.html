@@ -560,17 +560,17 @@ async function aplica() {
     $('b-linha').textContent = l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[l] || Object.values(precos)[0])) || '';
   }
   if (!pronto || !mv.model || DEBUG) return;
-  const urlM = CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
+  const urlM = EH_KF ? 'kf/madeiras/' + KF.madeiras[estado.m][2] : CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
   const nada = Promise.resolve(null), comTextura = tem('tecido') && urlT;
   const [mc, mn, tc, tn, pc] = await Promise.all([
-    tem('madeira') ? textura('mc:' + arqM, urlM, 'image/jpeg') : nada, tem('madeira') ? textura('mn:' + arqM, relevoDe(urlM, 1.7, 512, 1024), 'image/jpeg') : nada,
+    tem('madeira') ? textura('mc:' + urlM, urlM, 'image/jpeg') : nada, tem('madeira') ? textura('mn:' + urlM, relevoDe(urlM, 1.7, 512, 1024), 'image/jpeg') : nada,
     comTextura ? textura('tc:' + estado.t, urlT, 'image/jpeg', CAT.escala(estado.t)) : nada, comTextura ? textura('tn:' + estado.t, relevoDe(urlT, forca, 1024, 1024, volume), 'image/jpeg', CAT.escala(estado.t)) : nada,
     tem('palha') ? textura('p:' + arqE, palhaLimpa(CDN + 'palhas-v2/' + arqE), 'image/png') : nada
   ]);
   if (minha !== vez) return;
   const m = mat('madeira'), t = mat('tecido'), p = mat('palha');
   if (m && mc) { m.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); m.pbrMetallicRoughness.baseColorTexture.setTexture(mc); m.normalTexture.setTexture(mn); m.pbrMetallicRoughness.setRoughnessFactor(roughM); }
-  if (m && mc && EH_KF) { m.pbrMetallicRoughness.baseColorTexture.setTexture(null); m.pbrMetallicRoughness.setBaseColorFactor(KF.madeiras[estado.m][1]); m.pbrMetallicRoughness.setRoughnessFactor(0.72); }
+  if (m && mc && EH_KF) m.pbrMetallicRoughness.setRoughnessFactor(0.72);
   if (t && tc) { t.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); t.pbrMetallicRoughness.baseColorTexture.setTexture(tc); t.normalTexture.setTexture(tn); t.pbrMetallicRoughness.setRoughnessFactor(rough); }
   // escala própria do couro: tem de ser aplicada DEPOIS de pôr a textura no material (antes disso o visualizador descarta)
   if (t && tc) { const e = CAT.escala(estado.t); for (const info of [t.pbrMetallicRoughness.baseColorTexture, t.normalTexture]) { const s = info && info.texture && info.texture.sampler; if (s && s.setScale) s.setScale({ u: e, v: e }); } }
