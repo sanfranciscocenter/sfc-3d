@@ -1,6 +1,8 @@
 // Configuração de cada produto do configurador genérico (produto.html?p=<chave>).
 // partes: papel de cada peça do GLB. Chave = nome do material no GLB, ou "#n" para a malha de índice n (tem prioridade).
 // Papéis: madeira | tecido | palha | metal | preto | original | oculto
+// Linha Serra: materiais dos blocos que são madeira (o restante cai em '*' = tecido)
+const SER_MAD = { '*': 'tecido', 'Plywood_01_1K': 'madeira', 'Wood_Veneer': 'madeira', 'Wood_Veneer_15_1K': 'madeira', 'Verniz Jequitibá Natural': 'madeira', '[Wood Cherry Original]': 'madeira' };
 export const PRODUTOS = {
   // KF Mobiliário (T-118): catálogo próprio em kf/catalogo.js. Piloto: Sofá Portos.
   // O bloco "KF - Sofá Alva" da Warehouse NÃO é o do anúncio (Matheus, 12/11/2026) — não usar.
@@ -48,6 +50,33 @@ export const PRODUTOS = {
       { tipo: 'almofada', papel: 'tecido', tam: [0.45, 0.45, 0.15], rot: [-0.28, -0.75, -0.10], pos: [0.90, 0.67, -0.16] }
     ]
   },
+  // ---------- Linha Serra (marca Share) ----------
+  // Blocos da Warehouse da fábrica, regravados sem texturas (originais em outputs/configurador3d-cmd/originais).
+  // SER_MAD = nomes de material que são madeira; o resto é tecido, salvo o que cada produto corrige em "partes".
+  'ser-cadeira-tainhas': { nome: 'Cadeira Tainhas', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/tainhas.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-bento': { nome: 'Cadeira Bento', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/bento.glb', partes: { ...SER_MAD } },
+  'ser-poltrona-canela': { nome: 'Poltrona Canela', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/poltrona-canela.glb', partes: { ...SER_MAD } },
+  'ser-poltrona-gramado': { nome: 'Poltrona Gramado', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/poltrona-gramado.glb', partes: { ...SER_MAD, '#0': 'oculto', '#1': 'oculto', '#2': 'oculto', '#3': 'oculto', '#4': 'oculto', '#5': 'oculto' } },   // o bloco traz poltrona e puff: aqui só a poltrona
+  'ser-puff-gramado': { nome: 'Puff Gramado', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/poltrona-gramado.glb', partes: { ...SER_MAD, '#6': 'oculto', '#7': 'oculto', '#8': 'oculto', '#9': 'oculto', '#10': 'oculto', '#11': 'oculto' } },   // só o puff
+  'ser-cadeira-malacara': { nome: 'Cadeira Malacara', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/malacara.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-ivoti': { nome: 'Cadeira Ivoti', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/ivoti.glb', giraY: -90, partes: { ...SER_MAD } },   // bloco modelado de lado
+  'ser-cadeira-encantado': { nome: 'Cadeira Encantado', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/encantado.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-guapore': { nome: 'Cadeira Guaporé', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/guapore.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-caracol': { nome: 'Cadeira Caracol', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/caracol.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-serafina': { nome: 'Cadeira Serafina', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/serafina.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-piratini': { nome: 'Cadeira Piratini', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/piratini.glb', partes: { ...SER_MAD } },
+  'ser-poltrona-ronda': { nome: 'Poltrona Ronda', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/poltrona-ronda.glb', partes: { ...SER_MAD, '*101': 'madeira' } },   // *101 = pés e saia de madeira
+  'ser-cadeira-itaimbe': { nome: 'Cadeira Itaimbé', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/itaimbe.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-joaneta': { nome: 'Cadeira Joaneta', sobre: 'Linha Serra', marca: 'ser', glb: ['ser/modelos/joaneta-1.glb', 'ser/modelos/joaneta-2.glb'], partes: { ...SER_MAD } },
+  'ser-cadeira-canela': { nome: 'Cadeira Canela', sobre: 'Linha Serra', marca: 'ser', glb: ['ser/modelos/canela-1.glb', 'ser/modelos/canela-2.glb'], partes: { ...SER_MAD } },
+  'ser-banqueta-joaneta': { nome: 'Banqueta Joaneta', sobre: 'Linha Serra', marca: 'ser', glb: ['ser/modelos/banqueta-joaneta-1.glb', 'ser/modelos/banqueta-joaneta-2.glb'], partes: { ...SER_MAD } },
+  'ser-cadeira-ferradura': { nome: 'Cadeira Ferradura', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/ferradura.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-monte-belo': { nome: 'Cadeira Monte Belo', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/monte-belo.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-ametista': { nome: 'Cadeira Ametista', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/ametista.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-barao': { nome: 'Cadeira Barão', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/barao.glb', partes: { ...SER_MAD } },
+  'ser-cadeira-cambara': { nome: 'Cadeira Cambará', sobre: 'Linha Serra', marca: 'ser', glb: ['ser/modelos/cambara-1.glb', 'ser/modelos/cambara-2.glb'], partes: { ...SER_MAD } },
+  'ser-banqueta-guapore': { nome: 'Banqueta Guaporé', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/banqueta-guapore.glb', partes: { ...SER_MAD } },   // o bloco traz duas banquetas; o arquivo publicado ficou só com a primeira (#0 a #14)
+  'ser-cadeira-taquara': { nome: 'Cadeira Taquara', sobre: 'Linha Serra', marca: 'ser', glb: 'ser/modelos/taquara.glb', partes: { ...SER_MAD } },
   'kf-jades-sofa': { nome: 'Sofá Jades', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/jades-sofa.glb',
     // Bloco "KF - Sofá Jades" (b487174c…): traz um módulo com braço + um módulo chaise. O anúncio é o sofá reto de
     // 2 módulos com braço: fica só o módulo com braço (x < 0,30 m), repetido espelhado do outro lado (Matheus, 13/11/2026).
@@ -71,9 +100,10 @@ export const PRODUTOS = {
   'kf-verona-sofa': { nome: 'Sofá Verona', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/verona-sofa.glb',
     // Bloco "KF - Sofa ALVA com Mesa 2" (81772623…; nome errado na Warehouse, é o Verona — Matheus, 13/11/2026), 276 cm.
     // Vem com o braço e a mesa em lados trocados em relação à foto do anúncio: invertido aqui. Só a parte estofada
-    // estica; a mesa (59 cm) e o braço mantêm a medida. O bloco traz um assento inteiro; a foto mostra dois.
+    // estica; a mesa (59 cm) e o braço mantêm a medida.
     partes: { '*': 'tecido', '[0135_DarkGray]': 'metal', 'madeira': 'madeira' },
     inverteX: true,
+    divide: { '#74': 2 },   // o bloco traz um assento inteiro; a peça real (foto) tem dois, um por módulo
     tamanhos: [257, 277, 297], tamanhoBloco: 277,
     estica: { base: 2.76, zona: [-1.21, 0.79], rigido: 0.6, porMalha: true } },
   'kf-flow-sofa': { nome: 'Sofá Flow', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/flow-poltrona.glb',
