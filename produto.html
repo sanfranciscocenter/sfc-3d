@@ -156,7 +156,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { PRODUTOS } from './alma/produtos.js';
-import { KF } from './kf/catalogo.js';
+import { KF as KF0 } from './kf/catalogo.js';
+import { SER } from './ser/catalogo.js';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d@main/pivot/';
 const LOJA = 'https://sanfranciscocenter.cdn.magazord.com.br/img/';
@@ -450,17 +451,32 @@ async function prepararModelo(largura) {
     if (!o.isMesh) return;
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     const g = o.geometry.clone().applyMatrix4(o.matrixWorld);
+    if (P.giraY) g.rotateY(P.giraY * Math.PI / 180);   // bloco modelado virado para o lado
     if (P.escala) g.scale(P.escala, P.escala, P.escala);   // bloco que veio na unidade errada
     if (o.matrixWorld.determinant() < 0 && g.index) { const a = g.index.array; for (let i = 0; i < a.length; i += 3) { const t = a[i]; a[i] = a[i + 2]; a[i + 2] = t; } }
     const fora = largura && P.ocultaEm && (P.ocultaEm[Math.round(largura * 100)] || []).includes('#' + n);   // peça que não existe neste tamanho
-    if (fora) { n++; return; }
+    if (fora || P.partes['#' + n] === 'oculto') { n++; return; }   // peça oculta não entra nem na centralização
     pecas.push({ i: n++, geo: g, nomeMat: mats[0]?.name || '', original: mats[0] });
   });
   // centraliza no chão
   const cx = new THREE.Box3(); pecas.forEach(p => { p.geo.computeBoundingBox(); cx.union(p.geo.boundingBox); });
   const dx = -(cx.min.x + cx.max.x) / 2, dy = -cx.min.y, dz = -(cx.min.z + cx.max.z) / 2;
   pecas.forEach(p => { p.geo.translate(dx, dy, dz); p.geo.computeBoundingBox(); });
-  // bloco modelado ao contrário da foto do anúncio (braço e mesa em lados trocados): espelha tudo
+  // almofada que no bloco é uma peça só e na peça real são várias (assento inteiro × dois assentos): vira n almofadas
+  // iguais, lado a lado, cada uma com as bordas arredondadas da original
+  if (P.divide) {
+    const novas = [];
+    for (const p of pecas) {
+      const n = P.divide['#' + p.i]; if (!n) { novas.push(p); continue; }
+      const b = p.geo.boundingBox, c0 = (b.min.x + b.max.x) / 2, w0 = b.max.x - b.min.x, h0 = w0 / 2, h1 = h0 / n, e = Math.min(P.divide.borda || 0.05, h1 * 0.6);
+      for (let k = 0; k < n; k++) {
+        const g = p.geo.clone(), q = g.attributes.position;
+        for (let i = 0; i < q.count; i++) { const x = q.getX(i) - c0, ax = Math.abs(x); q.setX(i, b.min.x + h1 * (2 * k + 1) + (ax <= h0 - e ? x * (h1 - e) / (h0 - e) : Math.sign(x) * (h1 - (h0 - ax)))); }
+        q.needsUpdate = true; g.computeBoundingBox(); novas.push({ ...p, geo: g });
+      }
+    }
+    pecas.length = 0; pecas.push(...novas);
+  }  // bloco modelado ao contrário da foto do anúncio (braço e mesa em lados trocados): espelha tudo
   if (P.inverteX) pecas.forEach(p => {
     const g = p.geo.index ? p.geo.toNonIndexed() : p.geo, a = g.attributes.position.array, nr = g.attributes.normal && g.attributes.normal.array;
     for (let i = 0; i < a.length; i += 9) {
@@ -629,14 +645,15 @@ const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
 const tem = papel => papeis.has(papel);
 
 // Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
-const EH_KF = !!P && P.marca === 'kf';
-const codKF = v => (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
+const EH_KF = !!P && (P.marca === 'kf' || P.marca === 'ser');   // marcas com catálogo próprio no formato da KF
+const KF = P && P.marca === 'ser' ? SER : KF0, PASTA = KF.pasta || 'kf';
+const codKF = v => KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
 const TIPO_KF = { 'Bouclé': 'boucle', 'Linho': 'linhoKF', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
 const CAT = EH_KF ? {
   grupos: KF.linhas, tile: KF.tile, valido: k => KF.linhas.some(([, v]) => v.includes(k)),
-  nome: k => k, url: k => codKF(k) ? `kf/tecidos/${codKF(k)}.jpg?v=2` : null, mini: k => { const i = KF.mini.ordem.indexOf(codKF(k)); return i < 0 ? null : { folha: KF.mini.arquivo + '?v=2', col: i % KF.mini.colunas, lin: Math.floor(i / KF.mini.colunas), cols: KF.mini.colunas, lins: KF.mini.linhas }; },
+  nome: k => k, url: k => codKF(k) ? `${PASTA}/tecidos/${codKF(k)}.jpg?v=2` : null, mini: k => { const i = KF.mini.ordem.indexOf(codKF(k)); return i < 0 ? null : { folha: KF.mini.arquivo + '?v=2', col: i % KF.mini.colunas, lin: Math.floor(i / KF.mini.colunas), cols: KF.mini.colunas, lins: KF.mini.linhas }; },
   cor: () => null, escala: k => /^Couro leg/.test(k) ? KF.tile / KF.tileCouro : 1,   // a foto do couro cobre uma área menor
-  tipo: k => /^Couro leg/.test(k) ? 'couroFosco' : (TIPO_KF[k.replace(/\s*\d+$/, '')] || 'medio'),
+  tipo: k => KF.tipo ? KF.tipo(k) : /^Couro leg/.test(k) ? 'couroFosco' : (TIPO_KF[k.replace(/\s*\d+$/, '')] || 'medio'),
   linha: k => (KF.linhas.find(([, v]) => v.includes(k)) || [''])[0], valorSite: k => k, deSite: v => v
 } : {
   grupos: GRUPOS, tile: TECIDO_TILE, valido: k => !!MIDIA[k],
@@ -654,7 +671,7 @@ if (EH_KF) {
 const larguraAtual = () => TAMANHOS.length ? TAMANHOS[estado.z] / 100 : 0;
 
 async function aplica() {
-  const minha = ++vez, [nomeM, arqM, roughM] = MADEIRAS[estado.m], [nomeE, arqE] = PALHAS[estado.e];
+  const minha = ++vez, [nomeM, arqM, roughM] = MADEIRAS[estado.m] || MADEIRAS[0], [nomeE, arqE] = PALHAS[estado.e];
   $('nm-madeira').textContent = MADS[estado.m][0]; $('nm-encosto').textContent = 'Palha ' + nomeE.replace(/ PN\d+$/, ''); $('nm-tecido').textContent = CAT.nome(estado.t);
   const urlT = CAT.url(estado.t), corT = CAT.cor(estado.t), amo = $('escolhido').firstElementChild;
   amo.style.backgroundImage = urlT ? `url("${urlT}")` : 'none'; amo.style.backgroundColor = corT || '';
@@ -665,7 +682,7 @@ async function aplica() {
     $('b-linha').textContent = l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[l] || Object.values(precos)[0])) || '';
   }
   if (!pronto || !mv.model || DEBUG) return;
-  const urlM = EH_KF ? 'kf/madeiras/' + KF.madeiras[estado.m][2] : CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
+  const urlM = EH_KF ? PASTA + '/madeiras/' + KF.madeiras[estado.m][2] : CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
   const nada = Promise.resolve(null), comTextura = tem('tecido') && urlT;
   const [mc, mn, tc, tn, pc] = await Promise.all([
     tem('madeira') ? textura('mc:' + urlM, urlM, 'image/jpeg') : nada, tem('madeira') ? textura('mn:' + urlM, relevoDe(urlM, 1.7, 512, 1024), 'image/jpeg') : nada,
