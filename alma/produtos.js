@@ -2,6 +2,15 @@
 // partes: papel de cada peça do GLB. Chave = nome do material no GLB, ou "#n" para a malha de índice n (tem prioridade).
 // Papéis: madeira | tecido | palha | metal | preto | original | oculto
 export const PRODUTOS = {
+  // KF Mobiliário (T-118): catálogo próprio em kf/catalogo.js. Piloto: Sofá Portos.
+  // O bloco "KF - Sofá Alva" da Warehouse NÃO é o do anúncio (Matheus, 12/11/2026) — não usar.
+  'kf-portos-sofa': {
+    nome: 'Sofá Portos', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/portos-sofa.glb',
+    // bloco de 210 cm (um dos tamanhos do anúncio); Material.001 = estofado, Material.002 = pés
+    partes: { 'SOFÁ MENDONZA_Material.001': 'tecido', 'SOFÁ MENDONZA_Material.002': 'metal' },
+    tamanhos: [190, 210, 230, 250, 270], tamanhoBloco: 210,
+    estica: { base: 2.10, braco: 0.25 }
+  },
   'mestre-cadeira': { nome: 'Cadeira Mestre', sobre: 'Alma Mobília', glb: 'alma/modelos/mestre-cadeira.glb',
     // #0 a #3 pernas, #5 #6 travessas do assento, #7 régua de madeira sob o encosto; #4 assento e #8 faixa do encosto/braços (tecido)
     partes: { '4ba03d1a7754a6e93869e27b148a06ad1': 'madeira', '*28': 'tecido' } },
