@@ -125,7 +125,7 @@
   }
   const estadoDaPagina = () => ({
     sfc3d: 'estado', precos: precosPorLinha(),
-    madeira: sel(cfg.sel.madeira)?.value || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: (cfg.sel.acabamento && sel(cfg.sel.acabamento)?.value) || '',
+    madeira: (cfg.sel.madeira && sel(cfg.sel.madeira)?.value) || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: (cfg.sel.acabamento && sel(cfg.sel.acabamento)?.value) || '',
     metal: (cfg.sel.metal && sel(cfg.sel.metal)?.value) || '', tamanho: tamanhoAtual()
   });
 
