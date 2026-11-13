@@ -22,5 +22,8 @@ export const KF = {
   // folha única de miniaturas (kf/tecidos-mini.jpg): grade de 15 colunas, na ordem abaixo
   mini: { arquivo: 'kf/tecidos-mini.jpg', colunas: 15, linhas: 9, ordem: '2040,2041,2042,2043,2044,2045,214,216,217,3174,3283,3299,3301,3302,3303,3304,3305,3306,3307,3308,3309,3310,3311,3312,3313,3314,3315,3316,3317,3318,3319,3320,3321,3322,3323,4319,4341,4351,4352,4353,4354,4355,4356,4357,4362,4364,4366,4381,4382,4383,4384,4385,4386,4387,4388,4389,4390,4391,4393,4394,4395,4396,4397,4398,4399,4400,4401,4402,5277,5278,5327,5329,5332,5333,5343,5344,5346,5347,5348,5350,5351,5354,5356,5357,6323,6327,6330,6331,6332,6341,6342,6344,6345,6346,6354,6355,6359,6360,6361,6362,6363,7162,7166,7167,7208,7209,7217,7219,7228,7231,7232,7233,7234,7235,8007,8008,8009,8010,8011,8012,8013,8014,C30,C31,C32,C33,C34,C35,C37,C38,C39,C40,C41,C42,C44'.split(',') },
   // pintura dos pés (cores aproximadas das amostras do site)
+  selMadeira: 'Escolha a madeira (KF):',
+  // madeira dos pés: as amostras do site são esferas (não servem de textura); usa a cor de cada uma, com veio em relevo
+  madeiras: [['Mel', '#C58A3C'], ['Amêndoa', '#A89B86'], ['Imbuia', '#4B2F23']],
   metais: [['Preto', '#1C1C1D'], ['Grafite', '#4B4C4F'], ['Champanhe', '#B8A888'], ['Fendi', '#A39584'], ['Off White', '#E4E0D6']]
 };
