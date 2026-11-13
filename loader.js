@@ -275,8 +275,13 @@
     return false;
   }
   async function aplica(d) {
-    const okTam = (await trocaTamanho(d.tamanho)) && (await trocaCartoes(d.cartoes));
-    const okLinha = await trocaLinha(d.linha);
+    // nas camas Vindima trocar a linha desmarca o tamanho: primeiro a linha, depois tamanho e cartões; confere e repete uma vez
+    let okLinha = false, okTam = false;
+    if (cfg.cartoes) for (let volta = 0; volta < 2; volta++) {
+      okLinha = await trocaLinha(d.linha);
+      okTam = (await trocaTamanho(d.tamanho)) && (await trocaCartoes(d.cartoes));
+      if (okLinha && okTam && (!d.linha || linhaAtual() === d.linha)) break;
+    } else { okTam = await trocaTamanho(d.tamanho); okLinha = await trocaLinha(d.linha); }
     // só as personalizações que este anúncio tem (o estofado não tem tela)
     const pares = ['acabamento', 'tela', 'madeira', 'metal'].filter(k => cfg.sel[k]).map(k => [k === 'acabamento' ? selAcab(d.linha) : cfg.sel[k], d[k]]);
     let ok = 0;
