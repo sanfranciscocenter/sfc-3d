@@ -509,7 +509,7 @@ const codKF = v => (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
 const TIPO_KF = { 'Bouclé': 'grosso', 'Linho': 'medio', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
 const CAT = EH_KF ? {
   grupos: KF.linhas, tile: KF.tile, valido: k => KF.linhas.some(([, v]) => v.includes(k)),
-  nome: k => k, url: k => codKF(k) ? `kf/tecidos/${codKF(k)}.jpg` : null, mini: k => { const i = KF.mini.ordem.indexOf(codKF(k)); return i < 0 ? null : { folha: KF.mini.arquivo, col: i % KF.mini.colunas, lin: Math.floor(i / KF.mini.colunas), cols: KF.mini.colunas, lins: KF.mini.linhas }; },
+  nome: k => k, url: k => codKF(k) ? `kf/tecidos/${codKF(k)}.jpg?v=2` : null, mini: k => { const i = KF.mini.ordem.indexOf(codKF(k)); return i < 0 ? null : { folha: KF.mini.arquivo + '?v=2', col: i % KF.mini.colunas, lin: Math.floor(i / KF.mini.colunas), cols: KF.mini.colunas, lins: KF.mini.linhas }; },
   cor: () => null, escala: k => /^Couro leg/.test(k) ? KF.tile / KF.tileCouro : 1,   // a foto do couro cobre uma área menor
   tipo: k => /^Couro leg/.test(k) ? 'couroFosco' : (TIPO_KF[k.replace(/\s*\d+$/, '')] || 'medio'),
   linha: k => (KF.linhas.find(([, v]) => v.includes(k)) || [''])[0], valorSite: k => k, deSite: v => v
