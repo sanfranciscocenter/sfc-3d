@@ -47,6 +47,11 @@
       pagina: 'produto.html', params: 'p=maracaja-cadeira', derivacao: 208,
       sel: { madeira: 'Escolha a madeira (AL):', tela: 'Escolha a tela (AL):', acabamento: 'Escolha o acabamento (CRN):' }
     },
+    // KF Mobiliário: tecido + metal (ou madeira) + tamanho (derivação 181, cartões .sfc-tamc)
+    '/sofa-portos': {
+      pagina: 'produto.html', params: 'p=kf-portos-sofa', derivacao: 208, tamanho: 181,
+      sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' }
+    },
     '/cadeira-cartier': {
       pagina: 'produto.html', params: 'p=cartier-cadeira',
       sel: { madeira: 'Escolha a madeira (AL):', tela: 'Escolha a tela (AL):' }
@@ -97,7 +102,8 @@
   function precosPorLinha() {
     const out = {};
     // produto com "Preço sob consulta": o pop-up não mostra preço nenhum
-    if (!cfg.derivacao || document.querySelector('.sfc-sc-oculto, .sfc-sc-box')) return out;
+    // com tamanho o preço depende de duas escolhas (linha × tamanho): o pop-up não mostra preço para não errar
+    if (!cfg.derivacao || cfg.tamanho || document.querySelector('.sfc-sc-oculto, .sfc-sc-box')) return out;
     try {
       const txt = [...document.scripts].map(s => s.textContent).find(t => t.includes('derivacoes_produto') && t.includes('"deri_id":' + cfg.derivacao)) || '';
       // [^{}] mantém a leitura dentro do mesmo item (sem isso pega o preço de um produto sugerido)
@@ -109,9 +115,18 @@
     } catch (e) {}
     return out;
   }
+  // tamanho escolhido na página (cartão marcado), em cm de largura
+  const tamanhoAtual = () => { const c = document.querySelector('.sfc-tamc.is-on'); return c ? parseInt(c.dataset.tam, 10) || '' : ''; };
+  async function trocaTamanho(cm) {
+    if (!cfg.tamanho || !cm) return true; if (tamanhoAtual() === +cm) return true;
+    const c = [...document.querySelectorAll('.sfc-tamc')].find(b => parseInt(b.dataset.tam, 10) === +cm); if (!c) return false;
+    c.click(); for (let i = 0; i < 25; i++) { await zz(200); if (tamanhoAtual() === +cm) { await zz(500); return true; } }
+    return false;
+  }
   const estadoDaPagina = () => ({
     sfc3d: 'estado', precos: precosPorLinha(),
-    madeira: sel(cfg.sel.madeira)?.value || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: (cfg.sel.acabamento && sel(cfg.sel.acabamento)?.value) || ''
+    madeira: sel(cfg.sel.madeira)?.value || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: (cfg.sel.acabamento && sel(cfg.sel.acabamento)?.value) || '',
+    metal: (cfg.sel.metal && sel(cfg.sel.metal)?.value) || '', tamanho: tamanhoAtual()
   });
 
   /* ---------- pop-up ---------- */
@@ -178,9 +193,10 @@
     return false;
   }
   async function aplica(d) {
+    const okTam = await trocaTamanho(d.tamanho);
     const okLinha = await trocaLinha(d.linha);
     // só as personalizações que este anúncio tem (o estofado não tem tela)
-    const pares = ['acabamento', 'tela', 'madeira'].filter(k => cfg.sel[k]).map(k => [cfg.sel[k], d[k]]);
+    const pares = ['acabamento', 'tela', 'madeira', 'metal'].filter(k => cfg.sel[k]).map(k => [cfg.sel[k], d[k]]);
     let ok = 0;
     for (let tentativa = 0; tentativa < 3 && ok < pares.length; tentativa++) {
       ok = pares.filter(([n, v]) => grava(n, v)).length;
@@ -188,8 +204,8 @@
     }
     await zz(700);   // confere de novo: o tema refaz o bloco depois de trocar a linha
     const firmes = pares.filter(([n, v]) => sel(n)?.value === v || grava(n, v)).length;
-    const tudo = okLinha && firmes === pares.length;
-    const resumo = [d.madeira, cfg.sel.tela ? 'palha ' + d.tela : '', d.acabamento].filter(Boolean).join(', ');
+    const tudo = okTam && okLinha && firmes === pares.length;
+    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela ? 'palha ' + d.tela : '', d.acabamento, cfg.sel.metal ? 'metal ' + d.metal : ''].filter(Boolean).join(', ');
     avisa(tudo ? 'Configuração aplicada: ' + resumo : 'Não consegui marcar todas as opções. Confira a seleção abaixo.');
     const alvo = document.querySelector('.sfc-linhas') || sel(cfg.sel.acabamento || cfg.sel.madeira);
     if (alvo && alvo.scrollIntoView) alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
