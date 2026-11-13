@@ -77,8 +77,25 @@
     // Ateliê Ipê: tecido + cor da madeira, linhas de preço na derivação 208
     ...Object.fromEntries(['cadeira-calice', 'cadeira-folhagem', 'poltrona-bruma', 'poltrona-talhe']
       .map(u => ['/' + u, { pagina: 'produto.html', params: 'p=ipe-' + u, derivacao: 208, sel: { acabamento: 'Escolha o tecido (IPE):', madeira: 'Escolha a cor da madeira (IPE):' } }])),
-    // Share: tecido + madeira, três linhas de preço (derivação 208), sem tamanhos
-    '/cadeira-tainhas': { pagina: 'produto.html', params: 'p=ser-cadeira-tainhas', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
+    // Vindima: tecido e couro em personalizações separadas (a linha de preço diz qual vale), telas, madeira e,
+    // nas camas, tamanho em cartões com nome (Solteiro, Casal, Queen, King); "cartoes" = outras escolhas em cartão
+    ...Object.fromEntries((() => {
+      const T = 'Escolha o tecido (VND):', C = 'Escolha o couro (VND):', TL = 'Escolha a tela (VND):', J = 'Escolha o acabamento do jequitibá (VND):', M = 'Escolha o acabamento da madeira (VND):';
+      return [
+        ['cama-pinotage', { derivacao: 208, cartoes: true, sel: { acabamento: T, couro: C, madeira: J } }],
+        ['cadeira-gamay', { derivacao: 208, sel: { acabamento: T, couro: C, madeira: M } }],
+        ['recamier-friulano', { derivacao: 208, sel: { acabamento: T, couro: C, madeira: M } }],
+        ['cama-riesling', { derivacao: 208, cartoes: true, sel: { acabamento: TL, madeira: J } }],
+        ['cama-tannat', { derivacao: 208, cartoes: true, sel: { acabamento: T, couro: C, telaLinha: TL, madeira: M } }],
+        ['cadeira-moscato', { derivacao: 208, cartoes: true, sel: { acabamento: T, couro: C, tela: TL, madeira: M } }],
+        ['cama-viognier', { cartoes: true, sel: { madeira: J } }],
+        ['cama-verdicchio', { cartoes: true, sel: { madeira: J } }],
+        ['poltrona-trebbiano', { sel: { acabamento: 'Escolha o couro da poltrona (VND):', madeira: J } }],
+        ['cadeira-trebbiano', { derivacao: 208, cartoes: true, sel: { acabamento: T, couro: C, tela: TL, madeira: J } }],
+        ['cama-teroldego', { cartoes: true, sel: { madeira: J } }]
+      ].map(([u, c]) => ['/' + u, { pagina: 'produto.html', params: 'p=vnd-' + u, ...c }]);
+    })()),
+    // Share: tecido + madeira, três linhas de preço (derivação 208), sem tamanhos    '/cadeira-tainhas': { pagina: 'produto.html', params: 'p=ser-cadeira-tainhas', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/cadeira-bento': { pagina: 'produto.html', params: 'p=ser-cadeira-bento', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/poltrona-canela': { pagina: 'produto.html', params: 'p=ser-poltrona-canela', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
     '/poltrona-gramado': { pagina: 'produto.html', params: 'p=ser-poltrona-gramado', derivacao: 208, sel: { acabamento: 'Escolha o tecido (SER):', madeira: 'Escolha a madeira (SER):' } },
@@ -153,7 +170,7 @@
     const out = {};
     // produto com "Preço sob consulta": o pop-up não mostra preço nenhum
     // com tamanho o preço depende de duas escolhas (linha × tamanho): o pop-up não mostra preço para não errar
-    if (!cfg.derivacao || cfg.tamanho || document.querySelector('.sfc-sc-oculto, .sfc-sc-box')) return out;
+    if (!cfg.derivacao || cfg.tamanho || cfg.cartoes || document.querySelector('.sfc-sc-oculto, .sfc-sc-box')) return out;
     try {
       const txt = [...document.scripts].map(s => s.textContent).find(t => t.includes('derivacoes_produto') && t.includes('"deri_id":' + cfg.derivacao)) || '';
       // [^{}] mantém a leitura dentro do mesmo item (sem isso pega o preço de um produto sugerido)
@@ -173,9 +190,24 @@
     c.click(); for (let i = 0; i < 25; i++) { await zz(200); if (tamanhoAtual() === +cm) { await zz(500); return true; } }
     return false;
   }
+  // cartões com nome (tamanho de cama, tipo de encosto): os marcados na página e a troca por nome
+  const cartoesAtuais = () => [...document.querySelectorAll('.sfc-tamc.is-on')].map(c => c.dataset.tam);
+  async function trocaCartoes(nomes) {
+    if (!cfg.cartoes || !nomes || !nomes.length) return true; let ok = true;
+    for (const nome of nomes) {
+      const c = [...document.querySelectorAll('.sfc-tamc')].find(b => b.dataset.tam === nome); if (!c) { ok = false; continue; }
+      if (c.classList.contains('is-on')) continue;
+      c.click(); let feito = false;
+      for (let i = 0; i < 25 && !feito; i++) { await zz(200); feito = !![...document.querySelectorAll('.sfc-tamc.is-on')].find(b => b.dataset.tam === nome); }
+      if (feito) await zz(500); else ok = false;
+    }
+    return ok;
+  }
+  // a personalização que guarda o acabamento depende da linha: couro e tela têm lista própria em alguns anúncios
+  const selAcab = linha => linha === 'Couro legítimo' && cfg.sel.couro ? cfg.sel.couro : /^Tela/.test(linha || '') && cfg.sel.telaLinha ? cfg.sel.telaLinha : cfg.sel.acabamento;
   const estadoDaPagina = () => ({
-    sfc3d: 'estado', precos: precosPorLinha(),
-    madeira: (cfg.sel.madeira && sel(cfg.sel.madeira)?.value) || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: (cfg.sel.acabamento && sel(cfg.sel.acabamento)?.value) || '',
+    sfc3d: 'estado', precos: precosPorLinha(), cartoes: cfg.cartoes ? cartoesAtuais() : [],
+    madeira: (cfg.sel.madeira && sel(cfg.sel.madeira)?.value) || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: (cfg.sel.acabamento && sel(selAcab(linhaAtual()))?.value) || '',
     metal: (cfg.sel.metal && sel(cfg.sel.metal)?.value) || '', tamanho: tamanhoAtual()
   });
 
@@ -243,10 +275,10 @@
     return false;
   }
   async function aplica(d) {
-    const okTam = await trocaTamanho(d.tamanho);
+    const okTam = (await trocaTamanho(d.tamanho)) && (await trocaCartoes(d.cartoes));
     const okLinha = await trocaLinha(d.linha);
     // só as personalizações que este anúncio tem (o estofado não tem tela)
-    const pares = ['acabamento', 'tela', 'madeira', 'metal'].filter(k => cfg.sel[k]).map(k => [cfg.sel[k], d[k]]);
+    const pares = ['acabamento', 'tela', 'madeira', 'metal'].filter(k => cfg.sel[k]).map(k => [k === 'acabamento' ? selAcab(d.linha) : cfg.sel[k], d[k]]);
     let ok = 0;
     for (let tentativa = 0; tentativa < 3 && ok < pares.length; tentativa++) {
       ok = pares.filter(([n, v]) => grava(n, v)).length;
@@ -255,7 +287,7 @@
     await zz(700);   // confere de novo: o tema refaz o bloco depois de trocar a linha
     const firmes = pares.filter(([n, v]) => sel(n)?.value === v || grava(n, v)).length;
     const tudo = okTam && okLinha && firmes === pares.length;
-    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela ? 'palha ' + d.tela : '', d.acabamento, cfg.sel.metal ? 'metal ' + d.metal : ''].filter(Boolean).join(', ');
+    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.cartoes && d.cartoes ? d.cartoes.join(', ') : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela ? (/VND/.test(cfg.sel.tela) ? 'tela ' : 'palha ') + d.tela : '', d.acabamento, cfg.sel.metal ? 'metal ' + d.metal : ''].filter(Boolean).join(', ');
     avisa(tudo ? 'Configuração aplicada: ' + resumo : 'Não consegui marcar todas as opções. Confira a seleção abaixo.');
     const alvo = document.querySelector('.sfc-linhas') || sel(cfg.sel.acabamento || cfg.sel.madeira);
     if (alvo && alvo.scrollIntoView) alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });
