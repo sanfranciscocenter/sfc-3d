@@ -492,7 +492,35 @@ $('compartilhar').addEventListener('click', async () => {
   } catch (e) { if (e.name !== 'AbortError') $('aviso').textContent = 'Não foi possível compartilhar'; }
 });
 
-mv.addEventListener('load', () => { statusEl.hidden = true; boxV.hidden = false; aplica(); });
+// Dentro de aplicativos (janela embutida) o componente esconde o botão de realidade aumentada.
+// Nesse caso entra um botão próprio: no iPhone tenta abrir o visualizador da Apple; se não abrir (ou no Android),
+// leva o cliente ao navegador do aparelho com a mesma configuração.
+function arAlternativo() {
+  if (mv.canActivateAR || $('ra-alt')) return;
+  const ua = navigator.userAgent, ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1), android = /Android/.test(ua);
+  if (!ios && !android) return;
+  const fora = () => {
+    const q = new URLSearchParams(location.search); q.delete('embed'); q.set('m', estado.m); q.set('e', estado.e); q.set('t', estado.t);
+    const resto = location.host + location.pathname + '?' + q;
+    const a = document.createElement('a'); a.target = '_top';
+    a.href = ios ? 'x-safari-https://' + resto : 'intent://' + resto + '#Intent;scheme=https;action=android.intent.action.VIEW;end';
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  const b = document.createElement('button'); b.id = 'ra-alt'; b.className = 'ra'; b.type = 'button'; b.textContent = 'Ver no meu ambiente';
+  let tentou = false;
+  b.addEventListener('click', async () => {
+    if (!ios || tentou || typeof mv.prepareUSDZ !== 'function') return fora();
+    tentou = true; b.textContent = 'Preparando…';
+    try {
+      const url = await mv.prepareUSDZ(), a = document.createElement('a'); a.rel = 'ar'; a.href = url; a.appendChild(document.createElement('img'));
+      document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) { console.error(e); }
+    // se o visualizador não abriu, o botão passa a levar ao Safari
+    setTimeout(() => { b.textContent = document.hidden ? 'Ver no meu ambiente' : 'Abrir no Safari para ver no ambiente'; if (document.hidden) tentou = false; }, 2500);
+  });
+  mv.parentElement.appendChild(b);
+}
+mv.addEventListener('load', () => { statusEl.hidden = true; boxV.hidden = false; aplica(); setTimeout(arAlternativo, 800); });
 try {
   await customElements.whenDefined('model-viewer');
   mv.environmentImage = CDN + 'luz/estudio.hdr';
