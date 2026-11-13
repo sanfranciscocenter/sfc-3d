@@ -1,0 +1,22 @@
+// Catálogo da Buriti para o configurador (mesmo formato de kf/catalogo.js).
+// Tecidos: texto exato das opções de "Escolha o tecido: (BUR)"; o número no fim é o código e dá o arquivo bur/tecidos/<código>.jpg.
+// Linhas: Essencial = faixas 3 e 4, Standard = 5 e 6, Premium = 7 e 8, Couro legítimo = peles 1000–1023.
+// Fotos: uma página por amostra de catalogo-tecidos-2026.pdf e catalogo-peles-2026.pdf (pasta do fornecedor), tratadas sem emenda.
+export const BUR = {
+  pasta: 'bur',
+  selTecido: 'Escolha o tecido: (BUR)',
+  cod: v => (/(\d+)\s*$/.exec(v) || [])[1],
+  tipo: k => /^Boucl/.test(k) ? 'boucle' : /^(Veludo|Camur)/.test(k) ? 'camurca' : /^Corino/.test(k) || /\b10\d\d$/.test(k) ? 'couroFosco' : 'linhoKF',
+  escala: k => /\b10\d\d$/.test(k) ? 0.18 / 0.11 : 1,   // a foto do couro cobre uma área menor
+  tile: 0.18, tileCouro: 0.11,   // lado real da textura, em metros (estimado; o catálogo não traz escala)
+  linhas: [
+    ['Essencial', ['Linho Faixa 3 - Cód 462', 'Linho Faixa 3 - Cód 463', 'Veludo Faixa 3 - Cód 63', 'Veludo Faixa 3 - Cód 64', 'Veludo Faixa 3 - Cód 125', 'Veludo Faixa 3 - Cód 144', 'Veludo Faixa 3 - Cód 148', 'Bouclé Faixa 4 - Cód 161', 'Bouclé Faixa 4 - Cód 162', 'Bouclé Faixa 4 - Cód 163', 'Linho Faixa 4 - Cód 10', 'Linho Faixa 4 - Cód 11', 'Linho Faixa 4 - Cód 12', 'Linho Faixa 4 - Cód 13', 'Linho Faixa 4 - Cód 343', 'Linho Faixa 4 - Cód 344', 'Linho Faixa 4 - Cód 345', 'Linho Faixa 4 - Cód 346', 'Linho Faixa 4 - Cód 347', 'Linho Faixa 4 - Cód 447', 'Linho Faixa 4 - Cód 448', 'Linho Faixa 4 - Cód 449']],
+    ['Standard', ['Bouclé Faixa 5 - Cód 426', 'Bouclé Faixa 5 - Cód 427', 'Bouclé Faixa 5 - Cód 428', 'Corino Faixa 5 - Cód 172', 'Corino Faixa 5 - Cód 173', 'Corino Faixa 5 - Cód 174', 'Corino Faixa 5 - Cód 450', 'Corino Faixa 5 - Cód 451', 'Corino Faixa 5 - Cód 452', 'Linho Faixa 5 - Cód 180', 'Linho Faixa 5 - Cód 189', 'Linho Faixa 5 - Cód 190', 'Linho Faixa 5 - Cód 191', 'Linho Faixa 5 - Cód 321', 'Linho Faixa 5 - Cód 322', 'Linho Faixa 5 - Cód 330', 'Linho Faixa 5 - Cód 340', 'Linho Faixa 5 - Cód 341', 'Linho Faixa 5 - Cód 342', 'Linho Faixa 5 - Cód 437', 'Linho Faixa 5 - Cód 438', 'Linho Faixa 5 - Cód 439', 'Linho Faixa 5 - Cód 440', 'Linho Faixa 5 - Cód 441', 'Linho Faixa 5 - Cód 442', 'Linho Faixa 5 - Cód 443', 'Linho Faixa 5 - Cód 444', 'Linho Faixa 5 - Cód 445', 'Linho Faixa 5 - Cód 446', 'Linho Faixa 6 - Cód 314', 'Linho Faixa 6 - Cód 316', 'Linho Faixa 6 - Cód 318', 'Linho Faixa 6 - Cód 319', 'Linho Faixa 6 - Cód 320', 'Linho Faixa 6 - Cód 348', 'Linho Faixa 6 - Cód 349', 'Linho Faixa 6 - Cód 350', 'Linho Faixa 6 - Cód 351', 'Linho Faixa 6 - Cód 352', 'Linho Faixa 6 - Cód 353', 'Linho Faixa 6 - Cód 453', 'Linho Faixa 6 - Cód 454', 'Linho Faixa 6 - Cód 455', 'Linho Faixa 6 - Cód 461', 'Veludo Faixa 6 - Cód 304', 'Veludo Faixa 6 - Cód 305', 'Veludo Faixa 6 - Cód 306', 'Veludo Faixa 6 - Cód 307']],
+    ['Premium', ['Bouclé Faixa 7 - Cód 310', 'Bouclé Faixa 7 - Cód 311', 'Bouclé Faixa 7 - Cód 312', 'Bouclé Faixa 7 - Cód 313', 'Camurça Faixa 7 - Cód 421', 'Camurça Faixa 7 - Cód 422', 'Camurça Faixa 7 - Cód 423', 'Linho Faixa 7 - Cód 354', 'Linho Faixa 7 - Cód 355', 'Veludo Faixa 7 - Cód 464', 'Linho Faixa 8 - Cód 356', 'Linho Faixa 8 - Cód 357', 'Linho Faixa 8 - Cód 358', 'Linho Faixa 8 - Cód 359', 'Linho Faixa 8 - Cód 360', 'Linho Faixa 8 - Cód 361', 'Linho Faixa 8 - Cód 456', 'Linho Faixa 8 - Cód 457', 'Linho Faixa 8 - Cód 458', 'Linho Faixa 8 - Cód 459', 'Linho Faixa 8 - Cód 460']],
+    ['Couro legítimo', ['Off White 1000', 'Bege 1001', 'Granizo 1011', 'Fogg 1012', 'Brown 1006', 'Cromio 1014', 'Cinza 1008', 'Cinza Escuro 1010', 'Dust Blue 1022', 'Musgo 1009', 'Zafir 1013', 'Preto 1005', 'White 1023', 'Mostarda 1018', 'Nozes 1016', 'Desert 1017', 'Cappuccino 1015', 'Outono 1019', 'Verde 1021', 'Black 1020']]
+  ],
+  mini: { arquivo: 'bur/tecidos-mini.jpg', colunas: 12, linhas: 10, ordem: '462,463,63,64,125,144,148,161,162,163,10,11,12,13,343,344,345,346,347,447,448,449,426,427,428,172,173,174,450,451,452,180,189,190,191,321,322,330,340,341,342,437,438,439,440,441,442,443,444,445,446,314,316,318,319,320,348,349,350,351,352,353,453,454,455,461,304,305,306,307,310,311,312,313,421,422,423,354,355,356,357,358,359,360,361,456,457,458,459,460,1000,1001,1011,1012,1006,1014,1008,1010,1022,1009,1013,1005,1023,1018,1016,1017,1015,1019,1021,1020'.split(',') },
+  // pés: a Buriti não tem escolha de madeira nem de metal no anúncio; cor fixa por produto (corMadeira / corMetal)
+  madeiras: [['Padrão', '#6B4A36', '../kf/madeiras/imbuia.jpg']],
+  metais: []
+};
