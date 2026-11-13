@@ -68,6 +68,21 @@ export const PRODUTOS = {
       '#30': 'metal', '#31': 'metal', '#32': 'metal', '#33': 'metal' },
     tamanhos: [210, 230, 250, 270, 290], tamanhoBloco: 250,
     estica: { base: 2.50, braco: 0.25, rigido: 0.6, porMalha: true } },
+  'kf-verona-sofa': { nome: 'Sofá Verona', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/verona-sofa.glb',
+    // Bloco "KF - Sofa ALVA com Mesa 2" (81772623…; nome errado na Warehouse, é o Verona — Matheus, 13/11/2026), 276 cm.
+    // Vem com o braço e a mesa em lados trocados em relação à foto do anúncio: invertido aqui. Só a parte estofada
+    // estica; a mesa (59 cm) e o braço mantêm a medida. O bloco traz um assento inteiro; a foto mostra dois.
+    partes: { '*': 'tecido', '[0135_DarkGray]': 'metal', 'madeira': 'madeira' },
+    inverteX: true,
+    tamanhos: [257, 277, 297], tamanhoBloco: 277,
+    estica: { base: 2.76, zona: [-1.21, 0.79], rigido: 0.6, porMalha: true } },
+  'kf-flow-sofa': { nome: 'Sofá Flow', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/flow-poltrona.glb',
+    // Não há bloco do sofá: montado a partir da Poltrona Flow (Matheus, 13/11/2026). A base estica, os braços e os pés
+    // vão para as pontas, e a almofada do assento (#5) e a do encosto (#0) viram duas, como na foto do anúncio.
+    partes: { 'POLTRONA FLOW_TEC': 'tecido', 'POLTRONA FLOW_MAD': 'madeira' },
+    tamanhos: [185, 205, 225, 245, 265, 285], tamanhoBloco: 225,
+    estica: { base: 1.20, braco: 0.30, rigido: 0.35, porMalha: true },
+    duplica: { vao: 0.60, pecas: { '#5': 1.2, '#0': 1.02 } } },
   'kf-portos-sofa': {
     nome: 'Sofá Portos', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/portos-sofa.glb',
     // bloco de 210 cm (um dos tamanhos do anúncio); Material.001 = estofado, Material.002 = pés
