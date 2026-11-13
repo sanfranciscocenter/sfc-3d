@@ -4,6 +4,13 @@
 export const PRODUTOS = {
   // KF Mobiliário (T-118): catálogo próprio em kf/catalogo.js. Piloto: Sofá Portos.
   // O bloco "KF - Sofá Alva" da Warehouse NÃO é o do anúncio (Matheus, 12/11/2026) — não usar.
+  'kf-flow-poltrona': { nome: 'Poltrona Flow', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/flow-poltrona.glb',
+    // 120 × 82 × 81 cm; confere com as fotos do anúncio. TEC = almofadas e base estofada, MAD = 4 pés
+    partes: { 'POLTRONA FLOW_TEC': 'tecido', 'POLTRONA FLOW_MAD': 'madeira' } },
+  'kf-base-poltrona': { nome: 'Poltrona Base', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/base-poltrona.glb',
+    // SEM anúncio no site em 13/11/2026. O bloco divide as faces de cada peça em duas malhas (parecem duplicadas, mas
+    // são metades complementares): usar todas. #2 a #5 = pés; o resto é estofado
+    partes: { 'default_face_material': 'tecido', '#2': 'madeira', '#3': 'madeira', '#4': 'madeira', '#5': 'madeira' } },
   'kf-portos-sofa': {
     nome: 'Sofá Portos', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/portos-sofa.glb',
     // bloco de 210 cm (um dos tamanhos do anúncio); Material.001 = estofado, Material.002 = pés
