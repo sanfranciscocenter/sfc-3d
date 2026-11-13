@@ -373,15 +373,47 @@ let papeis = new Set();
 // Sofá em outra largura: o bloco vem numa medida só. Estica só o miolo; cada braço (faixa "braco" em cada ponta)
 // mantém a largura, e as peças pequenas (pés, botões) são só deslocadas, sem deformar.
 function estica(geo, c, largura) {
-  const pos = geo.attributes.position, meia = c.base / 2, hi = meia - c.braco, hi2 = largura / 2 - c.braco; if (hi <= 0 || Math.abs(hi2 - hi) < 1e-4) return;
-  const mapa = x => { const a = Math.abs(x), s = x < 0 ? -1 : 1; return a <= hi ? x * hi2 / hi : s * (hi2 + (a - hi)); };
+  const pos = geo.attributes.position; let mapa;
+  if (c.zona) {   // sofá assimétrico (com chaise): só a faixa [xa, xb] estica ou encolhe; o que está depois dela é deslocado
+    const [xa, xb] = c.zona, d = largura - c.base; if (Math.abs(d) < 1e-4) return;
+    mapa = x => x <= xa ? x : x >= xb ? x + d : xa + (x - xa) * (xb - xa + d) / (xb - xa);
+  } else {
+    const meia = c.base / 2, hi = meia - c.braco, hi2 = largura / 2 - c.braco; if (hi <= 0 || Math.abs(hi2 - hi) < 1e-4) return;
+    mapa = x => { const a = Math.abs(x), s = x < 0 ? -1 : 1; return a <= hi ? x * hi2 / hi : s * (hi2 + (a - hi)); };
+  }
+  if (c.porMalha) {   // blocos com as faces em fragmentos soltos: decide pela malha inteira (almofada/pé = desloca; corpo = estica)
+    geo.computeBoundingBox(); const b = geo.boundingBox, w = b.max.x - b.min.x, cx0 = (b.max.x + b.min.x) / 2, rig = w < (c.rigido || 0.3), dxr = mapa(cx0) - cx0;
+    for (let i = 0; i < pos.count; i++) pos.setX(i, rig ? pos.getX(i) + dxr : mapa(pos.getX(i)));
+    pos.needsUpdate = true; geo.computeBoundingBox(); return;
+  }
   const an = analisa(geo), raizDe = new Int32Array(pos.count).fill(-1);
   for (let t = 0; t < an.nt; t++) { const r = an.raiz(t); for (let k = 0; k < 3; k++) raizDe[an.idx[t * 3 + k]] = r; }
   for (let i = 0; i < pos.count; i++) {
     const cx = an.caixas.get(raizDe[i]), x = pos.getX(i);
-    if (cx && cx.tam[0] < (c.rigido || 0.3)) pos.setX(i, x + mapa(cx.centro[0]) - cx.centro[0]); else pos.setX(i, mapa(x));
+    if (cx && cx.tam[0] < (c.rigido || 0.3)) {
+      // peça pequena (almofada, pé): só é deslocada. Se a faixa encolhe, as almofadas dentro dela afinam um pouco (até 18%) para não se sobreporem
+      let esc = 1; if (c.zona && cx.centro[0] > c.zona[0] && cx.centro[0] < c.zona[1]) { const f = (c.zona[1] - c.zona[0] + largura - c.base) / (c.zona[1] - c.zona[0]); if (f < 1) esc = Math.max(0.82, f); }
+      pos.setX(i, mapa(cx.centro[0]) + (x - cx.centro[0]) * esc);
+    } else pos.setX(i, mapa(x));
   }
   pos.needsUpdate = true; geo.computeBoundingBox();
+}
+
+// Almofada solta (largura × altura × espessura), de pé no plano XY: duas faces abauladas que se fecham na costura,
+// com as pontas dos cantos levemente esticadas como numa almofada de verdade.
+function almofada(W, H, T, N = 22) {
+  const pos = [], idx = [];
+  for (const lado of [1, -1]) for (let j = 0; j <= N; j++) for (let i = 0; i <= N; i++) {
+    const u = i / N * 2 - 1, v = j / N * 2 - 1, f = Math.pow(Math.max(0, (1 - u * u) * (1 - v * v)), 0.4);
+    pos.push(u * W / 2 * (1 - 0.07 * (1 - v * v)), v * H / 2 * (1 - 0.07 * (1 - u * u)), lado * T / 2 * f);
+  }
+  const M = N + 1;
+  for (let s = 0; s < 2; s++) for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const a = s * M * M + j * M + i, b = a + 1, c = a + M, d = c + 1;
+    if (s === 0) idx.push(a, b, d, a, d, c); else idx.push(a, d, b, a, c, d);
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
+  return g;
 }
 
 let gltfCache = null;
@@ -397,6 +429,8 @@ async function prepararModelo(largura) {
     const g = o.geometry.clone().applyMatrix4(o.matrixWorld);
     if (P.escala) g.scale(P.escala, P.escala, P.escala);   // bloco que veio na unidade errada
     if (o.matrixWorld.determinant() < 0 && g.index) { const a = g.index.array; for (let i = 0; i < a.length; i += 3) { const t = a[i]; a[i] = a[i + 2]; a[i + 2] = t; } }
+    const fora = largura && P.ocultaEm && (P.ocultaEm[Math.round(largura * 100)] || []).includes('#' + n);   // peça que não existe neste tamanho
+    if (fora) { n++; return; }
     pecas.push({ i: n++, geo: g, nomeMat: mats[0]?.name || '', original: mats[0] });
   });
   // centraliza no chão
@@ -405,16 +439,35 @@ async function prepararModelo(largura) {
   pecas.forEach(p => { p.geo.translate(dx, dy, dz); p.geo.computeBoundingBox(); });
   // correções do bloco em relação à peça real (ver produtos.js)
   if (P.encostoReto) pecas.forEach(p => { if (P.encostoReto.pecas.includes('#' + p.i)) endireita(p.geo, P.encostoReto); });
-  if (P.estica && largura) pecas.forEach(p => estica(p.geo, P.estica, largura));
+  if (P.estica && largura) {
+    pecas.forEach(p => estica(p.geo, P.estica, largura));
+    const c2 = new THREE.Box3(); pecas.forEach(p => c2.union(p.geo.boundingBox)); const ddx = -(c2.min.x + c2.max.x) / 2;   // centraliza de novo
+    pecas.forEach(p => { p.geo.translate(ddx, 0, 0); p.geo.computeBoundingBox(); });
+  }
+
+  // peças geradas aqui (não existem no bloco): pés em esfera, almofadas soltas. Posições na medida do tamanhoBloco;
+  // acompanham a largura escolhida (o miolo encolhe/estica, as pontas só se deslocam).
+  if (P.extras) {
+    const B = (P.tamanhoBloco || 0) / 100, L = largura || B, br = (P.estica && P.estica.braco) || 0, k = B ? (L / 2 - br) / (B / 2 - br) : 1;
+    const mx = x => !B ? x : Math.abs(x) <= B / 2 - br ? x * k : Math.sign(x) * (L / 2 - (B / 2 - Math.abs(x)));
+    for (const e of P.extras) {
+      let g;
+      if (e.tipo === 'esfera') { g = new THREE.SphereGeometry(1, 28, 20); g.scale(e.r[0], e.r[1], e.r[2]); }
+      else { g = almofada(e.tam[0] * (e.encolhe ? Math.min(1, Math.max(0.85, k)) : 1), e.tam[1], e.tam[2]); if (e.rot) { g.rotateZ(e.rot[2] || 0); g.rotateX(e.rot[0] || 0); g.rotateY(e.rot[1] || 0); } }
+      g.translate(mx(e.pos[0]), e.pos[1], e.pos[2]); g.computeBoundingBox();
+      pecas.push({ i: n++, geo: g, nomeMat: 'extra', original: null, papel: e.papel });
+    }
+  }
 
   const cena = new THREE.Scene();
+  if (DEBUG) window._pecas = pecas;
   if (DEBUG) {
     const linhas = [];
     pecas.forEach(p => {
       const cor = CORES_DEBUG[p.i % CORES_DEBUG.length], b = p.geo.boundingBox, t = b.getSize(new THREE.Vector3());
       const g = p.geo.index ? p.geo.toNonIndexed() : p.geo; if (!g.attributes.normal) g.computeVertexNormals();
       const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ name: 'dbg' + p.i, color: cor, roughness: 0.8, side: THREE.DoubleSide })); cena.add(m);
-      linhas.push(`<div><i style="display:inline-block;width:12px;height:12px;background:${cor}"></i> #${p.i} mat "${p.nomeMat}" · ${(t.x*100).toFixed(1)} × ${(t.y*100).toFixed(1)} × ${(t.z*100).toFixed(1)} cm · y ${ (b.min.y*100).toFixed(0)}–${(b.max.y*100).toFixed(0)} · ${analisa(p.geo).caixas.size} peças soltas</div>`);
+      linhas.push(`<div><i style="display:inline-block;width:12px;height:12px;background:${cor}"></i> #${p.i} mat "${p.nomeMat}" · ${(t.x*100).toFixed(1)} × ${(t.y*100).toFixed(1)} × ${(t.z*100).toFixed(1)} cm · x ${(b.min.x*100).toFixed(0)}..${(b.max.x*100).toFixed(0)} · y ${ (b.min.y*100).toFixed(0)}–${(b.max.y*100).toFixed(0)} · ${analisa(p.geo).caixas.size} peças soltas</div>`);
     });
     $('debug').innerHTML = linhas.join(''); $('debug').hidden = false;
   } else {
@@ -430,7 +483,7 @@ async function prepararModelo(largura) {
     };
     const porPapel = {};
     for (const p of pecas) {
-      const papel = P.partes['#' + p.i] || P.partes[p.nomeMat] || 'original';
+      const papel = p.papel || P.partes['#' + p.i] || P.partes[p.nomeMat] || 'original';
       if (papel === 'oculto') continue;
       if (papel === 'original') { const m = new THREE.Mesh(p.geo, p.original); m.name = 'original' + p.i; cena.add(m); continue; }
       if (papel !== 'palha') { (porPapel[papel] = porPapel[papel] || []).push(p.geo); continue; }
