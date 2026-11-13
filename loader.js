@@ -27,6 +27,26 @@
       pagina: 'produto.html', params: 'p=cassa-banqueta', derivacao: 208,
       sel: { madeira: 'Escolha a madeira (AL):', acabamento: 'Escolha o acabamento (CRN):' }
     },
+    '/cadeira-origami': {
+      pagina: 'produto.html', params: 'p=origami-cadeira', derivacao: 208,
+      sel: { madeira: 'Escolha a madeira (AL):', acabamento: 'Escolha o acabamento (CRN):' }
+    },
+    '/cadeira-origami-assento-em-palha': {
+      pagina: 'produto.html', params: 'p=origami-cadeira-palha', derivacao: 208,
+      sel: { madeira: 'Escolha a madeira (AL):', tela: 'Escolha a tela (AL):', acabamento: 'Escolha o acabamento (CRN):' }
+    },
+    '/banqueta-origami': {
+      pagina: 'produto.html', params: 'p=origami-banqueta', derivacao: 208,
+      sel: { madeira: 'Escolha a madeira (AL):', acabamento: 'Escolha o acabamento (CRN):' }
+    },
+    '/cadeira-mestre': {
+      pagina: 'produto.html', params: 'p=mestre-cadeira', derivacao: 208,
+      sel: { madeira: 'Escolha a madeira (AL):', acabamento: 'Escolha o acabamento (CRN):' }
+    },
+    '/cadeira-maracaja': {
+      pagina: 'produto.html', params: 'p=maracaja-cadeira', derivacao: 208,
+      sel: { madeira: 'Escolha a madeira (AL):', tela: 'Escolha a tela (AL):', acabamento: 'Escolha o acabamento (CRN):' }
+    },
     '/cadeira-cartier': {
       pagina: 'produto.html', params: 'p=cartier-cadeira',
       sel: { madeira: 'Escolha a madeira (AL):', tela: 'Escolha a tela (AL):' }
