@@ -539,17 +539,18 @@ const CAT = EH_KF ? {
   escala: () => 1, tipo: k => TIPO_DE[k] || 'medio', linha: linhaDe, valorSite, deSite: v => +(/TC\s*(\d+)/.exec(v || '') || [])[1]
 };
 const METAIS = EH_KF ? KF.metais : [];
+const MADS = EH_KF ? KF.madeiras : MADEIRAS;   // KF: [nome, cor]; Alma: [nome, arquivo, rugosidade]
 const TAMANHOS = (P && P.tamanhos) || [];
 if (EH_KF) {
   estado.t = CAT.valido(par.get('t')) ? par.get('t') : KF.linhas[0][1][0];
-  estado.x = num('x', METAIS.length - 1, 0);
+  estado.x = num('x', METAIS.length - 1, 0); estado.m = num('m', KF.madeiras.length - 1, 0);
   estado.z = num('z', TAMANHOS.length - 1, Math.max(0, TAMANHOS.indexOf(P.tamanhoBloco)));
 }
 const larguraAtual = () => TAMANHOS.length ? TAMANHOS[estado.z] / 100 : 0;
 
 async function aplica() {
   const minha = ++vez, [nomeM, arqM, roughM] = MADEIRAS[estado.m], [nomeE, arqE] = PALHAS[estado.e];
-  $('nm-madeira').textContent = nomeM; $('nm-encosto').textContent = 'Palha ' + nomeE.replace(/ PN\d+$/, ''); $('nm-tecido').textContent = CAT.nome(estado.t);
+  $('nm-madeira').textContent = MADS[estado.m][0]; $('nm-encosto').textContent = 'Palha ' + nomeE.replace(/ PN\d+$/, ''); $('nm-tecido').textContent = CAT.nome(estado.t);
   const urlT = CAT.url(estado.t), corT = CAT.cor(estado.t), amo = $('escolhido').firstElementChild;
   amo.style.backgroundImage = urlT ? `url("${urlT}")` : 'none'; amo.style.backgroundColor = corT || '';
   if (METAIS.length) $('nm-metal').textContent = METAIS[estado.x][0];
@@ -569,6 +570,7 @@ async function aplica() {
   if (minha !== vez) return;
   const m = mat('madeira'), t = mat('tecido'), p = mat('palha');
   if (m && mc) { m.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); m.pbrMetallicRoughness.baseColorTexture.setTexture(mc); m.normalTexture.setTexture(mn); m.pbrMetallicRoughness.setRoughnessFactor(roughM); }
+  if (m && mc && EH_KF) { m.pbrMetallicRoughness.baseColorTexture.setTexture(null); m.pbrMetallicRoughness.setBaseColorFactor(KF.madeiras[estado.m][1]); m.pbrMetallicRoughness.setRoughnessFactor(0.72); }
   if (t && tc) { t.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); t.pbrMetallicRoughness.baseColorTexture.setTexture(tc); t.normalTexture.setTexture(tn); t.pbrMetallicRoughness.setRoughnessFactor(rough); }
   // escala própria do couro: tem de ser aplicada DEPOIS de pôr a textura no material (antes disso o visualizador descarta)
   if (t && tc) { const e = CAT.escala(estado.t); for (const info of [t.pbrMetallicRoughness.baseColorTexture, t.normalTexture]) { const s = info && info.texture && info.texture.sampler; if (s && s.setScale) s.setScale({ u: e, v: e }); } }
@@ -606,7 +608,8 @@ async function trocaModelo() {
 }
 const boxM = $('madeiras'), boxE = $('encostos'), boxT = $('tecidos'), boxV = $('vistas'), boxX = $('metais'), boxZ = $('tamanhos');
 function montaInterface() {
-  MADEIRAS.forEach(([nome, arq], i) => boxM.appendChild(amostra(nome, CDN + 'madeiras-v2/' + arq, i === estado.m, () => estado.m = i, boxM, i)));
+  if (EH_KF) KF.madeiras.forEach(([nome, cor], i) => pilula(boxM, nome, cor, i === estado.m, () => { estado.m = i; aplica(); }, i));
+  else MADEIRAS.forEach(([nome, arq], i) => boxM.appendChild(amostra(nome, CDN + 'madeiras-v2/' + arq, i === estado.m, () => estado.m = i, boxM, i)));
   PALHAS.forEach(([nome, arq, mini], i) => {
     const b = document.createElement('button'); b.className = 'pilula'; b.type = 'button'; b.dataset.k = i; b.setAttribute('aria-pressed', i === estado.e ? 'true' : 'false');
     const bola = document.createElement('i'); bola.style.backgroundImage = `url("${LOJA}${mini}?ims=fit-in/96x96")`;
@@ -643,7 +646,7 @@ if (EMBED) {
     if (!SITES.includes(ev.origin) || !ev.data || ev.data.sfc3d !== 'estado') return;
     const d = ev.data;
     if (d.precos && typeof d.precos === 'object') precos = d.precos;
-    const m = MADEIRAS.findIndex(x => x[0] === d.madeira); if (m >= 0) estado.m = m;
+    const m = MADS.findIndex(x => x[0] === d.madeira); if (m >= 0) estado.m = m;
     const e = PALHAS.findIndex(x => x[0] === d.tela); if (e >= 0) estado.e = e;
     const c = CAT.deSite(d.acabamento); if (CAT.valido(c)) estado.t = c;
     const x = METAIS.findIndex(q => q[0] === d.metal); if (x >= 0) estado.x = x;
@@ -651,7 +654,7 @@ if (EMBED) {
     marcaTudo(); aplica();
   });
   $('usar').addEventListener('click', () => parent.postMessage({
-    sfc3d: 'usar', madeira: MADEIRAS[estado.m][0], tela: tem('palha') ? PALHAS[estado.e][0] : '',
+    sfc3d: 'usar', madeira: MADS[estado.m][0], tela: tem('palha') ? PALHAS[estado.e][0] : '',
     acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: tem('tecido') ? CAT.linha(estado.t) : '',
     metal: METAIS.length ? METAIS[estado.x][0] : '', tamanho: TAMANHOS.length ? TAMANHOS[estado.z] : ''
   }, '*'));
@@ -670,7 +673,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lupa.hidd
 
 $('compartilhar').addEventListener('click', async () => {
   const url = `${location.origin}${location.pathname}?p=${encodeURIComponent(CHAVE)}&m=${estado.m}&e=${estado.e}&t=${encodeURIComponent(estado.t)}&x=${estado.x}&z=${estado.z}`;
-  const texto = [P.nome + ': ' + MADEIRAS[estado.m][0], tem('palha') && 'palha ' + PALHAS[estado.e][0], tem('tecido') && CAT.nome(estado.t), METAIS.length && 'metal ' + METAIS[estado.x][0], TAMANHOS.length && TAMANHOS[estado.z] + ' cm'].filter(Boolean).join(', ');
+  const texto = [P.nome + ': ' + MADS[estado.m][0], tem('palha') && 'palha ' + PALHAS[estado.e][0], tem('tecido') && CAT.nome(estado.t), METAIS.length && 'metal ' + METAIS[estado.x][0], TAMANHOS.length && TAMANHOS[estado.z] + ' cm'].filter(Boolean).join(', ');
   try {
     if (navigator.share) await navigator.share({ title: P.nome, text: texto, url });
     else { await navigator.clipboard.writeText(url); $('aviso').textContent = 'Link copiado'; setTimeout(() => $('aviso').textContent = '', 2500); }
