@@ -6,6 +6,11 @@ const SER_MAD = { '*': 'tecido', 'Plywood_01_1K': 'madeira', 'Wood_Veneer': 'mad
 // Buriti: o que não for pé cai em '*' = tecido
 const BUR_BASE = { '*': 'tecido', 'Aluminium Black Anodized Fingerprints': 'preto', 'Aluminium_Black_Anodized': 'preto', 'Acrylic Opaque Black': 'preto', 'metal_standard': 'preto', 'Cherry Semigloss': 'madeira' };
 // Ateliê Ipê: madeira = 'Acabamento champagne' / 'Nogueira' e miudezas; 'Material-N' é um plano de fundo do bloco (oculto); o resto é tecido
+// Vindima: nomes das opções de madeira de cada tipo de anúncio ("acabamento do jequitibá" × "acabamento da madeira")
+const VND_JEQ = ['In natura', 'Nogueira', 'Castanho', 'Envelhecido', 'Ebanizado'], VND_MAD = ['Natural', 'Nogueira', 'Castanho', 'Ebanizado'];
+const VND_CAMA = ['Solteiro', 'Casal', 'Queen', 'King'];
+const VND_TELAS = [['Tela sintética', ['Sintética sextavada creme', 'Sintética quadriculada creme']], ['Tela natural', ['Natural Vanilla', 'Natural Cappuccino']]];
+const VND_REGRAS = [[/travesseiro|coberta|len.ol/i, 'oculto'], [/colch/i, 'branco']];
 const IPE_BASE = { '*': 'tecido', 'Acabamento champagne': 'madeira', 'Acabamento champagne 1': 'madeira', 'Nogueira': 'madeira', '*1': 'madeira', '*2': 'madeira', 'Material-4': 'oculto', 'Material-6': 'oculto', 'Material-8': 'oculto' };
 // Buriti, sofás: [expressão do nome do material, papel]; o que não casar é tecido
 const BUR_REGRAS = [[/iron|glass|acrylic|black|roda|metal.?standard|mat_padrao|^p.{1,3}s$|anod/i, 'preto'], [/wenge|cherry|walnut|leather pull up/i, 'madeira'], [/alumin|chrome/i, 'metal']];
@@ -112,6 +117,42 @@ export const PRODUTOS = {
   'ipe-cadeira-folhagem': { nome: 'Cadeira Folhagem', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/folhagem.glb', partes: { ...IPE_BASE } },
   'ipe-poltrona-bruma': { nome: 'Poltrona Bruma', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/bruma.glb', partes: { ...IPE_BASE } },
   'ipe-poltrona-talhe': { nome: 'Poltrona Talhe', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/talhe.glb', partes: { ...IPE_BASE } },
+
+  // ---------- Vindima (catálogo em vnd/catalogo.js; blocos da fábrica reduzidos em vnd/modelos/) ----------
+  // Camas: o bloco traz colchão (fica, branco) e roupa de cama/travesseiros (saem: a foto do anúncio mostra só o colchão).
+  // Tamanhos = largura da cama em cm, com o nome do cartão do site; o bloco vem numa medida e o miolo estica.
+  'vnd-cama-pinotage': { nome: 'Cama Pinotage', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/pinotage-cama-queen.glb', madeiras: VND_JEQ,
+    partes: { '*': 'madeira', 'Material #29_ca3e7883': 'tecido', 'Material #31_ca3e7883': 'branco', 'Material #30_ca3e7883': 'couro' },
+    tamanhos: [180, 215], tamanhoNomes: ['Queen', 'King'], tamanhoBloco: 180, estica: { base: 1.80, braco: 0.12, porMalha: true, rigido: 0.5 } },
+  'vnd-cadeira-gamay': { nome: 'Cadeira Gamay', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/gamay-cadeira.glb', madeiras: VND_MAD, escala: 1.15,   // bloco menor que a peça (L 60 cm no catálogo)
+    partes: { '*': 'madeira', 'Material #28_843e3a68': 'tecido', '#4': 'oculto', '#5': 'oculto', '#10': 'oculto' } },
+  // bloco numa malha só: pés, base e bandeja são madeira; as almofadas do assento (y 34–42 cm), tecido
+  'vnd-recamier-friulano': { nome: 'Recamier Friulano', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/friulano-recamier.glb', madeiras: VND_MAD,
+    partes: { '*': 'madeira' }, separa: { '*': b => b.min[1] > 0.335 && b.max[1] < 0.43 && b.tam[2] > 0.3 ? 'tecido' : 'madeira' } },
+  // cabeceira em tela: as telas entram como "tecido" (linhas Tela sintética / Tela natural, como no anúncio)
+  'vnd-cama-riesling': { nome: 'Cama Riesling', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/riesling-cama.glb', madeiras: VND_JEQ, linhas: VND_TELAS, tituloTecido: 'Tela ',
+    partes: { '*': 'madeira', '#0': 'branco', '#1': 'branco', '#2': 'branco', '#3': 'branco', '#4': 'oculto', '#5': 'oculto', '#6': 'oculto', '#7': 'oculto', '#26': 'tecido', '#27': 'tecido', '#28': 'tecido' },
+    tamanhos: [96, 146, 166, 201], tamanhoNomes: VND_CAMA, tamanhoBloco: 201, estica: { base: 2.00, braco: 0.12, porMalha: true, rigido: 0.5 } },
+  'vnd-cama-tannat': { nome: 'Cama Tannat', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/tannat-cama.glb', madeiras: VND_MAD, linhas: 'tecidos+telas',
+    partes: { '*': 'madeira', 'Tecido Cabeceira': 'tecido', 'default_face_material': 'branco', 'Lastro': 'oculto' }, regras: VND_REGRAS,
+    tamanhos: [97, 147, 167, 202], tamanhoNomes: VND_CAMA, tamanhoBloco: 167, estica: { base: 1.72, braco: 0.12, porMalha: true, rigido: 0.5 } },
+  'vnd-cadeira-moscato': { nome: 'Cadeira Moscato', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/moscato-cadeira.glb', madeiras: VND_MAD, cartaoTela: true,
+    partes: { '*': 'madeira', 'Palhinha': 'palha', '*2': 'tecido' } },
+  'vnd-cama-viognier': { nome: 'Cama Viognier', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/viognier-cama.glb', madeiras: VND_JEQ,
+    partes: { '*': 'madeira', '#35': 'branco', '#36': 'branco', '02 - Default1': 'oculto', '*73': 'oculto' },
+    tamanhos: [108, 158, 178, 213], tamanhoNomes: VND_CAMA, tamanhoBloco: 178, estica: { base: 1.78, braco: 0.14, porMalha: true, rigido: 0.5 } },
+  'vnd-cama-verdicchio': { nome: 'Cama Verdicchio', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/verdicchio-cama.glb', madeiras: VND_JEQ, giraY: -90,
+    partes: { '*': 'madeira', '#18': 'branco', '#19': 'branco', '#20': 'oculto', '#21': 'oculto', '#26': 'oculto', '#27': 'oculto' }, regras: VND_REGRAS,
+    tamanhos: [99, 149, 169, 204], tamanhoNomes: VND_CAMA, tamanhoBloco: 169, estica: { base: 1.69, braco: 0.12, porMalha: true, rigido: 0.5 } },
+  // vendida só em couro soleta (personalização própria, sem linha de preço)
+  'vnd-poltrona-trebbiano': { nome: 'Poltrona Trebbiano', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/trebbiano-poltrona.glb', madeiras: VND_JEQ,
+    linhas: [['Couro soleta', ['Caramelo', 'Café', 'Preto']]], tituloTecido: 'Couro ', semLinha: true,
+    partes: { '*': 'madeira', '123_leather texture-seamless': 'tecido', 'Color M02': 'tecido' } },
+  'vnd-cadeira-trebbiano': { nome: 'Cadeira Trebbiano', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/trebbiano-cadeira.glb', madeiras: VND_JEQ, cartaoTela: true, giraY: -90,
+    partes: { '*': 'madeira', 'VELUDO': 'tecido', 'cadeira': 'palha' } },
+  'vnd-cama-teroldego': { nome: 'Cama Teroldego', sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/teroldego-cama.glb', madeiras: VND_JEQ, giraY: -90,
+    partes: { '*': 'madeira', 'COLCHÃO': 'branco', 'Material3': 'oculto', 'Material4': 'oculto', 'Material14': 'oculto' },
+    tamanhos: [98, 148, 168, 203], tamanhoNomes: VND_CAMA, tamanhoBloco: 98, estica: { base: 0.98, braco: 0.10, porMalha: true, rigido: 0.5 } },
   // ---------- Buriti, sofás cujo bloco da fábrica é a mesma configuração do anúncio. Largura: o miolo estica entre os
   // braços (peças com menos de 50 cm, como almofadas e pés, só se deslocam). BUR_REGRAS classifica os materiais. ----------
   'bur-sofa-sonata': { nome: 'Sofá Sonata', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-sonata.glb', texMadeira: 'kf/madeiras/imbuia.jpg', partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [200,220,240,260,280], tamanhoBloco: 280, estica: { base: 2.78, braco: 0.25, rigido: 0.5, porMalha: true } },
