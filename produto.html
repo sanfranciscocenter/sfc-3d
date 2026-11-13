@@ -399,6 +399,27 @@ function estica(geo, c, largura) {
   pos.needsUpdate = true; geo.computeBoundingBox();
 }
 
+// Mantém as peças soltas que ficam à esquerda de x = corte e acrescenta a cópia espelhada delas do outro lado.
+// Almofada que passa um pouco do corte é recuada inteira, para não atravessar a emenda dos módulos.
+function espelha(geo, corte, zMax) {
+  const an = analisa(geo), pos = geo.attributes.position, nor = geo.attributes.normal, P3 = [], N3 = [], Q3 = [], M3 = [];
+  geo.computeBoundingBox(); const b = geo.boundingBox, inteira = b.max.x - b.min.x < 0.7;
+  if (inteira && (b.max.x + b.min.x) / 2 >= corte) return null;
+  const dxM = inteira ? Math.min(0, corte - b.max.x) : 0;
+  for (let t = 0; t < an.nt; t++) {
+    const cx = an.caixas.get(an.raiz(t));
+    if (!inteira && (!cx || cx.centro[0] >= corte)) continue;
+    if (zMax !== undefined && cx && cx.centro[2] + cx.tam[2] / 2 > zMax) continue;   // sobra do outro módulo
+    const v = [an.idx[t * 3], an.idx[t * 3 + 1], an.idx[t * 3 + 2]];
+    for (const k of v) { P3.push(pos.getX(k) + dxM, pos.getY(k), pos.getZ(k)); if (nor) N3.push(nor.getX(k), nor.getY(k), nor.getZ(k)); }
+    for (const k of [v[0], v[2], v[1]]) { Q3.push(2 * corte - pos.getX(k) - dxM, pos.getY(k), pos.getZ(k)); if (nor) M3.push(-nor.getX(k), nor.getY(k), nor.getZ(k)); }
+  }
+  if (!P3.length) return null;
+  const faz = (p, n) => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
+    if (nor) g.setAttribute('normal', new THREE.Float32BufferAttribute(n, 3)); else g.computeVertexNormals(); return g; };
+  return [faz(P3, N3), faz(Q3, M3)];   // o módulo e a sua cópia espelhada, como peças separadas
+}
+
 // Almofada solta (largura × altura × espessura), de pé no plano XY: duas faces abauladas que se fecham na costura,
 // com as pontas dos cantos levemente esticadas como numa almofada de verdade.
 function almofada(W, H, T, N = 22) {
@@ -419,7 +440,8 @@ function almofada(W, H, T, N = 22) {
 let gltfCache = null;
 async function prepararModelo(largura) {
   const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
-  const gltf = gltfCache || (gltfCache = await new GLTFLoader().setDRACOLoader(draco).loadAsync(P.glb));
+  // glb pode ser uma lista: bloco grande dividido em partes (o envio ao GitHub aceita até 10 MB por arquivo)
+  const gltf = gltfCache || (gltfCache = await (async () => { const cs = []; for (const u of [].concat(P.glb)) cs.push(await new GLTFLoader().setDRACOLoader(draco).loadAsync(u)); const s = new THREE.Group(); cs.forEach(c => s.add(c.scene)); return { scene: s }; })());
   gltf.scene.updateMatrixWorld(true);
   // cada malha do arquivo, já na posição e escala finais (metros)
   const pecas = []; let n = 0;
@@ -437,6 +459,16 @@ async function prepararModelo(largura) {
   const cx = new THREE.Box3(); pecas.forEach(p => { p.geo.computeBoundingBox(); cx.union(p.geo.boundingBox); });
   const dx = -(cx.min.x + cx.max.x) / 2, dy = -cx.min.y, dz = -(cx.min.z + cx.max.z) / 2;
   pecas.forEach(p => { p.geo.translate(dx, dy, dz); p.geo.computeBoundingBox(); });
+  // bloco que traz só um dos módulos certos: fica o que está à esquerda do corte e ele é repetido, espelhado, do outro lado
+  if (P.espelha) {
+    const c = P.espelha.corte, ficam = [];
+    for (const p of pecas) {
+      if ((P.espelha.fora || []).includes('#' + p.i)) continue;
+      const g = espelha(p.geo, c, P.espelha.zMax); if (g) { p.geo = g[0]; ficam.push(p, { ...p, geo: g[1] }); }
+    }
+    pecas.length = 0; pecas.push(...ficam);
+    pecas.forEach(p => { p.geo.translate(-c, 0, 0); p.geo.computeBoundingBox(); });
+  }
   // correções do bloco em relação à peça real (ver produtos.js)
   if (P.encostoReto) pecas.forEach(p => { if (P.encostoReto.pecas.includes('#' + p.i)) endireita(p.geo, P.encostoReto); });
   if (P.estica && largura) {
@@ -483,7 +515,7 @@ async function prepararModelo(largura) {
     };
     const porPapel = {};
     for (const p of pecas) {
-      const papel = p.papel || P.partes['#' + p.i] || P.partes[p.nomeMat] || 'original';
+      const papel = p.papel || P.partes['#' + p.i] || P.partes[p.nomeMat] || P.partes['*'] || 'original';
       if (papel === 'oculto') continue;
       if (papel === 'original') { const m = new THREE.Mesh(p.geo, p.original); m.name = 'original' + p.i; cena.add(m); continue; }
       if (papel !== 'palha') { (porPapel[papel] = porPapel[papel] || []).push(p.geo); continue; }
