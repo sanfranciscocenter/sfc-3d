@@ -373,6 +373,7 @@ let papeis = new Set();
 // Sofá em outra largura: o bloco vem numa medida só. Estica só o miolo; cada braço (faixa "braco" em cada ponta)
 // mantém a largura, e as peças pequenas (pés, botões) são só deslocadas, sem deformar.
 function estica(geo, c, largura) {
+  if (geo.userData.fixo) return;   // peça já montada na largura certa (ver duplica)
   const pos = geo.attributes.position; let mapa;
   if (c.zona) {   // sofá assimétrico (com chaise): só a faixa [xa, xb] estica ou encolhe; o que está depois dela é deslocado
     const [xa, xb] = c.zona, d = largura - c.base; if (Math.abs(d) < 1e-4) return;
@@ -459,7 +460,26 @@ async function prepararModelo(largura) {
   const cx = new THREE.Box3(); pecas.forEach(p => { p.geo.computeBoundingBox(); cx.union(p.geo.boundingBox); });
   const dx = -(cx.min.x + cx.max.x) / 2, dy = -cx.min.y, dz = -(cx.min.z + cx.max.z) / 2;
   pecas.forEach(p => { p.geo.translate(dx, dy, dz); p.geo.computeBoundingBox(); });
-  // bloco que traz só um dos módulos certos: fica o que está à esquerda do corte e ele é repetido, espelhado, do outro lado
+  // bloco modelado ao contrário da foto do anúncio (braço e mesa em lados trocados): espelha tudo
+  if (P.inverteX) pecas.forEach(p => {
+    const g = p.geo.index ? p.geo.toNonIndexed() : p.geo, a = g.attributes.position.array, nr = g.attributes.normal && g.attributes.normal.array;
+    for (let i = 0; i < a.length; i += 9) {
+      a[i] = -a[i]; a[i + 3] = -a[i + 3]; a[i + 6] = -a[i + 6];
+      for (let k = 0; k < 3; k++) { const t = a[i + 3 + k]; a[i + 3 + k] = a[i + 6 + k]; a[i + 6 + k] = t; }
+      if (nr) { nr[i] = -nr[i]; nr[i + 3] = -nr[i + 3]; nr[i + 6] = -nr[i + 6]; for (let k = 0; k < 3; k++) { const t = nr[i + 3 + k]; nr[i + 3 + k] = nr[i + 6 + k]; nr[i + 6 + k] = t; } }
+    }
+    p.geo = g; g.computeBoundingBox();
+  });
+  // sofá feito a partir da poltrona: a almofada (assento, encosto) vira duas, lado a lado, cada uma com metade do vão
+  if (P.duplica && largura) {
+    const novas = [];
+    for (const p of pecas) {
+      const fator = P.duplica.pecas['#' + p.i]; if (!fator) { novas.push(p); continue; }
+      const b = p.geo.boundingBox, c0 = (b.min.x + b.max.x) / 2, w0 = b.max.x - b.min.x, meio = (largura - P.duplica.vao) / 2, s = meio * fator / w0;
+      for (const lado of [-1, 1]) { const g = p.geo.clone(); g.translate(-c0, 0, 0); g.scale(s, 1, 1); g.translate(lado * meio / 2, 0, 0); g.computeBoundingBox(); g.userData.fixo = true; novas.push({ ...p, geo: g }); }
+    }
+    pecas.length = 0; pecas.push(...novas);
+  }  // bloco que traz só um dos módulos certos: fica o que está à esquerda do corte e ele é repetido, espelhado, do outro lado
   if (P.espelha) {
     const c = P.espelha.corte, ficam = [];
     for (const p of pecas) {
