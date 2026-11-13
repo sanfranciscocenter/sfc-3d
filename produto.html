@@ -483,17 +483,24 @@ async function prepararModelo(largura) {
     if (!o.isMesh) return;
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     const g = emFloat(o.geometry).applyMatrix4(o.matrixWorld);
+    if (P.giraX) g.rotateX(P.giraX * Math.PI / 180);   // bloco modelado deitado
     if (P.giraY) g.rotateY(P.giraY * Math.PI / 180);   // bloco modelado virado para o lado
     if (P.escala) g.scale(P.escala, P.escala, P.escala);   // bloco que veio na unidade errada
     if (o.matrixWorld.determinant() < 0 && g.index) { const a = g.index.array; for (let i = 0; i < a.length; i += 3) { const t = a[i]; a[i] = a[i + 2]; a[i + 2] = t; } }
     const fora = largura && P.ocultaEm && (P.ocultaEm[Math.round(largura * 100)] || []).includes('#' + n);   // peça que não existe neste tamanho
-    if (fora || (P.partes['#' + n] || P.partes[mats[0]?.name || '']) === 'oculto') { n++; return; }   // peça oculta não entra nem na centralização
+    if (fora || (P.partes['#' + n] || P.partes[mats[0]?.name || ''] || ((P.regras || []).find(([re]) => re.test(mats[0]?.name || '')) || [])[1]) === 'oculto') { n++; return; }   // peça oculta não entra nem na centralização
     pecas.push({ i: n++, geo: g, nomeMat: mats[0]?.name || '', original: mats[0] });
   });
   // centraliza no chão
   const cx = new THREE.Box3(); pecas.forEach(p => { p.geo.computeBoundingBox(); cx.union(p.geo.boundingBox); });
   const dx = -(cx.min.x + cx.max.x) / 2, dy = -cx.min.y, dz = -(cx.min.z + cx.max.z) / 2;
   pecas.forEach(p => { p.geo.translate(dx, dy, dz); p.geo.computeBoundingBox(); });
+  // bloco com objetos a mais (outra peça, sobras longe): ficam só as malhas com o centro dentro da faixa; centraliza de novo
+  if (P.recorta) {
+    const [xa, xb] = P.recorta.x, ficam = pecas.filter(p => { const c = (p.geo.boundingBox.min.x + p.geo.boundingBox.max.x) / 2; return c >= xa && c <= xb; });
+    pecas.length = 0; pecas.push(...ficam);
+    const c4 = new THREE.Box3(); pecas.forEach(p => c4.union(p.geo.boundingBox)); const e = [-(c4.min.x + c4.max.x) / 2, -c4.min.y, -(c4.min.z + c4.max.z) / 2]; pecas.forEach(p => { p.geo.translate(e[0], e[1], e[2]); p.geo.computeBoundingBox(); });
+  }
   if (P.recompoe) for (const op of [].concat(P.recompoe)) {
     const ficam = []; for (const p of pecas) { const g = recompoe(p.geo, op); if (g) { p.geo = g; ficam.push(p); } }
     pecas.length = 0; pecas.push(...ficam);
@@ -598,10 +605,14 @@ async function prepararModelo(largura) {
       madeira: new THREE.MeshStandardMaterial({ name: 'madeira', color: 0xffffff, roughness: 0.5, metalness: 0, side: EH_VND ? THREE.DoubleSide : THREE.FrontSide }),   // Vindima: blocos com faces viradas ao contrário
       tecido: new THREE.MeshPhysicalMaterial({ name: 'tecido', color: 0xffffff, roughness: 1, metalness: 0, sheen: 1, sheenRoughness: 0.8, sheenColor: new THREE.Color(0.05, 0.05, 0.05), side: THREE.DoubleSide }),   // dois lados: alguns blocos trazem o tampo como uma folha aberta
       palha: new THREE.MeshStandardMaterial({ name: 'palha', color: 0xffffff, roughness: 0.7, metalness: 0, side: THREE.DoubleSide, alphaTest: 0.5 }),
-      metal: new THREE.MeshStandardMaterial({ name: 'metal', color: new THREE.Color(P.corMetal || '#B9B6AE'), roughness: 0.32, metalness: 1 }),
+      metal: new THREE.MeshStandardMaterial({ name: 'metal', color: new THREE.Color(P.corMetal || '#B9B6AE'), roughness: 0.32, metalness: 1, side: EH_VND ? THREE.DoubleSide : THREE.FrontSide }),
       preto: new THREE.MeshStandardMaterial({ name: 'preto', color: 0x1c1b1a, roughness: 0.6, metalness: 0 }),
       // camas: colchão e roupa de cama do bloco, em tons neutros (não mudam com as escolhas)
       couro: new THREE.MeshStandardMaterial({ name: 'couro', color: 0x7A4A2E, roughness: 0.6, metalness: 0, side: THREE.DoubleSide }),   // detalhe em couro, fixo
+      vidro: new THREE.MeshPhysicalMaterial({ name: 'vidro', color: 0xDDE8E6, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.28, side: THREE.DoubleSide }),
+      laca: new THREE.MeshStandardMaterial({ name: 'laca', color: 0xDAD9D5, roughness: 0.45, metalness: 0, side: THREE.DoubleSide }),   // laca fixa (corpo ou prateleira que o anúncio não deixa escolher)
+      aco: new THREE.MeshStandardMaterial({ name: 'aco', color: 0x8B8D90, roughness: 0.4, metalness: 0.8, side: THREE.DoubleSide }),   // metal fixo (anúncio sem escolha de metal)
+      espelho: new THREE.MeshStandardMaterial({ name: 'espelho', color: 0xC9D1D3, roughness: 0.04, metalness: 1, side: THREE.DoubleSide }),
       branco: new THREE.MeshStandardMaterial({ name: 'branco', color: 0xF3F0EA, roughness: 0.95, metalness: 0, side: THREE.DoubleSide }),
       roupa: new THREE.MeshStandardMaterial({ name: 'roupa', color: 0xD8D2C6, roughness: 1, metalness: 0, side: THREE.DoubleSide }),
       // forro: fundo liso logo atrás da palha (o vão dos furos), na cor da palha escolhida
@@ -706,7 +717,7 @@ const tem = papel => papeis.has(papel);
 // Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
 const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
 const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : EH_VND ? VND : KF0, PASTA = KF.pasta || 'kf';
-const codKF = v => KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
+const codKF = v => P.prefixoTecido ? P.prefixoTecido + KF.sem(v) : KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
 const LINHAS = P && P.linhas === 'tecidos+telas' ? [...KF.linhas, ...KF.linhasTela] : (P && P.linhas) || KF.linhas;   // produto com lista própria (ex.: poltrona só em couro soleta)
 const TIPO_KF = { 'Bouclé': 'boucle', 'Linho': 'linhoKF', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
 const CAT = EH_KF ? {
@@ -721,7 +732,9 @@ const CAT = EH_KF ? {
   escala: () => 1, tipo: k => TIPO_DE[k] || 'medio', linha: linhaDe, valorSite, deSite: v => +(/TC\s*(\d+)/.exec(v || '') || [])[1]
 };
 const METAIS = EH_KF ? KF.metais : [];
-const MADS = EH_KF ? (P.madeiras ? KF.madeiras.filter(m => P.madeiras.includes(m[0])) : KF.madeiras) : MADEIRAS;   // KF: [nome, cor]; Alma: [nome, arquivo, rugosidade]
+const MADS = EH_KF ? (P.laminas ? KF.madeiras.filter(m => m[3] && P.laminas.includes(m[3].esp)) : P.madeiras ? KF.madeiras.filter(m => !m[3] && P.madeiras.includes(m[0])) : KF.madeiras.filter(m => !m[3])) : MADEIRAS;
+// Vindima, móveis em lâmina: cada opção é madeira + cor; no site a madeira é um cartão (linha) e a cor, a personalização dessa madeira
+const infoMad = m => { const e = m && m[3]; if (!e) return null; if (e.esp === 'laca' && P.lacaNoJequitiba) return { linha: KF.especies.jequitiba.linha, sel: P.selJequitiba, valor: 'Laca ' + e.valor }; const E = KF.especies[e.esp]; return { linha: E.linha, sel: (e.esp === 'jequitiba' && P.selJequitiba) || E.sel, valor: e.valor }; };   // KF: [nome, cor]; Alma: [nome, arquivo, rugosidade]
 const TAMANHOS = (P && P.tamanhos) || [], TAM_NOMES = (P && P.tamanhoNomes) || null;   // camas: Solteiro, Casal, Queen, King
 const telaTipo = () => /^Sint/.test(PALHAS[estado.e][0]) ? 'sintética' : 'natural';
 if (EH_KF) {
@@ -813,9 +826,9 @@ function ajustaGrupos() {   // só aparecem os grupos de opção que este produt
   $('g-metal').hidden = !(METAIS.length && tem('metal')); $('g-tamanho').hidden = !TAMANHOS.length;
   if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = P.tituloTecido || 'Tecido ';
   if (EH_VND) boxE.closest('.grupo').querySelector('h2').firstChild.textContent = 'Tela ';
-  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && (EH_VND ? 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
+  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && (EH_VND ? 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
   const lista = itens.length > 1 ? itens.slice(0, -1).join(', ') + ' e ' + itens.at(-1) : itens[0] || 'as opções';
-  const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : /^cama/i.test(P.nome) ? 'a cama' : /^recamier/i.test(P.nome) ? 'o recamier' : 'a cadeira';
+  const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : /^cama/i.test(P.nome) ? 'a cama' : /^(mesa|c.moda|estante|escrivaninha|cristaleira|lumin)/i.test(P.nome) ? 'a peça' : /^(aparador|buffet|espelho|cabideiro)/i.test(P.nome) ? 'o móvel' : /^recamier/i.test(P.nome) ? 'o recamier' : 'a cadeira';
   document.querySelector('.texto').textContent = `Escolha ${lista} e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar ${peca} na sua sala.`;
 }
 
@@ -830,7 +843,7 @@ if (EMBED) {
     if (!SITES.includes(ev.origin) || !ev.data || ev.data.sfc3d !== 'estado') return;
     const d = ev.data;
     if (d.precos && typeof d.precos === 'object') precos = d.precos;
-    const m = MADS.findIndex(x => x[0] === d.madeira); if (m >= 0) estado.m = m;
+    const noSite = [].concat(d.cartoes || []), m = MADS.findIndex(x => { const i = infoMad(x); return i ? !!d.todos && d.todos[i.sel] === i.valor && noSite.includes(i.linha) : x[0] === d.madeira; }); if (m >= 0) estado.m = m;
     const e = PALHAS.findIndex(x => x[0] === d.tela); if (e >= 0) estado.e = e;
     const c = CAT.deSite(d.acabamento); if (CAT.valido(c)) estado.t = c;
     const x = METAIS.findIndex(q => q[0] === d.metal); if (x >= 0) estado.x = x;
@@ -838,10 +851,10 @@ if (EMBED) {
     marcaTudo(); aplica();
   });
   $('usar').addEventListener('click', () => parent.postMessage({
-    sfc3d: 'usar', madeira: MADS[estado.m][0], tela: tem('palha') ? PALHAS[estado.e][0] : '',
+    sfc3d: 'usar', madeira: !tem('madeira') ? '' : infoMad(MADS[estado.m]) ? infoMad(MADS[estado.m]).valor : MADS[estado.m][0], selMadeira: infoMad(MADS[estado.m]) ? infoMad(MADS[estado.m]).sel : '', tela: tem('palha') ? PALHAS[estado.e][0] : '',
     acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: tem('tecido') && !P.semLinha ? CAT.linha(estado.t) : P.linhaTela && tem('palha') ? 'Tela ' + telaTipo() : '',
-    cartoes: [TAM_NOMES && TAM_NOMES[estado.z], P.cartaoTela && tem('palha') && 'Encosto tela ' + telaTipo()].filter(Boolean),
-    metal: METAIS.length ? METAIS[estado.x][0] : '', tamanho: TAM_NOMES ? '' : TAMANHOS.length ? TAMANHOS[estado.z] : ''
+    cartoes: [infoMad(MADS[estado.m]) && tem('madeira') && infoMad(MADS[estado.m]).linha, ...(P.cartoesFixos || []), TAM_NOMES && TAM_NOMES[estado.z], P.cartaoTela && tem('palha') && 'Encosto tela ' + telaTipo()].filter(Boolean),
+    metal: METAIS.length && tem('metal') ? METAIS[estado.x][0] : '', tamanho: TAM_NOMES ? '' : TAMANHOS.length ? TAMANHOS[estado.z] : ''
   }, '*'));
 }
 
