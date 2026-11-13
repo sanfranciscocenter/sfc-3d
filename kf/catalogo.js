@@ -9,7 +9,7 @@ export const KF = {
   selMetal: 'Escolha o metal (KF)',
   // lado real que a textura cobre, em metros (estimado; a foto do mostruário não tem escala)
   tile: 0.10,         // tecido: pela conta seriam ~0,065 (foto de ~10 cm, uso de 72% do centro), mas Matheus achou a trama pequena demais: aumentado em 13/11/2026
-  tileCouro: 0.0145,  // couro: pela conta ~0,0165; Matheus pediu a textura um pouquinho menor (13/11/2026)
+  tileCouro: 0.045,   // couro: até 13/11/2026 esta escala NÃO era aplicada (o couro saía em 0,10, igual ao tecido). O real seria ~0,0165, mas aí o grão some; 0,045 mostra o grão fino de perto
   linhas: [
     ['Essencial', lista('V 3323,S 3322,V 3321,V 3320,V 3319,L 3318,V 3317,V 3316,V 3315,V 3314,B 3313,B 3312,B 3311,S 3310,V 3309,V 3308,V 3307,L 3306,S 3305,L 3304,B 3303,B 3302,B 3301,L 3299,V 3283,L 3174,L 2045,L 2044,L 2043,L 2042,L 2041,L 2040,L 217,L 216,L 214')],
     ['Standard', lista('B 6363,B 6362,B 6361,L 6360,L 6359,L 6355,L 6354,L 6346,L 6345,L 6344,B 6342,L 6341,L 6332,L 6331,L 6330,L 6327,S 6323,S 5357,S 5356,L 5354,L 5351,L 5350,S 5348,S 5347,S 5346,L 5344,L 5343,L 5333,L 5332,L 5329,L 5327,L 5278,L 5277,B 4402,L 4401,L 4400,B 4399,L 4398,B 4397,B 4396,L 4395,L 4394,L 4393,N 4391,N 4390,N 4389,N 4388,L 4387,L 4386,L 4385,CS 4384,CS 4383,CS 4382,CS 4381,S 4366,B 4364,L 4362,L 4357,L 4356,L 4355,S 4354,S 4353,S 4352,S 4351,L 4341,L 4319')],
