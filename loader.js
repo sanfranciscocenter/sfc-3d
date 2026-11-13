@@ -304,12 +304,15 @@
   async function aplica(d) {
     // trocar a linha desmarca o tamanho (visto nas camas Vindima e nos sofás Buriti): primeiro a linha, depois tamanho
     // e cartões; confere e repete uma vez
+    const tamAntes = [...document.querySelectorAll('.sfc-tamc.is-on')].map(nomeCartao);   // escolhas em cartão que o 3D não muda (tamanho, vidro…)
     let okLinha = false, okTam = false;
     for (let volta = 0; volta < 2; volta++) {
       okLinha = await trocaLinha(d.linha);
       okTam = (await trocaTamanho(d.tamanho)) && (await trocaCartoes(d.cartoes));
       if (okLinha && okTam && (!d.linha || linhaAtual() === d.linha)) break;
     }
+    // a troca de linha desmarcou algum cartão que o cliente já tinha escolhido? marca de novo (se o grupo dele ficou sem nenhum)
+    for (const nome of tamAntes) { const c = [...document.querySelectorAll('.sfc-tamc')].find(x => nomeCartao(x) === nome); if (c && !c.classList.contains('is-on') && !c.parentElement.querySelector('.sfc-tamc.is-on')) await trocaCartoes([nome]); }
     // só as personalizações que este anúncio tem (o estofado não tem tela)
     const pares = ['acabamento', 'tela', 'madeira', 'metal'].filter(k => cfg.sel[k] && d[k]).map(k => [k === 'acabamento' ? selAcab(d.linha) : k === 'madeira' && d.selMadeira ? d.selMadeira : cfg.sel[k], d[k]]);
     let ok = 0;
