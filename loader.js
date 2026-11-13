@@ -52,6 +52,10 @@
       pagina: 'produto.html', params: 'p=kf-portos-sofa', derivacao: 208, tamanho: 181,
       sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' }
     },
+    '/poltrona-flow-kf-polflow': {
+      pagina: 'produto.html', params: 'p=kf-flow-poltrona', derivacao: 208,
+      sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' }
+    },
     '/cadeira-cartier': {
       pagina: 'produto.html', params: 'p=cartier-cadeira',
       sel: { madeira: 'Escolha a madeira (AL):', tela: 'Escolha a tela (AL):' }
