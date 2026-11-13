@@ -519,7 +519,7 @@ async function prepararModelo(largura) {
   // correções do bloco em relação à peça real (ver produtos.js)
   if (P.encostoReto) pecas.forEach(p => { if (P.encostoReto.pecas.includes('#' + p.i)) endireita(p.geo, P.encostoReto); });
   if (P.estica && largura) {
-    pecas.forEach(p => estica(p.geo, P.estica, largura));
+    pecas.forEach(p => estica(p.geo, P.estica, largura + (P.estica.extra || 0)));   // extra = largura fixa fora da medida do anúncio (consoles, pufe)
     const c2 = new THREE.Box3(); pecas.forEach(p => c2.union(p.geo.boundingBox)); const ddx = -(c2.min.x + c2.max.x) / 2;   // centraliza de novo
     pecas.forEach(p => { p.geo.translate(ddx, 0, 0); p.geo.computeBoundingBox(); });
   }
@@ -562,7 +562,7 @@ async function prepararModelo(largura) {
     };
     const porPapel = {};
     for (const p of pecas) {
-      const papel = p.papel || P.partes['#' + p.i] || P.partes[p.nomeMat] || P.partes['*'] || 'original';
+      const papel = p.papel || P.partes['#' + p.i] || P.partes[p.nomeMat] || ((P.regras || []).find(([re]) => re.test(p.nomeMat)) || [])[1] || P.partes['*'] || 'original';   // regras = [expressão, papel] para nomes de material parecidos
       if (papel === 'oculto') continue;
       if (papel === 'original') { const m = new THREE.Mesh(p.geo, p.original); m.name = 'original' + p.i; cena.add(m); continue; }
       if (papel !== 'palha') { (porPapel[papel] = porPapel[papel] || []).push(p.geo); continue; }
