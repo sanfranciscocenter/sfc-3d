@@ -15,6 +15,11 @@ const VND_REGRAS = [[/travesseiro|coberta|len.ol/i, 'oculto'], [/colch/i, 'branc
 const VND_R2 = metal => [[/glass|vidro|resin/i, 'vidro'], [/mirror/i, 'espelho'], [/palhinha/i, 'palha'], [/^couro$/i, 'couro'], [/steel|metal|ferro|alum|goldenrod|0137_black|gdblack|dimgray|charcoal|^\[?color m0/i, metal]];
 const VND_JCV = ['jequitiba', 'cinamomo', 'carvalho'], VND_S9 = { selJequitiba: 'Escolha o acabamento (VND):', lacaNoJequitiba: true };
 const VND_F2 = (nome, arq, o = {}) => ({ nome, sobre: 'Vindima', marca: 'vnd', glb: 'vnd/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...VND_R2(o.metal ? 'metal' : 'aco')], partes: { '*': 'madeira', ...(o.partes || {}) } });
+// Combinare: papel pelo nome do material do bloco. metal = pintura epóxi escolhida no anúncio (sem a opção: preto fixo);
+// couro = recouro escolhido no anúncio (sem a opção: acompanha o tecido)
+const CMB_R = (metal, couro) => [[/madeira|wood|tauari|maci.a/i, 'madeira'], [/metal|ferro|alum|crom|chrome|gold|dourad|sapata|preto fosco|plastic|_p.s$/i, metal], [/couro|leather/i, couro]];
+const CMB_P = (nome, arq, o = {}) => ({ nome, sobre: 'Combinare', marca: 'cmb', glb: 'cmb/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...CMB_R(o.metal ? 'metal' : 'preto', o.recouro ? 'palha' : 'tecido')], partes: { '*': 'tecido', ...(o.partes || {}) } });
+const CMB_SOFA = [150, 180, 210, 230, 260, 280, 300];
 const IPE_BASE = { '*': 'tecido', 'Acabamento champagne': 'madeira', 'Acabamento champagne 1': 'madeira', 'Nogueira': 'madeira', '*1': 'madeira', '*2': 'madeira', 'Material-4': 'oculto', 'Material-6': 'oculto', 'Material-8': 'oculto' };
 // Buriti, sofás: [expressão do nome do material, papel]; o que não casar é tecido
 const BUR_REGRAS = [[/iron|glass|acrylic|black|roda|metal.?standard|mat_padrao|^p.{1,3}s$|anod/i, 'preto'], [/wenge|cherry|walnut|leather pull up/i, 'madeira'], [/alumin|chrome/i, 'metal']];
@@ -202,6 +207,42 @@ export const PRODUTOS = {
   'vnd-aparador-sercial': VND_F2('Aparador Sercial', 'aparador-sercial', { metal: true, madeiras: VND_MAD }),
   'vnd-luminaria-de-chao-zweigelt': VND_F2('Luminária de Chão Zweigelt', 'luminaria-de-chao-zweigelt', { partes: { '#19': 'palha', '#20': 'palha' }, mais: [[/l.mpada|lampada/i, 'oculto'], [/#58|#63/, 'palha']], madeiras: VND_MAD, linhaTela: true }),
   'vnd-luminaria-de-chao-furmint': VND_F2('Luminária de Chão Furmint', 'luminaria-de-chao-furmint', { madeiras: VND_MAD, linhaTela: true }),
+  // ---------- Combinare (catálogo em cmb/catalogo.js; blocos da 3D Warehouse reduzidos em cmb/modelos/) ----------
+  'cmb-poltrona-avana': CMB_P('Poltrona Ava', 'poltrona-ava'),
+  'cmb-poltrona-bethara': CMB_P('Poltrona Betha', 'poltrona-betha', { metal: true }),
+  'cmb-poltrona-cloara': CMB_P('Poltrona Cloe', 'poltrona-cloe'),
+  'cmb-poltrona-flexara': CMB_P('Poltrona Flexa', 'poltrona-flexa', { metal: true }),
+  'cmb-poltrona-florena': CMB_P('Poltrona Flora', 'poltrona-flora', { giraX: 90, giraY: 270 }),   // bloco modelado deitado
+  'cmb-pufe-florena': CMB_P('Pufe Flora', 'pufe-flora'),
+  'cmb-poltrona-galena': CMB_P('Poltrona Gala', 'poltrona-gala', { metal: true, recouro: true }),
+  'cmb-poltrona-gavena': CMB_P('Poltrona Gaby', 'poltrona-gaby', { recorta: { z: [-0.6, 0.4] }, mais: [[/texture 2/i, 'madeira'], [/^R0,G0,B0/, 'preto']] }),
+  'cmb-poltrona-jasvara': CMB_P('Poltrona Jasmin', 'poltrona-jasmin', { metal: true, recorta: { z: [0, 0.8] }, separa: { '*': b => b.max[1] < 0.36 ? 'metal' : 'tecido' } }),
+  'cmb-poltrona-kairona-com-mesa-lateral': CMB_P('Poltrona Kaori com mesa lateral', 'poltrona-kaori-mesa', { metal: true }),
+  'cmb-poltrona-lizara': CMB_P('Poltrona Liz', 'poltrona-liz', { metal: true, recouro: true }),
+  'cmb-poltrona-lorana': CMB_P('Poltrona Lorena', 'poltrona-lorena', { recorta: { z: [-0.9, 0.1] }, separa: { '*': b => b.max[1] < 0.32 ? 'madeira' : 'tecido' } }),
+  'cmb-poltrona-lucara': CMB_P('Poltrona Lucca', 'poltrona-lucca'),
+  'cmb-poltrona-maisara': CMB_P('Poltrona Maísa', 'poltrona-maisa'),
+  'cmb-poltrona-manira': CMB_P('Poltrona Manilla', 'poltrona-manilla', { metal: true, recorta: { x: [-3.7, -2.5] } }),
+  'cmb-poltrona-marvella': CMB_P('Poltrona Marjorie', 'poltrona-marjorie', { recorta: { z: [-0.7, 0.3] }, mais: [[/^R200/, 'madeira'], [/^R0,G0,B0/, 'preto']] }),
+  'cmb-poltrona-melora': CMB_P('Poltrona Melania', 'poltrona-melania', { metal: true }),
+  'cmb-poltrona-oxfel': CMB_P('Poltrona Oxford', 'poltrona-oxford', { metal: true, mais: [[/material__\d+(36|38|54)$/i, 'metal']] }),
+  'cmb-poltrona-parina': CMB_P('Poltrona Paris', 'poltrona-paris-puff', { recouro: true, recorta: { z: [-0.8, 0.17] } }),
+  'cmb-pufe-parina': CMB_P('Pufe Paris', 'poltrona-paris-puff', { recorta: { z: [0.17, 0.8] } }),
+  'cmb-poltrona-perlina': CMB_P('Poltrona Pérola', 'poltrona-perola', { metal: true }),
+  'cmb-poltrona-unora': CMB_P('Poltrona Unique', 'poltrona-unique', { metal: true }),
+  'cmb-poltrona-windara': CMB_P('Poltrona Wind', 'poltrona-wind'),
+  'cmb-pufe-belara': CMB_P('Pufe Belt', 'pufe-belt', { metal: true, recorta: { x: [-0.25, 0.25] }, mais: [[/^G /, 'metal']] }),
+  // bloco com os três tamanhos numa malha só: fica a parte mais próxima do pufe do tamanho escolhido
+  'cmb-pufe-clubia-055cm': CMB_P('Pufe Club', 'pufe-club', { tamanhos: [55, 68, 105], partes: { 'Foto': 'oculto', 'default_face_material': 'oculto' },
+    separa: { '*': (b, L) => { const cs = [[-0.05, 0.565], [0.76, 0.215], [-0.59, -0.315]], d = cs.map(c => Math.hypot(b.centro[0] - c[0], b.centro[2] - c[1])), perto = d.indexOf(Math.min(...d)), quer = L > 0.9 ? 2 : L > 0.6 ? 1 : 0; return perto === quer ? 'tecido' : 'oculto'; } } }),
+  'cmb-pufe-hapera-048cm': CMB_P('Pufe Happy', 'pufe-happy', { metal: true, mais: [[/default_face/, 'metal']], tamanhos: [48, 63, 93], recortaTam: { 48: { x: [-1.25, -0.7] }, 63: { x: [-0.6, 0.05] }, 93: { x: [0.3, 1.25] } } }),
+  'cmb-pufe-framera': CMB_P('Pufe Frame', 'poltrona-frame-puff', { metal: true, recouro: true, recorta: { z: [0.17, 0.85] } }),
+  'cmb-sofa-avana-reto-1-50-m': CMB_P('Sofá Ava Reto', 'sofa-ava', { tamanhos: CMB_SOFA, recortaTam: { 150: { x: [-9.22, -7.66], z: [-0.46, 0.3] }, 180: { x: [-7.33, -5.47], z: [-0.46, 0.3] }, 210: { x: [-5.11, -2.95], z: [-0.46, 0.3] }, 230: { x: [-2.58, -0.22], z: [-0.46, 0.3] }, 260: { x: [0.07, 2.73], z: [-0.46, 0.3] }, 280: { x: [3.02, 5.87], z: [-0.46, 0.3] }, 300: { x: [6.16, 9.22], z: [-0.46, 0.3] } } }),
+  'cmb-sofa-mattea-reto-1-50-m': CMB_P('Sofá Matteo Reto', 'sofa-matteo', { tamanhos: CMB_SOFA, recortaTam: { 150: { x: [-2.45, -0.9], z: [2.48, 3.52] }, 180: { x: [0.65, 2.5], z: [2.48, 3.51] }, 210: { x: [-2.75, -0.6], z: [0.53, 1.56] }, 230: { x: [0.4, 2.75], z: [0.52, 1.56] }, 260: { x: [-3, -0.35], z: [-1.38, -0.34] }, 280: { x: [0.15, 3], z: [-1.38, -0.34] }, 300: { x: [-1.58, 1.48], z: [-3.52, -2.48] } } }),
+  'cmb-sofa-mezzara-reto-1-50-m': CMB_P('Sofá Mezzo Reto', 'sofa-mezzo', { tamanhos: CMB_SOFA, recortaTam: { 150: { x: [-2.88, -1.32], z: [2.02, 3.06] }, 180: { x: [-0.97, 0.89], z: [2.03, 3.06] }, 210: { x: [-2.88, -0.72], z: [0.3, 1.33] }, 230: { x: [-0.46, 1.9], z: [0.29, 1.33] }, 260: { x: [-2.88, -0.23], z: [-1.43, -0.39] }, 280: { x: [0.03, 2.88], z: [-1.43, -0.39] }, 300: { x: [-1.48, 1.58], z: [-3.06, -2.02] } } }),
+  'cmb-sofa-mondara-reto-1-50-m': CMB_P('Sofá Mondo Reto', 'sofa-mondo'),
+  'cmb-sofa-olvera-reto-1-50-m': CMB_P('Sofá Oliver Reto', 'sofa-oliver', { tamanhos: CMB_SOFA, recortaTam: { 150: { x: [-3.11, -1.55], z: [2.67, 3.71] }, 180: { x: [-0.83, 1.03], z: [2.67, 3.71] }, 210: { x: [-3.11, -0.95], z: [0.53, 1.57] }, 230: { x: [-0.39, 1.97], z: [0.53, 1.58] }, 260: { x: [-3.1, -0.45], z: [-1.55, -0.51] }, 280: { x: [0.25, 3.11], z: [-1.55, -0.51] }, 300: { x: [-1.65, 1.41], z: [-3.71, -2.67] } } }),
+  'cmb-sofa-tamara-reto-1-50-m': CMB_P('Sofá Thomas Reto', 'sofa-thomas', { tamanhos: CMB_SOFA, recortaTam: { 150: { x: [-5.07, -3.51], z: [0.68, 1.68] }, 180: { x: [-2.53, -0.68], z: [0.68, 1.68] }, 210: { x: [0.03, 2.19], z: [0.69, 1.68] }, 230: { x: [2.68, 5.03], z: [0.68, 1.68] }, 260: { x: [-5.07, -2.41], z: [-1.68, -0.68] }, 280: { x: [-1.73, 1.13], z: [-1.68, -0.68] }, 300: { x: [2.02, 5.07], z: [-1.68, -0.68] } } }),
   // ---------- Buriti, sofás cujo bloco da fábrica é a mesma configuração do anúncio. Largura: o miolo estica entre os
   // braços (peças com menos de 50 cm, como almofadas e pés, só se deslocam). BUR_REGRAS classifica os materiais. ----------
   'bur-sofa-sonata': { nome: 'Sofá Sonata', sobre: 'Buriti', marca: 'bur', glb: 'bur/modelos/sofa-sonata.glb', texMadeira: 'kf/madeiras/imbuia.jpg', partes: { '*': 'tecido' }, regras: BUR_REGRAS, tamanhos: [200,220,240,260,280], tamanhoBloco: 280, estica: { base: 2.78, braco: 0.25, rigido: 0.5, porMalha: true } },
