@@ -162,7 +162,8 @@ import { SER } from './ser/catalogo.js';
 import { BUR } from './bur/catalogo.js';
 import { IPE } from './ipe/catalogo.js';
 import { VND } from './vnd/catalogo.js';
-import { CMB } from './cmb/catalogo.js';
+import { CMB as CMB0 } from './cmb/catalogo.js';
+import { MCB } from './mcb/catalogo.js';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d@main/pivot/';
 const LOJA = 'https://sanfranciscocenter.cdn.magazord.com.br/img/';
@@ -208,7 +209,7 @@ const mv = $('mv'), statusEl = $('status');
 const par = new URLSearchParams(location.search);
 const CHAVE = par.get('p') || '', P = PRODUTOS[CHAVE];
 const DEBUG = par.get('debug') === '1';
-const EH_CMB = !!P && P.marca === 'cmb', EH_VND = !!P && (P.marca === 'vnd' || EH_CMB);   // marcas com 'telas' próprias no catálogo (Combinare: recouro)   // Vindima: telas próprias (foto opaca), madeiras por produto, tamanhos com nome
+const EH_CMB = !!P && (P.marca === 'cmb' || P.marca === 'mcb'), CMB = P && P.marca === 'mcb' ? MCB : CMB0, EH_VND = !!P && (P.marca === 'vnd' || EH_CMB);   // marcas com 'telas' próprias no catálogo (Combinare: recouro)   // Vindima: telas próprias (foto opaca), madeiras por produto, tamanhos com nome
 const PALHAS = EH_VND ? (EH_CMB ? CMB : VND).telas : PALHAS_ALMA;
 
 /* ---------- 1. Modelo ---------- */
@@ -721,7 +722,7 @@ const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
 const tem = papel => papeis.has(papel);
 
 // Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
-const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd', 'cmb'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
+const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd', 'cmb', 'mcb'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
 const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : EH_CMB ? CMB : EH_VND ? VND : KF0, PASTA = KF.pasta || 'kf';
 const codKF = v => P.prefixoTecido ? P.prefixoTecido + KF.sem(v) : KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
 const LINHAS = P && P.linhas === 'tecidos+telas' ? [...KF.linhas, ...KF.linhasTela] : (P && P.linhas) || KF.linhas;   // produto com lista própria (ex.: poltrona só em couro soleta)
@@ -830,11 +831,11 @@ function montaInterface() {
 function ajustaGrupos() {   // só aparecem os grupos de opção que este produto tem
   // tamanho primeiro (pedido de Matheus, 13/11/2026): no fim da lista o cliente não via que dava para trocar
   if (TAMANHOS.length) { const gt = $('g-tamanho'), pai = gt.parentElement, primeiro = pai.querySelector('.grupo'); if (primeiro !== gt) pai.insertBefore(gt, primeiro); }
-  boxM.closest('.grupo').hidden = !tem('madeira') || (EH_KF && MADS.length < 2); /* marca sem escolha de madeira: grupo some */ boxE.closest('.grupo').hidden = !tem('palha'); boxT.closest('.grupo').hidden = !tem('tecido');
+  boxM.closest('.grupo').hidden = !tem('madeira') || (EH_KF && MADS.length < 2); /* marca sem escolha de madeira: grupo some */ boxE.closest('.grupo').hidden = !tem('palha') || (EH_VND && PALHAS.length < 2);   /* tela única (Marcobin Natura): nada a escolher */ boxT.closest('.grupo').hidden = !tem('tecido');
   $('g-metal').hidden = !(METAIS.length && tem('metal')); $('g-tamanho').hidden = !TAMANHOS.length;
   if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = P.tituloTecido || 'Tecido ';
   if (EH_VND) boxE.closest('.grupo').querySelector('h2').firstChild.textContent = KF.tituloTela || 'Tela ';
-  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && (EH_VND ? KF.artigoTela || 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
+  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && !(EH_VND && PALHAS.length < 2) && (EH_VND ? KF.artigoTela || 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
   const lista = itens.length > 1 ? itens.slice(0, -1).join(', ') + ' e ' + itens.at(-1) : itens[0] || 'as opções';
   const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : /^cama/i.test(P.nome) ? 'a cama' : /^(mesa|c.moda|estante|escrivaninha|cristaleira|lumin)/i.test(P.nome) ? 'a peça' : /^(aparador|buffet|espelho|cabideiro)/i.test(P.nome) ? 'o móvel' : /^recamier/i.test(P.nome) ? 'o recamier' : 'a cadeira';
   document.querySelector('.texto').textContent = `Escolha ${lista} e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar ${peca} na sua sala.`;
