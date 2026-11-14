@@ -58,6 +58,8 @@
     },
     // KF: sofás com tamanho (derivação 181) — ligados em 13/11/2026 a pedido de Matheus
     '/sofa-celine-com-chaise': { pagina: 'produto.html', params: 'p=kf-celine', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
+    '/sofa-retratil-sollo': { pagina: 'produto.html', params: 'p=kf-sollo', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    '/sofa-retratil-orion': { pagina: 'produto.html', params: 'p=kf-orion', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-bonno-kf-bonno': { pagina: 'produto.html', params: 'p=kf-bonno', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
