@@ -41,6 +41,10 @@ export const PRODUTOS = {
   // Sofá Orla (2 módulos com braço, base em lâmina): bloco "KF. Sofa Orla Base lamina" (650d308d…), 220 cm. Malhas juntadas por material:
   // #0 tecido, #1 pés em lâmina (madeira escolhível). O anúncio vende de 180 a 300 cm: estica o miolo, braços fixos.
   'kf-orla': { nome: 'Sofá Orla', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/orla.glb', partes: { '*': 'tecido', '#1': 'madeira' }, tamanhos: [180, 200, 220, 260, 300], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.18, rigido: 0.3 } },
+  // Sofá Oásis (com capa): bloco "KF. Sofa OASIS" (ee2e47c0…; nome interno Cassange). Mesma configuração da foto, mas o bloco veio menor
+  // (176 × 65 × 80 cm): escala por eixo para 211 × 95 × 90 e largura do anúncio (195 a 275 cm) esticando o miolo, braços fixos.
+  // #0 tecido (capa e almofadas), #1 sapatas (pretas, quase escondidas pela saia).
+  'kf-oasis': { nome: 'Sofá Oásis', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/oasis.glb', escala: [1.2, 1.46, 1.125], partes: { '*': 'tecido', '#1': 'preto' }, tamanhos: [195, 215, 235, 255, 275], tamanhoBloco: 215, estica: { base: 2.11, braco: 0.26, rigido: 0.75 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
   'kf-panna': { nome: 'Sofá Panna', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/panna.glb', partes: { '*': 'tecido', '#1': 'preto', '#2': 'metal' }, tamanhos: [210, 230, 250, 270, 290], tamanhoBloco: 270, estica: { base: 2.70, braco: 0.22, rigido: 0.3 } },
