@@ -63,6 +63,8 @@
     '/sofa-less': { pagina: 'produto.html', params: 'p=kf-less', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-gaia': { pagina: 'produto.html', params: 'p=kf-gaia', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-soul-com-chaise': { pagina: 'produto.html', params: 'p=kf-soul', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    '/sofa-nina-com-chaise': { pagina: 'produto.html', params: 'p=kf-nina', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    '/sofa-otto-organico': { pagina: 'produto.html', params: 'p=kf-otto', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-bonno-kf-bonno': { pagina: 'produto.html', params: 'p=kf-bonno', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
