@@ -487,7 +487,7 @@ async function prepararModelo(largura) {
     const g = emFloat(o.geometry).applyMatrix4(o.matrixWorld);
     if (P.giraX) g.rotateX(P.giraX * Math.PI / 180);   // bloco modelado deitado
     if (P.giraY) g.rotateY(P.giraY * Math.PI / 180);   // bloco modelado virado para o lado
-    if (P.escala) g.scale(P.escala, P.escala, P.escala);   // bloco que veio na unidade errada
+    if (P.escala) { const E = [].concat(P.escala); g.scale(E[0], E[1] || E[0], E[2] || E[0]); }   // bloco que veio na unidade errada; [x, y, z] quando a proporção do bloco também difere da peça
     if (o.matrixWorld.determinant() < 0 && g.index) { const a = g.index.array; for (let i = 0; i < a.length; i += 3) { const t = a[i]; a[i] = a[i + 2]; a[i + 2] = t; } }
     const fora = largura && P.ocultaEm && (P.ocultaEm[Math.round(largura * 100)] || []).includes('#' + n);   // peça que não existe neste tamanho
     if (fora || (P.partes['#' + n] || P.partes[mats[0]?.name || ''] || ((P.regras || []).find(([re]) => re.test(mats[0]?.name || '')) || [])[1]) === 'oculto') { n++; return; }   // peça oculta não entra nem na centralização
