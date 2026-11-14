@@ -66,6 +66,12 @@ export const PRODUTOS = {
   // Sofá Soul com Chaise: bloco "KF. SOFÁ SOUL" (ef13ab32…), 318 × 83 × 170, chaise à esquerda como na foto. #0 tecido, #1 rodapé (escuro, fixo).
   // De 290 a 470 cm: os três módulos crescem juntos (estica o miolo), braços de 20 cm rígidos.
   'kf-soul': { nome: 'Sofá Soul com Chaise', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/soul.glb', partes: { '*': 'tecido', '#1': 'preto' }, tamanhos: [290, 320, 350, 380, 410, 470], tamanhoBloco: 320, estica: { base: 3.18, braco: 0.20, rigido: 0.3 } },
+  // Sofá Nina com Chaise: bloco "KF - Sofa NINA" (5266b559…), curvo, 318 × 81 × 180 de caixa = a medida de 307 cm (módulo do meio de 0,97).
+  // #0 tecido, #1 rodapé (escuro, fixo). De 307 a 457 cm os três módulos crescem juntos: estica o miolo, pontas de 25 cm rígidas.
+  'kf-nina': { nome: 'Sofá Nina com Chaise', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/nina.glb', partes: { '*': 'tecido', '#1': 'preto' }, tamanhos: [307, 337, 367, 397, 457], tamanhoBloco: 307, estica: { base: 3.07, braco: 0.25, rigido: 0.7 } },
+  // Sofá Otto Orgânico: bloco "KF. OTTO" (836f6e8f…), 3 módulos, 449 × 87 × 134 de caixa = a medida de 455 cm. #0 tecido, #1 pés (tom de madeira fixo).
+  // De 455 a 515 cm só o módulo da direita cresce (assento de 0,80 a 1,40 m): estica a faixa do assento dele; o resto não muda.
+  'kf-otto': { nome: 'Sofá Otto Orgânico', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/otto.glb', partes: { '*': 'tecido', '#1': 'couro' }, tamanhos: [455, 465, 475, 485, 495, 515], tamanhoBloco: 455, estica: { base: 4.55, zona: [1.30, 2.00], rigido: 0.7 } },
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
