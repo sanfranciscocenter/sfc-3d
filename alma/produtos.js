@@ -51,6 +51,12 @@ export const PRODUTOS = {
   // só o módulo de 2 assentos estica; chaise e mesa não mudam.
   'kf-celine': { nome: 'Sofá Celine com Chaise', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/celine.glb', partes: { '*': 'tecido', '#1': 'metal', '#2': 'preto' }, tamanhos: [278, 298, 318, 338, 358], tamanhoBloco: 318, estica: { base: 3.178, zona: [-1.375, 0.175], rigido: 0.3 } },
   // Sofá Bonno: bloco "KF - Sofá BONNO" (c193799b…), 276 cm, braços de alturas diferentes. #0 tecido, #1 base em aço (metal escolhível).
+  // Sofá Retrátil Sollo: bloco "KF. SOLLO" (1e1eb2f8…), 240 × 88 × 106, 2 assentos com dois braços e almofadas soltas, como nas fotos.
+  // #0 tecido, #1 rodapé da base (escuro, fixo). O anúncio vende de 200 a 280 cm: estica o miolo, braços de 22 cm e almofadas rígidos.
+  'kf-sollo': { nome: 'Sofá Retrátil Sollo', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/sollo.glb', partes: { '*': 'tecido', '#1': 'preto' }, tamanhos: [200, 220, 240, 260, 280], tamanhoBloco: 240, estica: { base: 2.40, braco: 0.22, rigido: 0.7 } },
+  // Sofá Retrátil Órion (2024): bloco "KF- Sofá 2024" (308abaae…), 220 × 94 × 116 fechado, com o assento direito aberto como na foto.
+  // #0 tecido, #1 rodapé da base (escuro, fixo). O anúncio vende de 180 a 260 cm: estica o miolo, braços finos de 8 cm rígidos.
+  'kf-orion': { nome: 'Sofá Retrátil Órion', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/orion.glb', partes: { '*': 'tecido', '#1': 'preto' }, tamanhos: [180, 200, 220, 240, 260], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.08, rigido: 0.6 } },
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
