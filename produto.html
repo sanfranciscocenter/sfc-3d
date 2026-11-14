@@ -725,7 +725,9 @@ const tem = papel => papeis.has(papel);
 const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd', 'cmb', 'mcb'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
 const KF = P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : EH_CMB ? CMB : EH_VND ? VND : KF0, PASTA = KF.pasta || 'kf';
 const codKF = v => P.prefixoTecido ? P.prefixoTecido + KF.sem(v) : KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
-const LINHAS = P && P.linhas === 'tecidos+telas' ? [...KF.linhas, ...KF.linhasTela] : (P && P.linhas) || KF.linhas;   // produto com lista própria (ex.: poltrona só em couro soleta)
+const LINHAS0 = P && P.linhas === 'tecidos+telas' ? [...KF.linhas, ...KF.linhasTela] : (P && P.linhas) || KF.linhas;
+// semTecido: tecidos que a fábrica não faz neste produto (ex.: Sofá Oásis sem veludo, suede e nobuck)
+const LINHAS = P && P.semTecido ? LINHAS0.map(([n, v]) => [n, v.filter(k => !P.semTecido.test(k))]).filter(([, v]) => v.length) : LINHAS0;   // produto com lista própria (ex.: poltrona só em couro soleta)
 const TIPO_KF = { 'Bouclé': 'boucle', 'Linho': 'linhoKF', 'Veludo': 'camurca', 'Suéde': 'camurca', 'Nobuck': 'camurca', 'Couro Sintético': 'couroFosco' };
 const CAT = EH_KF ? {
   grupos: LINHAS, tile: KF.tile, valido: k => LINHAS.some(([, v]) => v.includes(k)),
