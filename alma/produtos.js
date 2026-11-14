@@ -57,6 +57,15 @@ export const PRODUTOS = {
   // Sofá Retrátil Órion (2024): bloco "KF- Sofá 2024" (308abaae…), 220 × 94 × 116 fechado, com o assento direito aberto como na foto.
   // #0 tecido, #1 rodapé da base (escuro, fixo). O anúncio vende de 180 a 260 cm: estica o miolo, braços finos de 8 cm rígidos.
   'kf-orion': { nome: 'Sofá Retrátil Órion', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/orion.glb', partes: { '*': 'tecido', '#1': 'preto' }, tamanhos: [180, 200, 220, 240, 260], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.08, rigido: 0.6 } },
+  // Sofá Less: bloco "KF. Sofá LESS" (98ad4ba3…), 350 × 98 × 104, 2 módulos com braço como na foto. #0 tecido, #1 pés (metal escolhível).
+  // O anúncio vende de 350 a 510 cm: estica o miolo, braços de 15 cm rígidos.
+  'kf-less': { nome: 'Sofá Less', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/less.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [350, 390, 430, 470, 510], tamanhoBloco: 350, estica: { base: 3.50, braco: 0.15, rigido: 0.5 } },
+  // Sofá Gaia: bloco "KF - Sofá Gaia" (415f2da0…), 259 × 92 × 93, uma malha só; separada por altura em #0 tecido, #1 requadro de lâmina
+  // (tom de madeira fixo, o anúncio não deixa escolher) e #2 pés (metal escolhível). De 200 a 320 cm; braços de 12 cm rígidos.
+  'kf-gaia': { nome: 'Sofá Gaia', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/gaia.glb', partes: { '*': 'tecido', '#1': 'couro', '#2': 'metal' }, tamanhos: [200, 220, 240, 260, 280, 320], tamanhoBloco: 260, estica: { base: 2.59, braco: 0.12, rigido: 0.6 } },
+  // Sofá Soul com Chaise: bloco "KF. SOFÁ SOUL" (ef13ab32…), 318 × 83 × 170, chaise à esquerda como na foto. #0 tecido, #1 rodapé (escuro, fixo).
+  // De 290 a 470 cm: os três módulos crescem juntos (estica o miolo), braços de 20 cm rígidos.
+  'kf-soul': { nome: 'Sofá Soul com Chaise', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/soul.glb', partes: { '*': 'tecido', '#1': 'preto' }, tamanhos: [290, 320, 350, 380, 410, 470], tamanhoBloco: 320, estica: { base: 3.18, braco: 0.20, rigido: 0.3 } },
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
