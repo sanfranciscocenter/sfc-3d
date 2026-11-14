@@ -65,6 +65,9 @@
     '/sofa-soul-com-chaise': { pagina: 'produto.html', params: 'p=kf-soul', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-nina-com-chaise': { pagina: 'produto.html', params: 'p=kf-nina', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-otto-organico': { pagina: 'produto.html', params: 'p=kf-otto', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    // Litoral (T-132): linha de preço na derivação 208; tecido, madeira e tela de ratan são personalizações (LG)
+    '/cadeira-enseada-estofada-essencial': { pagina: 'produto.html', params: 'p=lit-cadeira-enseada-estofada', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):' } },
+    '/cadeira-enseada-ratan-aberto-essencial': { pagina: 'produto.html', params: 'p=lit-cadeira-enseada-ratan', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):', tela: 'Escolha a tela de ratan (LG):' } },
     '/sofa-bonno-kf-bonno': { pagina: 'produto.html', params: 'p=kf-bonno', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
