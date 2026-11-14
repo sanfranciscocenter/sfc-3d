@@ -27,6 +27,7 @@ const BUR_REGRAS = [[/iron|glass|acrylic|black|roda|metal.?standard|mat_padrao|^
 // O casco de trás das giratórias ("tecido das costas" no site) usa o mesmo tecido do assento no 3D.
 const MCB_R = metal => [[/^$/, 'oculto'], [/madeira|tauari|^acad4fa2c9e$|^acad7301/i, 'madeira'], [/tecido|linho|linha|couro|^acadfb1cf241$/i, 'tecido'], [/^acad(2a8b0ced|fa90ccd9)$/, metal], [/^acad(11917b7a|866a941c)$/, 'palha'], [/cromad|^acad60adb84$/i, 'aco'], [/metal|material #|0\.00/i, 'preto']];
 const MCB_P = (nome, arq, o = {}) => ({ nome, sobre: 'Marcobin', marca: 'mcb', glb: 'mcb/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...MCB_R(o.metal ? 'metal' : 'aco')], partes: { '*': 'madeira', ...(o.partes || {}) } });
+const LIT_P = (nome, arq, o = {}) => ({ nome, sobre: 'Litoral', marca: 'lit', glb: 'lit/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'palha', PRETO: 'preto', ACO: 'aco', '*': 'madeira', ...(o.partes || {}) } });
 const MCB_T = re => ({ mais: [[re, 'tecido']] });   // bloco sem nome de material: o que casar com a expressão é o estofado
 export const PRODUTOS = {
   // KF Mobiliário (T-118): catálogo próprio em kf/catalogo.js. Piloto: Sofá Portos.
@@ -72,6 +73,10 @@ export const PRODUTOS = {
   // Sofá Otto Orgânico: bloco "KF. OTTO" (836f6e8f…), 3 módulos, 449 × 87 × 134 de caixa = a medida de 455 cm. #0 tecido, #1 pés (tom de madeira fixo).
   // De 455 a 515 cm só o módulo da direita cresce (assento de 0,80 a 1,40 m): estica a faixa do assento dele; o resto não muda.
   'kf-otto': { nome: 'Sofá Otto Orgânico', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/otto.glb', partes: { '*': 'tecido', '#1': 'couro' }, tamanhos: [455, 465, 475, 485, 495, 515], tamanhoBloco: 455, estica: { base: 4.55, zona: [1.30, 2.00], rigido: 0.7 } },
+  // Litoral (T-132): catálogo em lit/catalogo.js. Blocos do perfil da fábrica na 3D Warehouse, reduzidos e com os materiais renomeados
+  // para TECIDO / MADEIRA / PALHA (tela de ratan) / PRETO / ACO; LIT_P liga cada nome ao papel. Tamanho único; linha de preço = tecido.
+  'lit-cadeira-enseada-estofada': LIT_P('Cadeira Enseada Estofada', 'cadeira-enseada-estofada'),   // 47 × 83 × 58, confere com a foto do anúncio
+  'lit-cadeira-enseada-ratan': LIT_P('Cadeira Enseada Ratan', 'cadeira-enseada-ratan'),   // encosto em tela de ratan (vazada), assento estofado
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
