@@ -15,7 +15,16 @@ export const LIT = {
   tipo: k => /^Boucl/.test(k) ? 'boucle' : /^Cour/.test(k) ? 'couroFosco' : /Aveludado/.test(k) ? 'camurca' : 'linhoKF',
   mini: { arquivo: 'lit/tecidos-mini.jpg', colunas: 10, linhas: 6, ordem: '2014,2015,2030,2031,2034,2035,2040,2041,2042,2043,2044,4033,4038,4047,4051,4058,4059,4066,4072,4073,4074,4075,4076,4077,4078,4079,4080,4081,6000,6001,6010,6011,6012,6019,6020,6021,6026,6027,6029,6030,6031,6032,6033,6034,6035,6036,6037,8000,8001,8002,8003,8004,8005,8006,8007,8008,8009'.split(',') },
   // madeira: [nome igual à opção de "Escolha a madeira (LG):", cor, textura em lit/madeiras]
-  madeiras: [['Naturalíssimo', '#C4905A', 'naturalissimo.jpg'], ['Amêndoa', '#9C663A', 'amendoa.jpg'], ['Capuccino', '#5E3A22', 'capuccino.jpg'], ['Ebanizado', '#1E1A18', 'ebanizado.jpg']],
+  madeiras: [['Naturalíssimo', '#C28545', 'naturalissimo-v2.jpg'], ['Amêndoa', '#6D3F1F', 'amendoa-v2.jpg'], ['Capuccino', '#512411', 'capuccino-v2.jpg'], ['Ebanizado', '#262626', 'ebanizado-v2.jpg'],
+    // lâminas (móveis): nome igual à opção de "Escolha a lâmina (LG):"; esp = cartão de acabamento do site (derivação 211)
+    ...[['Cinamomo Natural', '#A6682E', 'cinamomo-natural'], ['Cinamomo Amêndoa', '#603715', 'cinamomo-amendoa'], ['Cinamomo Capuccino', '#491D0A', 'cinamomo-capuccino'], ['Cinamomo Ebanizado', '#1B1B1B', 'cinamomo-ebanizado'], ['Carvalho Natural', '#BD7B3F', 'carvalho-natural'], ['Carvalho Amêndoa', '#62310D', 'carvalho-amendoa'], ['Carvalho Capuccino', '#3E1708', 'carvalho-capuccino'], ['Carvalho Ebanizado', '#1D1B1B', 'carvalho-ebanizado']].map(([v, c, a]) => [v, c, 'lam-' + a + '.jpg', { esp: 'lam', valor: v }]),
+    ['Nogueira', '#704E34', 'lam-nogueira.jpg', { esp: 'nog', valor: 'Nogueira' }],
+    ['Carvalho Metalizado Gold', '#BAA070', 'lam-metalizado-gold.jpg', { esp: 'met', valor: 'Carvalho Metalizado Gold' }], ['Carvalho Metalizado Pérola', '#D6CEC0', 'lam-metalizado-perola.jpg', { esp: 'met', valor: 'Carvalho Metalizado Pérola' }]],
+  especies: {
+    lam: { linha: 'Laminado Cinamomo/Carvalho', sel: 'Escolha a lâmina (LG):' },
+    nog: { linha: 'Nogueira', sel: 'Escolha a lâmina (LG):' },
+    met: { linha: 'Carvalho Metalizado', sel: 'Escolha a lâmina (LG):' }
+  },
   // tela de ratan: [nome igual à opção de "Escolha a tela de ratan (LG):", arquivo em lit/telas]; .png = trama vazada (furos transparentes)
   telas: [['Ratan Naturalíssimo Aberto', 'naturalissimo-aberto.png'], ['Ratan Natural Aberto', 'natural-aberto.png'], ['Ratan Amêndoa Aberto', 'amendoa-aberto.png'], ['Ratan Capuccino Aberto', 'capuccino-aberto.png'], ['Ratan Preto Aberto', 'preto-aberto.png'], ['Ratan Sintético Aberto', 'sintetico-aberto.jpg'], ['Ratan Sintético Mesclado', 'sintetico-mesclado.jpg'], ['Ratan Tribal Aberto', 'tribal-aberto.jpg']],
   tituloTela: 'Tela de ratan ', artigoTela: 'a tela',
