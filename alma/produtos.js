@@ -243,6 +243,9 @@ export const PRODUTOS = {
   'anc-poltrona-sting': ANC_P('Poltrona Sting', 'poltrona-sting', { grupoMad: 'mad' }),
   'anc-poltrona-umbra': ANC_P('Poltrona Umbra', 'poltrona-umbra', { grupoMad: 'mad' }),
   'anc-poltrona-yuna': ANC_P('Poltrona Yuna', 'poltrona-yuna', { grupoMad: 'lam' }),
+  'anc-mesa-lateral-tucano': ANC_P('Mesa Lateral Tucano', 'mesa-lateral-tucano', { grupoMad: 'lam' }),
+  // Ramos de centro: bloco de 90; o de 110 é o mesmo ampliado no diâmetro (a ficha dá 26 cm de altura no 110 e 30 no 90). Vidro central em cor fixa
+  'anc-mesa-de-centro-ramos': ANC_P('Mesa de Centro Ramos', 'mesa-de-centro-ramos', { grupoMad: 'lam', tamanhos: [90, 110], tamanhoBloco: 90, redonda: true, tamanhoNomes: ['90 cm x 30 cm x 90 cm (L x A x P)', '110 cm x 26 cm x 110 cm (L x A x P)'], tamanhoRotulos: ['Ø 90 × 30 cm', 'Ø 110 × 26 cm'] }),
   // luminárias com cúpula: cúpula em cor fixa; a "laca ou pintura" do anúncio não entra no 3D (o cliente escolhe na página)
   'anc-luminaria-aura': ANC_P('Luminária de Chão Aura', 'luminaria-aura', { grupoMad: 'lam', escala: [1.28, 1.537, 1.28] }),
   'anc-luminaria-ginko': ANC_P('Luminária de Chão Ginko', 'luminaria-ginko', { grupoMad: 'lam', corCupula: '#DCC39A', tituloMetal: 'Detalhe', artigoMetal: 'o detalhe', modelos: [{ linha: 'Detalhe metalizado', usa: 'metal' }, { linha: 'Detalhe pintado', usa: 'laca' }] }),
