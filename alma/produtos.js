@@ -197,6 +197,11 @@ export const PRODUTOS = {
   'anc-mesa-de-centro-gio': ANC_P('Mesa de Centro Gio', 'mesa-de-centro-gio-60', { ...ANC_GIO, tamanhos: [60, 80], tamanhoBloco: 60, glbTam: [60, 80].map(d => 'anc/modelos/mesa-de-centro-gio-' + d + '.glb'), tamanhoNomes: [[60, 25], [80, 30]].map(([d, a]) => d + ' cm x ' + a + ' cm x ' + d + ' cm (L x A x P)'), tamanhoRotulos: [[60, 25], [80, 30]].map(([d, a]) => 'Ø ' + d + ' × ' + a + ' cm') }),
   // Franci: tampo em lâmina ou mármore conforme o Modelo (derivação 212, vai como "linha"); base na cor do metal. O bloco de 50 é o de 60 reduzido (o de 50 traz o tampo sem espessura)
   'anc-mesa-lateral-franci': ANC_P('Mesa Lateral Franci', 'mesa-lateral-franci-50', { grupoMad: 'tampo', linhaDaMadeira: true, tituloMadeira: 'Tampo', artigoMadeira: 'o tampo', tamanhos: [50, 60], tamanhoBloco: 50, glbTam: [50, 60].map(d => 'anc/modelos/mesa-lateral-franci-' + d + '.glb'), tamanhoNomes: [50, 60].map(d => d + ' cm x ' + d + ' cm x ' + d + ' cm (L x A x P)'), tamanhoRotulos: [50, 60].map(d => 'Ø ' + d + ' × ' + d + ' cm') }),
+  // blocos que o perfil da fábrica só tem em Collada (.dae), sem GLB
+  'anc-poltrona-deva': ANC_P('Poltrona Deva', 'poltrona-deva', { grupoMad: 'lam' }),
+  'anc-poltrona-alix': ANC_P('Poltrona Alix', 'poltrona-alix', { grupoMad: 'lam' }),
+  'anc-poltrona-ceres': ANC_P('Poltrona Ceres', 'poltrona-ceres', { grupoMad: 'lam' }),
+  'anc-poltrona-hellenia-media': ANC_P('Poltrona Hellenia Média', 'poltrona-hellenia-media', { grupoMad: 'lam' }),
   // luminárias com cúpula: cúpula em cor fixa; a "laca ou pintura" do anúncio não entra no 3D (o cliente escolhe na página)
   'anc-luminaria-aura': ANC_P('Luminária de Chão Aura', 'luminaria-aura', { grupoMad: 'lam', escala: [1.28, 1.537, 1.28] }),
   'anc-luminaria-ginko': ANC_P('Luminária de Chão Ginko', 'luminaria-ginko', { grupoMad: 'lam', corCupula: '#DCC39A', tituloMetal: 'Detalhe', artigoMetal: 'o detalhe', modelos: [{ linha: 'Detalhe metalizado', usa: 'metal' }, { linha: 'Detalhe pintado', usa: 'laca' }] }),
