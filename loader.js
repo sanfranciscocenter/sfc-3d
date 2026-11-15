@@ -134,6 +134,8 @@
     // mesas Porte e Gole: Modelo (derivação 212, lista padrão do tema) + tamanho em cartão; o Modelo vai como "linha"
     '/mesa-lateral-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-porte', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
     '/mesa-lateral-gole-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-gole', derivacao: 212, cartoes: true, sel: { metal: 'Escolha a cor do metal (ANC):' } },
+    '/mesa-lateral-gio-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-gio', derivacao: 212, cartoes: true, sel: { acabamento: 'Escolha o revestimento da bandeja (ANC):', metal: 'Escolha a cor do metal (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
+    '/mesa-de-centro-gio-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-gio', derivacao: 212, cartoes: true, sel: { acabamento: 'Escolha o revestimento da bandeja (ANC):', metal: 'Escolha a cor do metal (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
     '/mesa-de-centro-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-porte', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
     '/mesa-centro-veluti': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-veluti', sel: { madeira: 'Escolha a lâmina (ANC):' } },
     '/poltrona-geriba-essencial': { pagina: 'produto.html', params: 'p=lit-poltrona-geriba', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):' } },
