@@ -30,7 +30,7 @@ const MCB_P = (nome, arq, o = {}) => ({ nome, sobre: 'Marcobin', marca: 'mcb', g
 const LIT_P = (nome, arq, o = {}) => ({ nome, sobre: 'Litoral', marca: 'lit', glb: 'lit/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'palha', PRETO: 'preto', ACO: 'aco', COURO: 'couro', VIDRO: 'vidro', '*': 'madeira', ...(o.partes || {}) } });
 // Ancezki (marca real): blocos do perfil oficial na 3D Warehouse, convertidos por peça solta. Linha de preço = tecido (derivação 208).
 // grupoMad: 'mad' = "Escolha a madeira (ANC):" · 'lam' = "Escolha a lâmina (ANC):". ACO = peça que segue a cor do metal.
-const ANC_P = (nome, arq, o = {}) => ({ nome, sobre: 'Ancezki', marca: 'anc', glb: 'anc/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PRETO: 'preto', ACO: 'metal', VIDRO: 'vidro', '*': 'tecido', ...(o.partes || {}) } });
+const ANC_P = (nome, arq, o = {}) => ({ nome, sobre: 'Ancezki', marca: 'anc', glb: 'anc/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PRETO: 'preto', ACO: 'metal', COURO: 'couro', VIDRO: 'vidro', '*': 'tecido', ...(o.partes || {}) } });
 const LIT_L = (nome, arq, o = {}) => LIT_P(nome, arq, { laminas: ['lam', 'nog', 'met'], ...o });   // móveis em lâmina: a madeira do 3D é a lâmina (cartão + personalização do site)
 const LIT_T = ms => ({ tamanhoNomes: ms.map(([l, p]) => l + ' cm x 76 cm x ' + p + ' cm (L x A x P)'), tamanhoRotulos: ms.map(([l, p]) => l + ' × ' + p + ' cm') });   // nome exato do cartão de tamanho do site + rótulo curto
 const MCB_T = re => ({ mais: [[re, 'tecido']] });   // bloco sem nome de material: o que casar com a expressão é o estofado
@@ -163,6 +163,18 @@ export const PRODUTOS = {
   'anc-poltrona-geo': ANC_P('Poltrona Geo', 'poltrona-geo', { grupoMad: 'lam' }),
   'anc-poltrona-need': ANC_P('Poltrona Need', 'poltrona-need', { grupoMad: 'lam' }),
   'anc-poltrona-aloe': ANC_P('Poltrona Aloe', 'poltrona-aloe'),
+  'anc-banqueta-revea': ANC_P('Banqueta Révea', 'banqueta-revea', { grupoMad: 'lam' }),
+  'anc-poltrona-revea-media': ANC_P('Poltrona Révea Média', 'poltrona-revea-media', { grupoMad: 'lam' }),
+  'anc-poltrona-assai': ANC_P('Poltrona Assaí', 'poltrona-assai'),
+  'anc-poltrona-hellenia-compacta': ANC_P('Poltrona Hellenia Compacta', 'poltrona-hellenia-compacta', { grupoMad: 'lam' }),
+  'anc-poltrona-moon': ANC_P('Poltrona Moon', 'poltrona-moon', { grupoMad: 'lam' }),
+  'anc-poltrona-franti': ANC_P('Poltrona Franti', 'poltrona-franti', { grupoMad: 'mad' }),
+  'anc-puff-veluti': ANC_P('Puff Veluti', 'puff-veluti', { grupoMad: 'lam' }),
+  'anc-poltrona-stella': ANC_P('Poltrona Stella', 'poltrona-stella'),
+  'anc-puff-stella': ANC_P('Puff Stella', 'puff-stella'),
+  'anc-poltrona-guyra-lamina': ANC_P('Poltrona Guyrá Lâmina', 'poltrona-guyra-lamina', { grupoMad: 'lam' }),
+  'anc-poltrona-guyra-estofada': ANC_P('Poltrona Guyrá Estofada', 'poltrona-guyra-estofada'),
+  'anc-poltrona-andorinha': ANC_P('Poltrona Andorinha', 'poltrona-andorinha'),
   'lit-escrivaninha-itauna': LIT_L('Escrivaninha Itaúna', 'escrivaninha-itauna', { tamanhos: [160, 180], tamanhoBloco: 180, estica: { base: 1.80, braco: 0.25, rigido: 0.3 } }),
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
