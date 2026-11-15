@@ -27,7 +27,7 @@ const BUR_REGRAS = [[/iron|glass|acrylic|black|roda|metal.?standard|mat_padrao|^
 // O casco de trás das giratórias ("tecido das costas" no site) usa o mesmo tecido do assento no 3D.
 const MCB_R = metal => [[/^$/, 'oculto'], [/madeira|tauari|^acad4fa2c9e$|^acad7301/i, 'madeira'], [/tecido|linho|linha|couro|^acadfb1cf241$/i, 'tecido'], [/^acad(2a8b0ced|fa90ccd9)$/, metal], [/^acad(11917b7a|866a941c)$/, 'palha'], [/cromad|^acad60adb84$/i, 'aco'], [/metal|material #|0\.00/i, 'preto']];
 const MCB_P = (nome, arq, o = {}) => ({ nome, sobre: 'Marcobin', marca: 'mcb', glb: 'mcb/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...MCB_R(o.metal ? 'metal' : 'aco')], partes: { '*': 'madeira', ...(o.partes || {}) } });
-const LIT_P = (nome, arq, o = {}) => ({ nome, sobre: 'Litoral', marca: 'lit', glb: 'lit/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'palha', PRETO: 'preto', ACO: 'aco', COURO: 'couro', '*': 'madeira', ...(o.partes || {}) } });
+const LIT_P = (nome, arq, o = {}) => ({ nome, sobre: 'Litoral', marca: 'lit', glb: 'lit/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'palha', PRETO: 'preto', ACO: 'aco', COURO: 'couro', VIDRO: 'vidro', '*': 'madeira', ...(o.partes || {}) } });
 const LIT_L = (nome, arq, o = {}) => LIT_P(nome, arq, { laminas: ['lam', 'nog', 'met'], ...o });   // móveis em lâmina: a madeira do 3D é a lâmina (cartão + personalização do site)
 const MCB_T = re => ({ mais: [[re, 'tecido']] });   // bloco sem nome de material: o que casar com a expressão é o estofado
 export const PRODUTOS = {
@@ -127,6 +127,11 @@ export const PRODUTOS = {
   'lit-bar-pero': LIT_L('Bar Peró', 'bar-pero'),
   'lit-aparador-guaratuba': LIT_L('Aparador Guaratuba', 'aparador-guaratuba'),
   'lit-aparador-itauna': LIT_L('Aparador Itaúna', 'aparador-itauna'),
+  'lit-mesa-de-centro-boraceia-quadrada': LIT_L('Mesa de Centro Boracéia Quadrada', 'mesa-de-centro-boraceia-quadrada'),
+  'lit-mesa-de-centro-peruibe': LIT_L('Mesa de Centro Peruíbe', 'mesa-de-centro-peruibe'),
+  'lit-mesa-de-centro-prumirim': LIT_L('Mesa de Centro Prumirim', 'mesa-de-centro-prumirim'),
+  'lit-sofa-table-corumbau': LIT_L('Sofá Table Corumbau', 'sofa-table-corumbau'),
+  'lit-sofa-table-saquarema': LIT_L('Sofá Table Saquarema', 'sofa-table-saquarema'),
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
