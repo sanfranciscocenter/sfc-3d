@@ -136,6 +136,11 @@
     '/mesa-lateral-gole-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-gole', derivacao: 212, cartoes: true, sel: { metal: 'Escolha a cor do metal (ANC):' } },
     '/mesa-lateral-gio-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-gio', derivacao: 212, cartoes: true, sel: { acabamento: 'Escolha o revestimento da bandeja (ANC):', metal: 'Escolha a cor do metal (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
     '/mesa-de-centro-gio-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-gio', derivacao: 212, cartoes: true, sel: { acabamento: 'Escolha o revestimento da bandeja (ANC):', metal: 'Escolha a cor do metal (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
+    // blocos convertidos do Collada da fábrica (sem GLB no perfil)
+    '/poltrona-deva': { pagina: 'produto.html', params: 'p=anc-poltrona-deva', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):' } },
+    '/poltrona-alix': { pagina: 'produto.html', params: 'p=anc-poltrona-alix', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/poltrona-ceres': { pagina: 'produto.html', params: 'p=anc-poltrona-ceres', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/poltrona-hellenia-media': { pagina: 'produto.html', params: 'p=anc-poltrona-hellenia-media', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/mesa-lateral-franci-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-franci', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/mesa-de-centro-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-porte', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
     '/mesa-centro-veluti': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-veluti', sel: { madeira: 'Escolha a lâmina (ANC):' } },
