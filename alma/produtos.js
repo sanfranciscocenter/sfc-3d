@@ -29,6 +29,7 @@ const MCB_R = metal => [[/^$/, 'oculto'], [/madeira|tauari|^acad4fa2c9e$|^acad73
 const MCB_P = (nome, arq, o = {}) => ({ nome, sobre: 'Marcobin', marca: 'mcb', glb: 'mcb/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...MCB_R(o.metal ? 'metal' : 'aco')], partes: { '*': 'madeira', ...(o.partes || {}) } });
 const LIT_P = (nome, arq, o = {}) => ({ nome, sobre: 'Litoral', marca: 'lit', glb: 'lit/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'palha', PRETO: 'preto', ACO: 'aco', COURO: 'couro', VIDRO: 'vidro', '*': 'madeira', ...(o.partes || {}) } });
 const LIT_L = (nome, arq, o = {}) => LIT_P(nome, arq, { laminas: ['lam', 'nog', 'met'], ...o });   // móveis em lâmina: a madeira do 3D é a lâmina (cartão + personalização do site)
+const LIT_T = ms => ({ tamanhoNomes: ms.map(([l, p]) => l + ' cm x 76 cm x ' + p + ' cm (L x A x P)'), tamanhoRotulos: ms.map(([l, p]) => l + ' × ' + p + ' cm') });   // nome exato do cartão de tamanho do site + rótulo curto
 const MCB_T = re => ({ mais: [[re, 'tecido']] });   // bloco sem nome de material: o que casar com a expressão é o estofado
 export const PRODUTOS = {
   // KF Mobiliário (T-118): catálogo próprio em kf/catalogo.js. Piloto: Sofá Portos.
@@ -141,6 +142,13 @@ export const PRODUTOS = {
   'lit-mesa-de-jantar-guaeca': LIT_L('Mesa de Jantar Guaecá', 'mesa-de-jantar-guaeca', { laminas: ['lam'], tamanhos: [220, 240, 270, 300, 320], tamanhoBloco: 240, estica: { base: 2.40, braco: 0.2, rigido: 0.6 } }),
   'lit-mesa-de-jantar-trancoso': LIT_L('Mesa de Jantar Trancoso', 'mesa-de-jantar-trancoso', { laminas: ['lam'], tamanhos: [200, 220, 240, 270], tamanhoBloco: 270, estica: { base: 2.70, braco: 0.3, rigido: 0.6 } }),
   'lit-mesa-de-jantar-ubatuba': LIT_L('Mesa de Jantar Ubatuba', 'mesa-de-jantar-ubatuba', { laminas: ['lam'], tamanhos: [220, 240, 270], tamanhoBloco: 270, estica: { base: 2.70, braco: 0.3, rigido: 0.6 } }),
+  // Litoral, mesas com tamanho ambíguo pela largura: o tamanho vai pelo NOME do cartão do site (tamanhoNomes), com rótulo curto na tela (tamanhoRotulos)
+  'lit-mesa-de-jantar-taipu': LIT_L('Mesa de Jantar Taipu', 'mesa-de-jantar-taipu', { laminas: ['lam'], tamanhos: [180, 180, 200, 220], tamanhoBloco: 200, estica: { base: 2.00, braco: 0.25, rigido: 0.5 }, ...LIT_T([[180, 90], [180, 100], [200, 100], [220, 110]]) }),
+  'lit-mesa-de-jantar-toque-base-preta': LIT_L('Mesa de Jantar Toque Base Preta', 'mesa-de-jantar-toque-base-preta', { laminas: ['lam'], tamanhos: [160, 180, 180, 200, 220, 240], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.25, rigido: 0.5 }, ...LIT_T([[160, 90], [180, 90], [180, 100], [200, 100], [220, 110], [240, 110]]) }),
+  'lit-mesa-de-jantar-caraiva': LIT_L('Mesa de Jantar Caraíva Base Laminada', 'mesa-de-jantar-caraiva', { laminas: ['lam', 'nog'], tamanhos: [160, 180, 200, 220, 240], tamanhoBloco: 270, estica: { base: 2.70, braco: 0.45, rigido: 0.9 }, ...LIT_T([[160, 90], [180, 100], [200, 100], [220, 110], [240, 110]]) }),
+  'lit-mesa-de-jantar-arpoador': LIT_L('Mesa de Jantar Arpoador', 'mesa-de-jantar-arpoador', { laminas: ['lam'], tamanhos: [120, 140, 160, 180, 200, 220, 240], tamanhoBloco: 180, estica: { base: 1.80, braco: 0.2, rigido: 0.4 }, ...LIT_T([[120, 90], [140, 90], [160, 90], [180, 90], [200, 100], [220, 110], [240, 110]]) }),
+  // redonda: o tamanho é o diâmetro (escala em x e z); versão sem tampo giratório
+  'lit-mesa-de-jantar-itacare-redonda': LIT_L('Mesa de Jantar Itacaré Redonda', 'mesa-de-jantar-itacare-redonda', { laminas: ['lam', 'nog'], tamanhos: [150, 160, 180], tamanhoBloco: 160, redonda: true, tamanhoNomes: [150, 160, 180].map(d => d + ' cm de diâmetro x 76 cm de altura'), tamanhoRotulos: [150, 160, 180].map(d => 'Ø ' + d + ' cm') }),
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
