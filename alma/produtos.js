@@ -149,6 +149,10 @@ export const PRODUTOS = {
   'lit-mesa-de-jantar-arpoador': LIT_L('Mesa de Jantar Arpoador', 'mesa-de-jantar-arpoador', { laminas: ['lam'], tamanhos: [120, 140, 160, 180, 200, 220, 240], tamanhoBloco: 180, estica: { base: 1.80, braco: 0.2, rigido: 0.4 }, ...LIT_T([[120, 90], [140, 90], [160, 90], [180, 90], [200, 100], [220, 110], [240, 110]]) }),
   // redonda: o tamanho é o diâmetro (escala em x e z); versão sem tampo giratório
   'lit-mesa-de-jantar-itacare-redonda': LIT_L('Mesa de Jantar Itacaré Redonda', 'mesa-de-jantar-itacare-redonda', { laminas: ['lam', 'nog'], tamanhos: [150, 160, 180], tamanhoBloco: 160, redonda: true, tamanhoNomes: [150, 160, 180].map(d => d + ' cm de diâmetro x 76 cm de altura'), tamanhoRotulos: [150, 160, 180].map(d => 'Ø ' + d + ' cm') }),
+  // Litoral, aparador, buffet e escrivaninha com tamanho pela largura (derivação 205)
+  'lit-aparador-caraiva': LIT_L('Aparador Caraíva', 'aparador-caraiva', { tamanhos: [160, 180, 200], tamanhoBloco: 200, estica: { base: 2.00, braco: 0.2, rigido: 0.5 } }),
+  'lit-buffet-caioba-ratan': LIT_L('Buffet Caiobá com Ratan', 'buffet-caioba-ratan', { tamanhos: [180, 200], tamanhoBloco: 200, estica: { base: 2.00, braco: 0.1, rigido: 0.3 } }),
+  'lit-escrivaninha-itauna': LIT_L('Escrivaninha Itaúna', 'escrivaninha-itauna', { tamanhos: [160, 180], tamanhoBloco: 180, estica: { base: 1.80, braco: 0.25, rigido: 0.3 } }),
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
