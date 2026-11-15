@@ -175,6 +175,7 @@ export const PRODUTOS = {
   'anc-poltrona-guyra-lamina': ANC_P('Poltrona Guyrá Lâmina', 'poltrona-guyra-lamina', { grupoMad: 'lam' }),
   'anc-poltrona-guyra-estofada': ANC_P('Poltrona Guyrá Estofada', 'poltrona-guyra-estofada'),
   'anc-poltrona-andorinha': ANC_P('Poltrona Andorinha', 'poltrona-andorinha'),
+  'anc-poltrona-lea': ANC_P('Poltrona Léa', 'poltrona-lea', { grupoMad: 'lam' }),
   'anc-cadeira-de-escritorio-istmo': ANC_P('Cadeira de Escritório Istmo', 'cadeira-de-escritorio-istmo'),
   'anc-puff-ginko': ANC_P('Puff Ginko', 'puff-ginko'),
   // móveis Ancezki sem tecido: só lâmina/madeira e cor do metal
