@@ -132,6 +132,12 @@
     '/mesa-de-jantar-guaeca-laminado-cinamomo-carvalho-220': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-guaeca', tamanho: 205, cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
     '/mesa-de-jantar-trancoso-laminado-cinamomo-carvalho-200': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-trancoso', tamanho: 205, cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
     '/mesa-de-jantar-ubatuba-laminado-cinamomo-carvalho-220': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-ubatuba', tamanho: 205, cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    // Litoral, mesas com tamanho pelo nome do cartão (tamanhoNomes): sem "tamanho", o cartão de tamanho vai junto com o de acabamento
+    '/mesa-de-jantar-taipu-laminado-cinamomo-carvalho-180x90': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-taipu', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/mesa-de-jantar-toque-base-preta-laminado-cinamomo-carvalho-160': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-toque-base-preta', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/mesa-de-jantar-caraiva-base-laminada-laminado-cinamomo-carvalho-160': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-caraiva', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/mesa-de-jantar-arpoador-laminado-cinamomo-carvalho-120': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-arpoador', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/mesa-de-jantar-itacare-redonda-laminado-cinamomo-carvalho-150': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-itacare-redonda', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
     '/sofa-bonno-kf-bonno': { pagina: 'produto.html', params: 'p=kf-bonno', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
