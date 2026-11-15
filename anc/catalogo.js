@@ -15,16 +15,20 @@ export const ANC = {
     ['Couro legítimo', faixa('CO', '01,02,03,04,05,06,07,08,09')]
   ],
   tipo: k => /^CO-/.test(k) ? 'couroFosco' : /^AL-/.test(k) ? 'boucle' : 'linhoKF',
-  mini: { arquivo: 'anc/tecidos-mini.jpg', colunas: 10, linhas: 9, ordem: [...faixa('AL', '01,02,03,04,05,06,07,08,09,10,13,14,15,16,17,19,20,21'), ...faixa('CR', '83,85,121,123,124,144,145,146,147,148,149,150,151,153,154,155,156,157,158,159,160,161,162,164,165,166,167,168,169,170,171,172,173'), ...faixa('CM', '18,138,167,168,169,173,174,177,178,179,194,195,196,197,198,199,200,201,202,203,204,205,206,212,213'), ...faixa('PL', '149,150,151'), ...faixa('CO', '01,02,03,04,05,06,07,08,09')] },
+  mini: { arquivo: 'anc/tecidos-mini.jpg', colunas: 10, linhas: 9, ordem: [...faixa('AL', '01,02,03,04,05,06,07,08,09,10,13,14,15,16,17,19,20,21'), ...faixa('CR', '83,85,121,123,124,144,145,146,147,148,149,150,151,153,154,155,156,157,158,159,160,161,162,164,165,166,167,168,169,170,171,172,173'), ...faixa('CM', '18,138,167,168,169,173,174,177,178,179,194,195,196,197,198,199,200,201,202,203,204,205,206,212,213'), ...faixa('PL', '149,150,151'), ...faixa('CO', '01,02,03,04,05,06,07,08,09'), 'CM-211', 'CM-214'] },   // CM-211 e CM-214: só no revestimento da bandeja (mesas Gio)
   // madeira: [nome igual à opção do site, cor da bolinha, textura em anc/madeiras, null, grupo]
   // grupo 'mad' = "Escolha a madeira (ANC):" (maciça; as amostras do site são esferas, então o veio vem da lâmina, no tom da esfera)
   // grupo 'lam' = "Escolha a lâmina (ANC):" (foto real da amostra). O produto diz qual grupo usa em grupoMad.
   madeiras: [
     ['Castanho', '#825E4A', 'mad-castanho.jpg', null, 'mad'], ['Nogueira', '#6E5F58', 'mad-nogueira.jpg', null, 'mad'], ['Preto Ébano', '#2E3134', 'mad-preto-ebano.jpg', null, 'mad'],
+    // grupo 'tampo' (Mesa Franci): o Modelo do anúncio decide entre tampo laminado e tampo em mármore; cada um grava na sua personalização
+    ...[['Nogueira', '#886854', 'lam-nogueira.jpg'], ['Freijó', '#C5935C', 'lam-freijo.jpg'], ['Quartier', '#56483F', 'lam-quartier.jpg'], ['Preto Ébano', '#2E3134', 'lam-preto-ebano.jpg']].map(([n, cor, a]) => ['Lâmina ' + n, cor, a, { esp: 'lamTampo', valor: n }, 'tampo']),
+    ...[['Nero', '#2B2B2E', 'mar-nero.jpg'], ['Branco Carrara', '#E2E3E1', 'mar-branco-carrara.jpg'], ['Marrom Imperador', '#4A3B32', 'mar-marrom-imperador.jpg'], ['Travertino Natural', '#D8CFBA', 'mar-travertino-natural.jpg'], ['Verde Alpi', '#3F5A4E', 'mar-verde-alpi.jpg']].map(([n, cor, a]) => ['Mármore ' + n, cor, a, { esp: 'marmore', valor: n }, 'tampo']),
     ['Nogueira', '#886854', 'lam-nogueira.jpg', null, 'lam'], ['Freijó', '#C5935C', 'lam-freijo.jpg', null, 'lam'], ['Quartier', '#56483F', 'lam-quartier.jpg', null, 'lam'], ['Preto Ébano', '#2E3134', 'lam-preto-ebano.jpg', null, 'lam']
   ],
   // metal: nome igual à opção de "Escolha a cor do metal (ANC):"; cor aproximada da esfera de amostra do site
   // laca ou pintura: nome igual à opção de "Escolha a laca ou pintura (ANC):"; cor aproximada da amostra do site
-  lacas: [['Preto', '#1E1E1E'], ['Fendi', '#B3A38D'], ['Tabaco', '#6B4B36']],
+  lacas: [['Preto', '#151213'], ['Fendi', '#A8977D'], ['Tabaco', '#76583C']],
+  especies: { lamTampo: { linha: 'Tampo laminado', sel: 'Escolha a lâmina (ANC):' }, marmore: { linha: 'Tampo em mármore', sel: 'Escolha o mármore (ANC):' } },
   metais: [['Preto', '#1E1E1E'], ['Champagne', '#CFC9B4'], ['Dourado', '#C9B26A'], ['Bronze', '#8B8472'], ['Grafite', '#5F6767'], ['Moka', '#7A6359'], ['Marino', '#3A566E'], ['Cinza', '#8A9395'], ['Coral', '#E0A06C']]
 };
