@@ -771,7 +771,7 @@ async function aplica() {
   if (TAMANHOS.length) $('nm-tamanho').textContent = TAM_ROT ? TAM_ROT[estado.z] : TAMANHOS[estado.z] + ' cm de largura';
   if (EMBED) {
     const l = tem('tecido') && !KF.semLinha ? CAT.linha(estado.t) : '';   // Ancezki: preço único, sem linha de tecido
-    $('b-linha').textContent = MODELO() ? MODELO()[2] : l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[MODELO() ? MODELO()[2] : l] || (MODELO() ? '' : Object.values(precos)[0]))) || '';
+    $('b-linha').textContent = P.linhaDaMadeira ? infoMad(MADS[estado.m]).linha : MODELO() ? MODELO()[2] : l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[MODELO() ? MODELO()[2] : l] || (MODELO() ? '' : Object.values(precos)[0]))) || '';
   }
   if (!pronto || !mv.model || DEBUG) return;
   const urlM = P.texMadeira ? P.texMadeira : EH_KF ? PASTA + '/madeiras/' + MADS[estado.m][2] : CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
@@ -785,6 +785,8 @@ async function aplica() {
   const m = mat('madeira'), t = mat('tecido'), p = mat('palha');
   if (m && mc) { m.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); m.pbrMetallicRoughness.baseColorTexture.setTexture(mc); m.normalTexture.setTexture(mn); m.pbrMetallicRoughness.setRoughnessFactor(roughM); }
   if (m && mc && EH_KF) m.pbrMetallicRoughness.setRoughnessFactor(0.72);
+  // mármore no lugar da madeira (Mesa Franci): a malha usa a escala do veio (4,5 x 16 cm); a pedra é ampliada para ~64 cm e fica polida, sem o relevo do veio
+  if (m && mc && EH_KF) { const pedra = !!(MADS[estado.m][3] && MADS[estado.m][3].esp === 'marmore'); for (const info of [m.pbrMetallicRoughness.baseColorTexture, m.normalTexture]) { const s = info && info.texture && info.texture.sampler; if (s && s.setScale) s.setScale(pedra ? { u: 0.07, v: 0.25 } : { u: 1, v: 1 }); } if (pedra) { m.normalTexture.setTexture(null); m.pbrMetallicRoughness.setRoughnessFactor(0.2); } }
   if (t && tc) { t.pbrMetallicRoughness.setBaseColorFactor('#ffffff'); t.pbrMetallicRoughness.baseColorTexture.setTexture(tc); t.normalTexture.setTexture(tn); t.pbrMetallicRoughness.setRoughnessFactor(rough); }
   // escala própria do couro: tem de ser aplicada DEPOIS de pôr a textura no material (antes disso o visualizador descarta)
   if (t && tc) { const e = CAT.escala(estado.t); for (const info of [t.pbrMetallicRoughness.baseColorTexture, t.normalTexture]) { const s = info && info.texture && info.texture.sampler; if (s && s.setScale) s.setScale({ u: e, v: e }); } }
@@ -846,7 +848,8 @@ function ajustaGrupos() {   // só aparecem os grupos de opção que este produt
   $('g-metal').hidden = !(METAIS.length && tem('metal')); $('g-tamanho').hidden = !TAMANHOS.length;
   if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = P.tituloTecido || 'Tecido ';
   if (EH_VND) boxE.closest('.grupo').querySelector('h2').firstChild.textContent = KF.tituloTela || 'Tela ';
-  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && !(EH_VND && PALHAS.length < 2) && (EH_VND ? KF.artigoTela || 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : /^Revest/.test(P.tituloTecido) ? 'o revestimento' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && (P.artigoMetal || 'o metal')].filter(Boolean);
+  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && (P.artigoMadeira || 'a madeira'), tem('palha') && !(EH_VND && PALHAS.length < 2) && (EH_VND ? KF.artigoTela || 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : /^Revest/.test(P.tituloTecido) ? 'o revestimento' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && (P.artigoMetal || 'o metal')].filter(Boolean);
+  if (P.tituloMadeira) boxM.closest('.grupo').querySelector('h2').firstChild.textContent = P.tituloMadeira + ' ';
   if (P.tituloMetal) $('g-metal').querySelector('h2').firstChild.textContent = P.tituloMetal + ' ';
   const lista = itens.length > 1 ? itens.slice(0, -1).join(', ') + ' e ' + itens.at(-1) : itens[0] || 'as opções';
   const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : /^cama/i.test(P.nome) ? 'a cama' : /^(mesa|c.moda|estante|escrivaninha|cristaleira|lumin|carrinho|puff|bar )/i.test(P.nome) ? 'a peça' : /^(aparador|buffet|espelho|cabideiro)/i.test(P.nome) ? 'o móvel' : /^recamier/i.test(P.nome) ? 'o recamier' : 'a cadeira';
@@ -864,7 +867,7 @@ if (EMBED) {
     if (!SITES.includes(ev.origin) || !ev.data || ev.data.sfc3d !== 'estado') return;
     const d = ev.data;
     if (d.precos && typeof d.precos === 'object') precos = d.precos;
-    const noSite = [].concat(d.cartoes || []), m = MADS.findIndex(x => { const i = infoMad(x); return i ? !!d.todos && d.todos[i.sel] === i.valor && noSite.includes(i.linha) : x[0] === d.madeira; }); if (m >= 0) estado.m = m;
+    const noSite = [].concat(d.cartoes || []), m = MADS.findIndex(x => { const i = infoMad(x); return i ? !!d.todos && d.todos[i.sel] === i.valor && (P.linhaDaMadeira ? d.linha === i.linha : noSite.includes(i.linha)) : x[0] === d.madeira; }); if (m >= 0) estado.m = m;
     const e = PALHAS.findIndex(x => x[0] === d.tela); if (e >= 0) estado.e = e;
     const c = CAT.deSite(d.acabamento); if (CAT.valido(c)) estado.t = c;
     const x = P.modelos ? METAIS.findIndex(q => q[2] === d.linha && (!q[3] || q[4] === d[q[3]])) : METAIS.findIndex(q => q[0] === d.metal); if (x >= 0) estado.x = x;
@@ -874,9 +877,9 @@ if (EMBED) {
   });
   $('usar').addEventListener('click', () => parent.postMessage({
     sfc3d: 'usar', madeira: !tem('madeira') ? '' : infoMad(MADS[estado.m]) ? infoMad(MADS[estado.m]).valor : MADS[estado.m][0], selMadeira: infoMad(MADS[estado.m]) ? infoMad(MADS[estado.m]).sel : '', tela: tem('palha') ? PALHAS[estado.e][0] : '',
-    acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: MODELO() ? MODELO()[2] : tem('tecido') && !P.semLinha ? CAT.linha(estado.t) : P.linhaTela && tem('palha') ? 'Tela ' + telaTipo() : '',
+    acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: P.linhaDaMadeira ? infoMad(MADS[estado.m]).linha : MODELO() ? MODELO()[2] : tem('tecido') && !P.semLinha ? CAT.linha(estado.t) : P.linhaTela && tem('palha') ? 'Tela ' + telaTipo() : '',
     laca: MODELO() && MODELO()[3] === 'laca' ? MODELO()[4] : '',
-    cartoes: [infoMad(MADS[estado.m]) && tem('madeira') && infoMad(MADS[estado.m]).linha, ...(P.cartoesFixos || []), TAM_NOMES && TAM_NOMES[estado.z], P.cartaoTela && tem('palha') && 'Encosto tela ' + telaTipo()].filter(Boolean),
+    cartoes: [infoMad(MADS[estado.m]) && tem('madeira') && !P.linhaDaMadeira && infoMad(MADS[estado.m]).linha, ...(P.cartoesFixos || []), TAM_NOMES && TAM_NOMES[estado.z], P.cartaoTela && tem('palha') && 'Encosto tela ' + telaTipo()].filter(Boolean),
     metal: MODELO() ? (MODELO()[3] === 'metal' ? MODELO()[4] : '') : METAIS.length && tem('metal') ? METAIS[estado.x][0] : '', tamanho: TAM_NOMES ? '' : TAMANHOS.length ? TAMANHOS[estado.z] : ''
   }, '*'));
 }
