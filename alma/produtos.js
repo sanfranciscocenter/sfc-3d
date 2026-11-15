@@ -77,6 +77,25 @@ export const PRODUTOS = {
   // para TECIDO / MADEIRA / PALHA (tela de ratan) / PRETO / ACO; LIT_P liga cada nome ao papel. Tamanho único; linha de preço = tecido.
   'lit-cadeira-enseada-estofada': LIT_P('Cadeira Enseada Estofada', 'cadeira-enseada-estofada'),   // 47 × 83 × 58, confere com a foto do anúncio
   'lit-cadeira-enseada-ratan': LIT_P('Cadeira Enseada Ratan', 'cadeira-enseada-ratan'),   // encosto em tela de ratan (vazada), assento estofado
+  'lit-cadeira-geriba': LIT_P('Cadeira Geribá', 'cadeira-geriba'),   // Aroeira
+  'lit-cadeira-tucuns-estofada': LIT_P('Cadeira Tucuns estofada', 'cadeira-tucuns-estofada'),   // Bambu estofada
+  'lit-cadeira-tucuns-madeira': LIT_P('Cadeira Tucuns madeira', 'cadeira-tucuns-madeira'),   // Bambu madeira
+  'lit-cadeira-tucuns-ratan': LIT_P('Cadeira Tucuns ratan aberto', 'cadeira-tucuns-ratan'),   // Bambu ratan aberto
+  'lit-cadeira-conchas': LIT_P('Cadeira Conchas', 'cadeira-conchas'),   // Cacau
+  'lit-cadeira-itamambuca-ratan': LIT_P('Cadeira Itamambuca Ratan', 'cadeira-itamambuca-ratan'),   // Firenze ratan aberto
+  'lit-cadeira-arpoador-estofada': LIT_P('Cadeira Arpoador Estofada', 'cadeira-arpoador-estofada'),   // Florença estofada
+  'lit-cadeira-arpoador-madeira': LIT_P('Cadeira Arpoador Madeira', 'cadeira-arpoador-madeira'),   // Florença madeira
+  'lit-cadeira-guarau-estofada': LIT_P('Cadeira Guaraú Estofada', 'cadeira-guarau-estofada'),   // Floripa estofada 200
+  'lit-cadeira-guarau-madeira': LIT_P('Cadeira Guaraú Madeira', 'cadeira-guarau-madeira'),   // Floripa madeira 200
+  'lit-cadeira-maragogi-ratan': LIT_P('Cadeira Maragogi Ratan', 'cadeira-maragogi-ratan'),   // Gaia ratan aberto
+  'lit-cadeira-caioba': LIT_P('Cadeira Caiobá', 'cadeira-caioba'),   // Ipê
+  'lit-cadeira-trindade-ratan': LIT_P('Cadeira Trindade ratan aberto', 'cadeira-trindade-ratan'),   // Lis ratan aberto
+  'lit-cadeira-tabatinga': LIT_P('Cadeira Tabatinga', 'cadeira-tabatinga'),   // Pau-Brasil
+  'lit-cadeira-imbe': LIT_P('Cadeira Imbé', 'cadeira-imbe'),   // Lira
+  'lit-cadeira-leblon': LIT_P('Cadeira Leblon', 'cadeira-leblon'),   // Aura estofada
+  'lit-cadeira-ipanema-estofada': LIT_P('Cadeira Ipanema Estofada', 'cadeira-ipanema-estofada'),   // Brisa estofada
+  'lit-cadeira-caraiva': LIT_P('Cadeira Caraíva', 'cadeira-caraiva'),   // Orla estofada
+  'lit-cadeira-garopaba-estofada': LIT_P('Cadeira Garopaba Estofada', 'cadeira-garopaba-estofada'),   // Jatobá estofada
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
