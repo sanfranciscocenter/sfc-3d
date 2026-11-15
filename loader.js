@@ -144,6 +144,12 @@
     '/poltrona-verena': { pagina: 'produto.html', params: 'p=anc-poltrona-verena', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):' } },
     '/puff-verena': { pagina: 'produto.html', params: 'p=anc-puff-verena', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):' } },
     '/poltrona-luna': { pagina: 'produto.html', params: 'p=anc-poltrona-luna', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):' } },
+    // blocos do perfil do Asadesign Studio e de lojista da marca
+    '/poltrona-alma1': { pagina: 'produto.html', params: 'p=anc-poltrona-alma', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/poltrona-verbena': { pagina: 'produto.html', params: 'p=anc-poltrona-verbena', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/poltrona-zest': { pagina: 'produto.html', params: 'p=anc-poltrona-zest', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):' } },
+    '/cadeira-de-escritorio-lince-ancezki': { pagina: 'produto.html', params: 'p=anc-cadeira-de-escritorio-lince', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/poltrona-cegonha': { pagina: 'produto.html', params: 'p=anc-poltrona-cegonha', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/mesa-lateral-franci-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-franci', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/mesa-de-centro-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-porte', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
     '/mesa-centro-veluti': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-veluti', sel: { madeira: 'Escolha a lâmina (ANC):' } },
