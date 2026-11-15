@@ -137,6 +137,10 @@ export const PRODUTOS = {
   'lit-mesa-de-jantar-juquehy-macica': LIT_L('Mesa de Jantar Juquehy Madeira Maciça', 'mesa-de-jantar-juquehy-macica', { laminas: ['lam'], tamanhos: [200, 220, 240], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.5, rigido: 0.9 } }),
   'lit-mesa-de-jantar-patacho': LIT_L('Mesa de Jantar Patacho', 'mesa-de-jantar-patacho', { laminas: ['lam', 'nog'], tamanhos: [180, 200, 220, 240, 270], tamanhoBloco: 270, estica: { base: 2.68, braco: 0.3, rigido: 0.5 } }),
   'lit-mesa-de-jantar-prea': LIT_L('Mesa de Jantar Preá', 'mesa-de-jantar-prea', { laminas: ['lam'], tamanhos: [160, 180, 200, 220], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.55, rigido: 0.6 } }),
+  'lit-mesa-de-jantar-pipa': LIT_L('Mesa de Jantar Pipa', 'mesa-de-jantar-pipa', { laminas: ['lam', 'nog'], tamanhos: [220, 240, 270, 300, 320], tamanhoBloco: 270, estica: { base: 2.75, braco: 0.3, rigido: 0.5 } }),
+  'lit-mesa-de-jantar-guaeca': LIT_L('Mesa de Jantar Guaecá', 'mesa-de-jantar-guaeca', { laminas: ['lam'], tamanhos: [220, 240, 270, 300, 320], tamanhoBloco: 240, estica: { base: 2.40, braco: 0.2, rigido: 0.6 } }),
+  'lit-mesa-de-jantar-trancoso': LIT_L('Mesa de Jantar Trancoso', 'mesa-de-jantar-trancoso', { laminas: ['lam'], tamanhos: [200, 220, 240, 270], tamanhoBloco: 270, estica: { base: 2.70, braco: 0.3, rigido: 0.6 } }),
+  'lit-mesa-de-jantar-ubatuba': LIT_L('Mesa de Jantar Ubatuba', 'mesa-de-jantar-ubatuba', { laminas: ['lam'], tamanhos: [220, 240, 270], tamanhoBloco: 270, estica: { base: 2.70, braco: 0.3, rigido: 0.6 } }),
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
