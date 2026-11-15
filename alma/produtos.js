@@ -203,8 +203,14 @@ export const PRODUTOS = {
   'anc-poltrona-ceres': ANC_P('Poltrona Ceres', 'poltrona-ceres', { grupoMad: 'lam' }),
   'anc-poltrona-hellenia-media': ANC_P('Poltrona Hellenia Média', 'poltrona-hellenia-media', { grupoMad: 'lam' }),
   'anc-poltrona-verena': ANC_P('Poltrona Verena', 'poltrona-verena', { grupoMad: 'lam' }),
-  'anc-puff-verena': ANC_P('Puff Verena', 'puff-verena', { grupoMad: 'lam' }),
+  'anc-puff-verena': ANC_P('Puff Verena', 'puff-verena', { grupoMad: 'lam', duasFaces: true }),
   'anc-poltrona-luna': ANC_P('Poltrona Luna', 'poltrona-luna', { grupoMad: 'fixa' }),   // madeira fixa (o anúncio só tem tecido e recouro); braços em recouro, cor fixa
+  // blocos do perfil do Asadesign Studio (desenha as peças da Ancezki) e, na Cegonha, de um lojista da marca — o perfil da fábrica não tem
+  'anc-poltrona-alma': ANC_P('Poltrona Alma', 'poltrona-alma', { grupoMad: 'lam' }),
+  'anc-poltrona-verbena': ANC_P('Poltrona Verbena', 'poltrona-verbena'),   // braços e faixa das costas em recouro, cor fixa
+  'anc-poltrona-zest': ANC_P('Poltrona Zest', 'poltrona-zest', { grupoMad: 'lam', duasFaces: true }),
+  'anc-cadeira-de-escritorio-lince': ANC_P('Cadeira de Escritório Lince', 'cadeira-de-escritorio-lince', { grupoMad: 'lam' }),
+  'anc-poltrona-cegonha': ANC_P('Poltrona Cegonha', 'poltrona-cegonha'),
   // luminárias com cúpula: cúpula em cor fixa; a "laca ou pintura" do anúncio não entra no 3D (o cliente escolhe na página)
   'anc-luminaria-aura': ANC_P('Luminária de Chão Aura', 'luminaria-aura', { grupoMad: 'lam', escala: [1.28, 1.537, 1.28] }),
   'anc-luminaria-ginko': ANC_P('Luminária de Chão Ginko', 'luminaria-ginko', { grupoMad: 'lam', corCupula: '#DCC39A', tituloMetal: 'Detalhe', artigoMetal: 'o detalhe', modelos: [{ linha: 'Detalhe metalizado', usa: 'metal' }, { linha: 'Detalhe pintado', usa: 'laca' }] }),
