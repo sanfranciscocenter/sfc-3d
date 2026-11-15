@@ -117,6 +117,7 @@
     '/poltrona-guyra-lamina': { pagina: 'produto.html', params: 'p=anc-poltrona-guyra-lamina', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/poltrona-guyra-estofada': { pagina: 'produto.html', params: 'p=anc-poltrona-guyra-estofada', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/poltrona-andorinha': { pagina: 'produto.html', params: 'p=anc-poltrona-andorinha', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/poltrona-lea': { pagina: 'produto.html', params: 'p=anc-poltrona-lea', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/cadeira-de-escritorio-istmo-ancezki': { pagina: 'produto.html', params: 'p=anc-cadeira-de-escritorio-istmo', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/puff-ginko': { pagina: 'produto.html', params: 'p=anc-puff-ginko', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):' } },
     '/mesa-lateral-ginko': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-ginko', sel: { madeira: 'Escolha a lâmina (ANC):' } },
