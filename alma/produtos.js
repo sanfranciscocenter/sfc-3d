@@ -96,6 +96,18 @@ export const PRODUTOS = {
   'lit-cadeira-ipanema-estofada': LIT_P('Cadeira Ipanema Estofada', 'cadeira-ipanema-estofada'),   // Brisa estofada
   'lit-cadeira-caraiva': LIT_P('Cadeira Caraíva', 'cadeira-caraiva'),   // Orla estofada
   'lit-cadeira-garopaba-estofada': LIT_P('Cadeira Garopaba Estofada', 'cadeira-garopaba-estofada'),   // Jatobá estofada
+  'lit-banqueta-tucuns-laminada': LIT_P('Banqueta Tucuns Laminada', 'banqueta-tucuns-laminada'),
+  'lit-banqueta-tucuns-rattan': LIT_P('Banqueta Tucuns Rattan', 'banqueta-tucuns-rattan'),
+  'lit-banqueta-enseada-rattan': LIT_P('Banqueta Enseada Rattan', 'banqueta-enseada-rattan'),
+  'lit-banqueta-garopaba-estofada': LIT_P('Banqueta Garopaba Estofada', 'banqueta-garopaba-estofada'),
+  'lit-banqueta-garopaba-rattan': LIT_P('Banqueta Garopaba Rattan', 'banqueta-garopaba-rattan'),
+  'lit-banqueta-ipanema-estofada': LIT_P('Banqueta Ipanema Estofada', 'banqueta-ipanema-estofada'),
+  'lit-banqueta-itamambuca-rattan': LIT_P('Banqueta Itamambuca Rattan', 'banqueta-itamambuca-rattan'),
+  'lit-banqueta-arpoador-laminada': LIT_P('Banqueta Arpoador Laminada', 'banqueta-arpoador-laminada'),
+  'lit-banco-camboinhas-ratan': LIT_P('Banco Camboinhas com Ratan', 'banco-camboinhas-ratan'),
+  'lit-poltrona-geriba': LIT_P('Poltrona Geribá', 'poltrona-geriba'),
+  'lit-poltrona-prainha': LIT_P('Poltrona Prainha', 'poltrona-prainha'),
+  'lit-puff-prainha': LIT_P('Puff Prainha', 'puff-prainha'),
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
   // #0 tecido, #1 sapatas (pretas), #2 pés (metal escolhível). O anúncio vende de 210 a 290 cm: estica o miolo, braços fixos.
