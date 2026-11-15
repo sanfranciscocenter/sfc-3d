@@ -202,6 +202,9 @@ export const PRODUTOS = {
   'anc-poltrona-alix': ANC_P('Poltrona Alix', 'poltrona-alix', { grupoMad: 'lam' }),
   'anc-poltrona-ceres': ANC_P('Poltrona Ceres', 'poltrona-ceres', { grupoMad: 'lam' }),
   'anc-poltrona-hellenia-media': ANC_P('Poltrona Hellenia Média', 'poltrona-hellenia-media', { grupoMad: 'lam' }),
+  'anc-poltrona-verena': ANC_P('Poltrona Verena', 'poltrona-verena', { grupoMad: 'lam' }),
+  'anc-puff-verena': ANC_P('Puff Verena', 'puff-verena', { grupoMad: 'lam' }),
+  'anc-poltrona-luna': ANC_P('Poltrona Luna', 'poltrona-luna', { grupoMad: 'fixa' }),   // madeira fixa (o anúncio só tem tecido e recouro); braços em recouro, cor fixa
   // luminárias com cúpula: cúpula em cor fixa; a "laca ou pintura" do anúncio não entra no 3D (o cliente escolhe na página)
   'anc-luminaria-aura': ANC_P('Luminária de Chão Aura', 'luminaria-aura', { grupoMad: 'lam', escala: [1.28, 1.537, 1.28] }),
   'anc-luminaria-ginko': ANC_P('Luminária de Chão Ginko', 'luminaria-ginko', { grupoMad: 'lam', corCupula: '#DCC39A', tituloMetal: 'Detalhe', artigoMetal: 'o detalhe', modelos: [{ linha: 'Detalhe metalizado', usa: 'metal' }, { linha: 'Detalhe pintado', usa: 'laca' }] }),
