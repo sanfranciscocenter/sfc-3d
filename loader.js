@@ -112,6 +112,12 @@
     '/cadeira-itacoatiara-madeira-essencial': { pagina: 'produto.html', params: 'p=lit-cadeira-itacoatiara-madeira', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):' } },
     '/cadeira-itacoatiara-ratan-aberto-essencial': { pagina: 'produto.html', params: 'p=lit-cadeira-itacoatiara-ratan', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):', tela: 'Escolha a tela de ratan (LG):' } },
     '/poltrona-enseada-ratan-essencial': { pagina: 'produto.html', params: 'p=lit-poltrona-enseada-ratan', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):', tela: 'Escolha a tela de ratan (LG):' } },
+    // Litoral, móveis em lâmina (T-132): o cartão de acabamento (derivação 211) e a lâmina (personalização 177) vêm da madeira escolhida no 3D
+    '/carrinho-bar-geriba-unico': { pagina: 'produto.html', params: 'p=lit-carrinho-bar-geriba', sel: { madeira: 'Escolha a madeira (LG):' } },
+    '/carrinho-bar-corumbau-laminado-cinamomo-carvalho': { pagina: 'produto.html', params: 'p=lit-carrinho-bar-corumbau', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/bar-pero-laminado-cinamomo-carvalho': { pagina: 'produto.html', params: 'p=lit-bar-pero', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/aparador-guaratuba-laminado-cinamomo-carvalho': { pagina: 'produto.html', params: 'p=lit-aparador-guaratuba', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/aparador-itauna-laminado-cinamomo-carvalho': { pagina: 'produto.html', params: 'p=lit-aparador-itauna', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
     '/sofa-bonno-kf-bonno': { pagina: 'produto.html', params: 'p=kf-bonno', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
