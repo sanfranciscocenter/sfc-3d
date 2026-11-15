@@ -475,11 +475,12 @@ function emFloat(geo) {
   return g;
 }
 
-let gltfCache = null;
+let gltfCache = {};   // por tamanho quando o produto tem um bloco para cada medida (glbTam)
 async function prepararModelo(largura) {
   const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/');
   // glb pode ser uma lista: bloco grande dividido em partes (o envio ao GitHub aceita até 10 MB por arquivo)
-  const gltf = gltfCache || (gltfCache = await (async () => { const cs = []; for (const u of [].concat(P.glb)) cs.push(await new GLTFLoader().setDRACOLoader(draco).setMeshoptDecoder(MeshoptDecoder).loadAsync(u)); const s = new THREE.Group(); cs.forEach(c => s.add(c.scene)); return { scene: s }; })());
+  const zg = P.glbTam ? estado.z : 0;
+  const gltf = gltfCache[zg] || (gltfCache[zg] = await (async () => { const cs = []; for (const u of [].concat(P.glbTam ? P.glbTam[zg] : P.glb)) cs.push(await new GLTFLoader().setDRACOLoader(draco).setMeshoptDecoder(MeshoptDecoder).loadAsync(u)); const s = new THREE.Group(); cs.forEach(c => s.add(c.scene)); return { scene: s }; })());
   gltf.scene.updateMatrixWorld(true);
   // cada malha do arquivo, já na posição e escala finais (metros)
   const pecas = []; let n = 0;
@@ -623,6 +624,7 @@ async function prepararModelo(largura) {
       vidro: new THREE.MeshPhysicalMaterial({ name: 'vidro', color: 0xDDE8E6, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.28, side: THREE.DoubleSide }),
       laca: new THREE.MeshStandardMaterial({ name: 'laca', color: 0xDAD9D5, roughness: 0.45, metalness: 0, side: THREE.DoubleSide }),   // laca fixa (corpo ou prateleira que o anúncio não deixa escolher)
       aco: new THREE.MeshStandardMaterial({ name: 'aco', color: 0x8B8D90, roughness: 0.4, metalness: 0.8, side: THREE.DoubleSide }),   // metal fixo (anúncio sem escolha de metal)
+      cupula: new THREE.MeshStandardMaterial({ name: 'cupula', color: new THREE.Color(P.corCupula || '#EFE6D6'), roughness: 0.95, metalness: 0, side: THREE.DoubleSide }),   // cúpula de luminária, cor fixa
       espelho: new THREE.MeshStandardMaterial({ name: 'espelho', color: 0xC9D1D3, roughness: 0.04, metalness: 1, side: THREE.DoubleSide }),
       branco: new THREE.MeshStandardMaterial({ name: 'branco', color: 0xF3F0EA, roughness: 0.95, metalness: 0, side: THREE.DoubleSide }),
       roupa: new THREE.MeshStandardMaterial({ name: 'roupa', color: 0xD8D2C6, roughness: 1, metalness: 0, side: THREE.DoubleSide }),

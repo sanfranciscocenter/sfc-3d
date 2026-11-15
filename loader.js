@@ -125,6 +125,15 @@
     '/mesa-lateral-luma': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-luma', sel: { madeira: 'Escolha a madeira (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/carrinho-bar-aruna': { pagina: 'produto.html', params: 'p=anc-carrinho-bar-aruna', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/abajur-pax': { pagina: 'produto.html', params: 'p=anc-luminaria-pax', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    // luminárias com cúpula: a "laca ou pintura" fica só na página (o 3D não troca)
+    '/abajur-aura': { pagina: 'produto.html', params: 'p=anc-luminaria-aura', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/abajur-ginko': { pagina: 'produto.html', params: 'p=anc-luminaria-ginko', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/abajur-aster': { pagina: 'produto.html', params: 'p=anc-luminaria-aster', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/abajur-ada': { pagina: 'produto.html', params: 'p=anc-luminaria-ada', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/abajur-neg': { pagina: 'produto.html', params: 'p=anc-luminaria-neg', sel: { madeira: 'Escolha a madeira (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    // mesas Porte: tamanho em cartão (um bloco por medida) + lâmina da bandeja
+    '/mesa-lateral-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-porte', cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):' } },
+    '/mesa-de-centro-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-porte', cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):' } },
     '/mesa-centro-veluti': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-veluti', sel: { madeira: 'Escolha a lâmina (ANC):' } },
     '/poltrona-geriba-essencial': { pagina: 'produto.html', params: 'p=lit-poltrona-geriba', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):' } },
     '/poltrona-prainha-essencial': { pagina: 'produto.html', params: 'p=lit-poltrona-prainha', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):' } },
