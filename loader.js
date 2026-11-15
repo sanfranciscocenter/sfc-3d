@@ -123,6 +123,11 @@
     '/mesa-de-centro-prumirim-laminado-cinamomo-carvalho': { pagina: 'produto.html', params: 'p=lit-mesa-de-centro-prumirim', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
     '/sofa-table-corumbau-laminado-cinamomo-carvalho': { pagina: 'produto.html', params: 'p=lit-sofa-table-corumbau', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
     '/sofa-table-saquarema-vidro-fusing-laminado-cinamomo-carvalho': { pagina: 'produto.html', params: 'p=lit-sofa-table-saquarema', cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    // Litoral, mesas de jantar: tamanho pela largura (derivação 205) + cartão de acabamento + lâmina
+    '/mesa-de-jantar-juquehy-laminada-laminado-cinamomo-carvalho-200': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-juquehy-laminada', tamanho: 205, cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/mesa-de-jantar-juquehy-madeira-macica-laminado-cinamomo-carvalho-200': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-juquehy-macica', tamanho: 205, cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/mesa-de-jantar-patacho-laminado-cinamomo-carvalho-180': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-patacho', tamanho: 205, cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
+    '/mesa-de-jantar-prea-laminado-cinamomo-carvalho-160': { pagina: 'produto.html', params: 'p=lit-mesa-de-jantar-prea', tamanho: 205, cartoes: true, sel: { madeira: 'Escolha a lâmina (LG):' } },
     '/sofa-bonno-kf-bonno': { pagina: 'produto.html', params: 'p=kf-bonno', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
