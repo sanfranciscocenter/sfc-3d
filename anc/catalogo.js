@@ -24,5 +24,7 @@ export const ANC = {
     ['Nogueira', '#886854', 'lam-nogueira.jpg', null, 'lam'], ['Freijó', '#C5935C', 'lam-freijo.jpg', null, 'lam'], ['Quartier', '#56483F', 'lam-quartier.jpg', null, 'lam'], ['Preto Ébano', '#2E3134', 'lam-preto-ebano.jpg', null, 'lam']
   ],
   // metal: nome igual à opção de "Escolha a cor do metal (ANC):"; cor aproximada da esfera de amostra do site
+  // laca ou pintura: nome igual à opção de "Escolha a laca ou pintura (ANC):"; cor aproximada da amostra do site
+  lacas: [['Preto', '#1E1E1E'], ['Fendi', '#B3A38D'], ['Tabaco', '#6B4B36']],
   metais: [['Preto', '#1E1E1E'], ['Champagne', '#CFC9B4'], ['Dourado', '#C9B26A'], ['Bronze', '#8B8472'], ['Grafite', '#5F6767'], ['Moka', '#7A6359'], ['Marino', '#3A566E'], ['Cinza', '#8A9395'], ['Coral', '#E0A06C']]
 };
