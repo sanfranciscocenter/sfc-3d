@@ -20,6 +20,7 @@ export const ANC = {
   // grupo 'mad' = "Escolha a madeira (ANC):" (maciça; as amostras do site são esferas, então o veio vem da lâmina, no tom da esfera)
   // grupo 'lam' = "Escolha a lâmina (ANC):" (foto real da amostra). O produto diz qual grupo usa em grupoMad.
   madeiras: [
+    ['Nogueira', '#886854', 'lam-nogueira.jpg', null, 'fixa'],   // grupo 'fixa': madeira que o anúncio não deixa escolher (o grupo some no 3D)
     ['Castanho', '#825E4A', 'mad-castanho.jpg', null, 'mad'], ['Nogueira', '#6E5F58', 'mad-nogueira.jpg', null, 'mad'], ['Preto Ébano', '#2E3134', 'mad-preto-ebano.jpg', null, 'mad'],
     // grupo 'tampo' (Mesa Franci): o Modelo do anúncio decide entre tampo laminado e tampo em mármore; cada um grava na sua personalização
     ...[['Nogueira', '#886854', 'lam-nogueira.jpg'], ['Freijó', '#C5935C', 'lam-freijo.jpg'], ['Quartier', '#56483F', 'lam-quartier.jpg'], ['Preto Ébano', '#2E3134', 'lam-preto-ebano.jpg']].map(([n, cor, a]) => ['Lâmina ' + n, cor, a, { esp: 'lamTampo', valor: n }, 'tampo']),
