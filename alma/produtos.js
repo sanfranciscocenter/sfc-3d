@@ -175,6 +175,15 @@ export const PRODUTOS = {
   'anc-poltrona-guyra-lamina': ANC_P('Poltrona Guyrá Lâmina', 'poltrona-guyra-lamina', { grupoMad: 'lam' }),
   'anc-poltrona-guyra-estofada': ANC_P('Poltrona Guyrá Estofada', 'poltrona-guyra-estofada'),
   'anc-poltrona-andorinha': ANC_P('Poltrona Andorinha', 'poltrona-andorinha'),
+  'anc-cadeira-de-escritorio-istmo': ANC_P('Cadeira de Escritório Istmo', 'cadeira-de-escritorio-istmo'),
+  'anc-puff-ginko': ANC_P('Puff Ginko', 'puff-ginko'),
+  // móveis Ancezki sem tecido: só lâmina/madeira e cor do metal
+  'anc-mesa-lateral-ginko': ANC_P('Mesa Lateral Ginko', 'mesa-lateral-ginko', { grupoMad: 'lam' }),
+  'anc-mesa-lateral-zen': ANC_P('Mesa Lateral Zen', 'mesa-lateral-zen', { grupoMad: 'mad' }),
+  'anc-mesa-lateral-luma': ANC_P('Mesa Lateral Luma', 'mesa-lateral-luma', { grupoMad: 'mad' }),
+  'anc-carrinho-bar-aruna': ANC_P('Carrinho Bar Aruna', 'carrinho-bar-aruna', { grupoMad: 'lam' }),
+  'anc-luminaria-pax': ANC_P('Luminária de Chão Pax', 'luminaria-pax', { grupoMad: 'lam' }),
+  'anc-mesa-de-centro-veluti': ANC_P('Mesa de Centro Veluti', 'mesa-de-centro-veluti', { grupoMad: 'lam' }),
   'lit-escrivaninha-itauna': LIT_L('Escrivaninha Itaúna', 'escrivaninha-itauna', { tamanhos: [160, 180], tamanhoBloco: 180, estica: { base: 1.80, braco: 0.25, rigido: 0.3 } }),
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
