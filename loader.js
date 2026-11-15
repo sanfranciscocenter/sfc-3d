@@ -409,7 +409,8 @@
     let okLinha = false, okTam = false;
     for (let volta = 0; volta < 2; volta++) {
       okLinha = await trocaLinha(d.linha);
-      okTam = (await trocaTamanho(d.tamanho)) && (await trocaCartoes(d.cartoes));
+      // mesas Litoral (tamanho em cm + cartão de acabamento): o cartão é uma "linha" e desmarca o tamanho, então vai antes
+      okTam = cfg.tamanho && cfg.cartoes ? (await trocaCartoes(d.cartoes)) && (await trocaTamanho(d.tamanho)) : (await trocaTamanho(d.tamanho)) && (await trocaCartoes(d.cartoes));
       if (okLinha && okTam && (!d.linha || linhaAtual() === d.linha)) break;
     }
     // a troca de linha desmarcou algum cartão que o cliente já tinha escolhido? marca de novo (se o grupo dele ficou sem nenhum)
