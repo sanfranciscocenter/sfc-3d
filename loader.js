@@ -182,6 +182,8 @@
     '/poltrona-sting': { pagina: 'produto.html', params: 'p=anc-poltrona-sting', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a madeira (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/poltrona-umbra': { pagina: 'produto.html', params: 'p=anc-poltrona-umbra', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a madeira (ANC):' } },
     '/poltrona-yuna': { pagina: 'produto.html', params: 'p=anc-poltrona-yuna', derivacao: 208, sel: { acabamento: 'Escolha o tecido (ANC):', madeira: 'Escolha a lâmina (ANC):' } },
+    '/mesa-lateral-tucano': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-tucano', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
+    '/mesa-centro-ramos-alta': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-ramos', cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/mesa-lateral-franci-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-franci', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/mesa-de-centro-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-porte', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
     '/mesa-centro-veluti': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-veluti', sel: { madeira: 'Escolha a lâmina (ANC):' } },
