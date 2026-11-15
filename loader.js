@@ -133,6 +133,7 @@
     '/abajur-neg': { pagina: 'produto.html', params: 'p=anc-luminaria-neg', sel: { madeira: 'Escolha a madeira (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     // mesas Porte: tamanho em cartão (um bloco por medida) + lâmina da bandeja
     '/mesa-lateral-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-porte', cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):' } },
+    '/mesa-lateral-gole-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-gole', cartoes: true, sel: { metal: 'Escolha a cor do metal (ANC):' } },
     '/mesa-de-centro-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-porte', cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):' } },
     '/mesa-centro-veluti': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-veluti', sel: { madeira: 'Escolha a lâmina (ANC):' } },
     '/poltrona-geriba-essencial': { pagina: 'produto.html', params: 'p=lit-poltrona-geriba', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):' } },
