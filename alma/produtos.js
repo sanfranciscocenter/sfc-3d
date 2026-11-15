@@ -28,6 +28,9 @@ const BUR_REGRAS = [[/iron|glass|acrylic|black|roda|metal.?standard|mat_padrao|^
 const MCB_R = metal => [[/^$/, 'oculto'], [/madeira|tauari|^acad4fa2c9e$|^acad7301/i, 'madeira'], [/tecido|linho|linha|couro|^acadfb1cf241$/i, 'tecido'], [/^acad(2a8b0ced|fa90ccd9)$/, metal], [/^acad(11917b7a|866a941c)$/, 'palha'], [/cromad|^acad60adb84$/i, 'aco'], [/metal|material #|0\.00/i, 'preto']];
 const MCB_P = (nome, arq, o = {}) => ({ nome, sobre: 'Marcobin', marca: 'mcb', glb: 'mcb/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...MCB_R(o.metal ? 'metal' : 'aco')], partes: { '*': 'madeira', ...(o.partes || {}) } });
 const LIT_P = (nome, arq, o = {}) => ({ nome, sobre: 'Litoral', marca: 'lit', glb: 'lit/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'palha', PRETO: 'preto', ACO: 'aco', COURO: 'couro', VIDRO: 'vidro', '*': 'madeira', ...(o.partes || {}) } });
+// Ancezki (marca real): blocos do perfil oficial na 3D Warehouse, convertidos por peça solta. Linha de preço = tecido (derivação 208).
+// grupoMad: 'mad' = "Escolha a madeira (ANC):" · 'lam' = "Escolha a lâmina (ANC):". ACO = peça que segue a cor do metal.
+const ANC_P = (nome, arq, o = {}) => ({ nome, sobre: 'Ancezki', marca: 'anc', glb: 'anc/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PRETO: 'preto', ACO: 'metal', VIDRO: 'vidro', '*': 'tecido', ...(o.partes || {}) } });
 const LIT_L = (nome, arq, o = {}) => LIT_P(nome, arq, { laminas: ['lam', 'nog', 'met'], ...o });   // móveis em lâmina: a madeira do 3D é a lâmina (cartão + personalização do site)
 const LIT_T = ms => ({ tamanhoNomes: ms.map(([l, p]) => l + ' cm x 76 cm x ' + p + ' cm (L x A x P)'), tamanhoRotulos: ms.map(([l, p]) => l + ' × ' + p + ' cm') });   // nome exato do cartão de tamanho do site + rótulo curto
 const MCB_T = re => ({ mais: [[re, 'tecido']] });   // bloco sem nome de material: o que casar com a expressão é o estofado
@@ -152,6 +155,14 @@ export const PRODUTOS = {
   // Litoral, aparador, buffet e escrivaninha com tamanho pela largura (derivação 205)
   'lit-aparador-caraiva': LIT_L('Aparador Caraíva', 'aparador-caraiva', { tamanhos: [160, 180, 200], tamanhoBloco: 200, estica: { base: 2.00, braco: 0.2, rigido: 0.5 } }),
   'lit-buffet-caioba-ratan': LIT_L('Buffet Caiobá com Ratan', 'buffet-caioba-ratan', { tamanhos: [180, 200], tamanhoBloco: 200, estica: { base: 2.00, braco: 0.1, rigido: 0.3 } }),
+  'anc-cadeira-moa': ANC_P('Cadeira Moá', 'cadeira-moa', { grupoMad: 'mad' }),
+  'anc-cadeira-emy': ANC_P('Cadeira Emy', 'cadeira-emy'),
+  'anc-poltrona-hug': ANC_P('Poltrona Hug', 'poltrona-hug'),
+  'anc-poltrona-hana': ANC_P('Poltrona Hana', 'poltrona-hana', { grupoMad: 'lam' }),
+  'anc-banqueta-hellenia': ANC_P('Banqueta Hellenia', 'banqueta-hellenia', { grupoMad: 'lam' }),
+  'anc-poltrona-geo': ANC_P('Poltrona Geo', 'poltrona-geo', { grupoMad: 'lam' }),
+  'anc-poltrona-need': ANC_P('Poltrona Need', 'poltrona-need', { grupoMad: 'lam' }),
+  'anc-poltrona-aloe': ANC_P('Poltrona Aloe', 'poltrona-aloe'),
   'lit-escrivaninha-itauna': LIT_L('Escrivaninha Itaúna', 'escrivaninha-itauna', { tamanhos: [160, 180], tamanhoBloco: 180, estica: { base: 1.80, braco: 0.25, rigido: 0.3 } }),
   'kf-bonno': { nome: 'Sofá Bonno', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/bonno.glb', partes: { '*': 'tecido', '#1': 'metal' }, tamanhos: [235, 255, 275, 295, 335], tamanhoBloco: 275, estica: { base: 2.76, braco: 0.30, rigido: 0.55 } },
   // Sofá Panna: bloco "KF. SOFA PANNA" (a72bb3c4…), 270 cm, pés de metal como nas fotos. Malhas juntadas por material:
