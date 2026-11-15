@@ -130,11 +130,11 @@
     '/abajur-ginko': { pagina: 'produto.html', params: 'p=anc-luminaria-ginko', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/abajur-aster': { pagina: 'produto.html', params: 'p=anc-luminaria-aster', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
     '/abajur-ada': { pagina: 'produto.html', params: 'p=anc-luminaria-ada', sel: { madeira: 'Escolha a lâmina (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
-    '/abajur-neg': { pagina: 'produto.html', params: 'p=anc-luminaria-neg', sel: { madeira: 'Escolha a madeira (ANC):', metal: 'Escolha a cor do metal (ANC):' } },
-    // mesas Porte: tamanho em cartão (um bloco por medida) + lâmina da bandeja
-    '/mesa-lateral-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-porte', cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):' } },
-    '/mesa-lateral-gole-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-gole', cartoes: true, sel: { metal: 'Escolha a cor do metal (ANC):' } },
-    '/mesa-de-centro-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-porte', cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):' } },
+    '/abajur-neg': { pagina: 'produto.html', params: 'p=anc-luminaria-neg', derivacao: 212, sel: { madeira: 'Escolha a madeira (ANC):', metal: 'Escolha a cor do metal (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
+    // mesas Porte e Gole: Modelo (derivação 212, lista padrão do tema) + tamanho em cartão; o Modelo vai como "linha"
+    '/mesa-lateral-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-porte', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
+    '/mesa-lateral-gole-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-lateral-gole', derivacao: 212, cartoes: true, sel: { metal: 'Escolha a cor do metal (ANC):' } },
+    '/mesa-de-centro-porte-ancezki': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-porte', derivacao: 212, cartoes: true, sel: { madeira: 'Escolha a lâmina (ANC):', laca: 'Escolha a laca ou pintura (ANC):' } },
     '/mesa-centro-veluti': { pagina: 'produto.html', params: 'p=anc-mesa-de-centro-veluti', sel: { madeira: 'Escolha a lâmina (ANC):' } },
     '/poltrona-geriba-essencial': { pagina: 'produto.html', params: 'p=lit-poltrona-geriba', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):' } },
     '/poltrona-prainha-essencial': { pagina: 'produto.html', params: 'p=lit-poltrona-prainha', derivacao: 208, sel: { acabamento: 'Escolha o tecido (LG):', madeira: 'Escolha a madeira (LG):' } },
@@ -389,7 +389,7 @@
   const estadoDaPagina = () => ({
     sfc3d: 'estado', precos: precosPorLinha(), cartoes: cfg.cartoes ? cartoesAtuais() : [], todos: Object.fromEntries([...document.querySelectorAll('select.select-personaliza')].map(s => [s.name, s.value])),
     madeira: (cfg.sel.madeira && sel(cfg.sel.madeira)?.value) || '', tela: (cfg.sel.tela && sel(cfg.sel.tela)?.value) || '', acabamento: (cfg.sel.acabamento && sel(selAcab(linhaAtual()))?.value) || '',
-    metal: (cfg.sel.metal && sel(cfg.sel.metal)?.value) || '', tamanho: tamanhoAtual()
+    metal: (cfg.sel.metal && sel(cfg.sel.metal)?.value) || '', laca: (cfg.sel.laca && sel(cfg.sel.laca)?.value) || '', linha: cfg.derivacao ? linhaAtual() : '', tamanho: tamanhoAtual()
   });
 
   /* ---------- pop-up ---------- */
@@ -469,7 +469,7 @@
     // a troca de linha desmarcou algum cartão que o cliente já tinha escolhido? marca de novo (se o grupo dele ficou sem nenhum)
     for (const nome of tamAntes) { const c = [...document.querySelectorAll('.sfc-tamc')].find(x => nomeCartao(x) === nome); if (c && !c.classList.contains('is-on') && !c.parentElement.querySelector('.sfc-tamc.is-on')) await trocaCartoes([nome]); }
     // só as personalizações que este anúncio tem (o estofado não tem tela)
-    const pares = ['acabamento', 'tela', 'madeira', 'metal'].filter(k => cfg.sel[k] && d[k]).map(k => [k === 'acabamento' ? selAcab(d.linha) : k === 'madeira' && d.selMadeira ? d.selMadeira : cfg.sel[k], d[k]]);
+    const pares = ['acabamento', 'tela', 'madeira', 'metal', 'laca'].filter(k => cfg.sel[k] && d[k]).map(k => [k === 'acabamento' ? selAcab(d.linha) : k === 'madeira' && d.selMadeira ? d.selMadeira : cfg.sel[k], d[k]]);
     let ok = 0;
     for (let tentativa = 0; tentativa < 3 && ok < pares.length; tentativa++) {
       ok = pares.filter(([n, v]) => grava(n, v)).length;
@@ -478,7 +478,7 @@
     await zz(700);   // confere de novo: o tema refaz o bloco depois de trocar a linha
     const firmes = pares.filter(([n, v]) => sel(n)?.value === v || grava(n, v)).length;
     const tudo = okTam && okLinha && firmes === pares.length;
-    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.cartoes && d.cartoes ? d.cartoes.join(', ') : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela && d.tela ? (/VND/.test(cfg.sel.tela) ? 'tela ' : /SUP/.test(cfg.sel.tela) ? 'recouro ' : 'palha ') + d.tela : '', d.acabamento, cfg.sel.metal && d.metal ? 'metal ' + d.metal : ''].filter(Boolean).join(', ');
+    const resumo = [cfg.tamanho && d.tamanho ? d.tamanho + ' cm' : '', cfg.cartoes && d.cartoes ? d.cartoes.join(', ') : '', cfg.sel.madeira ? d.madeira : '', cfg.sel.tela && d.tela ? (/VND/.test(cfg.sel.tela) ? 'tela ' : /SUP/.test(cfg.sel.tela) ? 'recouro ' : 'palha ') + d.tela : '', d.acabamento, cfg.sel.metal && d.metal ? 'metal ' + d.metal : '', cfg.sel.laca && d.laca ? 'pintura ' + d.laca : ''].filter(Boolean).join(', ');
     avisa(tudo ? 'Configuração aplicada: ' + resumo : 'Não consegui marcar todas as opções. Confira a seleção abaixo.');
     const alvo = document.querySelector('.sfc-linhas') || sel(cfg.sel.acabamento || cfg.sel.madeira);
     if (alvo && alvo.scrollIntoView) alvo.scrollIntoView({ behavior: 'smooth', block: 'center' });

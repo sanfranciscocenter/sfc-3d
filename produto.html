@@ -746,7 +746,10 @@ const CAT = EH_KF ? {
   nome: nomeTecido, url: urlTecido, mini: k => `${LOJA}2026/09/produto/${MIDIA[k]}/crn-tc${k}.jpg?ims=fit-in/96x96`, cor: () => null,
   escala: () => 1, tipo: k => TIPO_DE[k] || 'medio', linha: linhaDe, valorSite, deSite: v => +(/TC\s*(\d+)/.exec(v || '') || [])[1]
 };
-const METAIS = EH_KF ? KF.metais : [];
+// P.modelos: o anúncio tem a derivação "Modelo" que decide o acabamento do pé (inox, metalizado na cor do metal, pintado na laca).
+// A lista do 3D junta tudo: [rótulo, cor, texto do Modelo no site, personalização que guarda a cor ('metal' | 'laca' | ''), valor]
+const METAIS = P && P.modelos ? P.modelos.flatMap(mo => mo.usa === 'metal' ? KF.metais.map(([n, c]) => [n, c, mo.linha, 'metal', n]) : mo.usa === 'laca' ? (KF.lacas || []).map(([n, c]) => ['Pintado ' + n, c, mo.linha, 'laca', n]) : [[mo.nome, mo.cor, mo.linha, '', '']]) : EH_KF ? KF.metais : [];
+const MODELO = () => P && P.modelos ? METAIS[estado.x] : null;
 const MADS = EH_KF ? (P.grupoMad ? KF.madeiras.filter(m => m[4] === P.grupoMad) : P.laminas ? KF.madeiras.filter(m => m[3] && P.laminas.includes(m[3].esp)) : P.madeiras ? KF.madeiras.filter(m => !m[3] && P.madeiras.includes(m[0])) : KF.madeiras.filter(m => !m[3])) : MADEIRAS;
 // Vindima, móveis em lâmina: cada opção é madeira + cor; no site a madeira é um cartão (linha) e a cor, a personalização dessa madeira
 const infoMad = m => { const e = m && m[3]; if (!e) return null; if (e.esp === 'laca' && P.lacaNoJequitiba) return { linha: KF.especies.jequitiba.linha, sel: P.selJequitiba, valor: 'Laca ' + e.valor }; const E = KF.especies[e.esp]; return { linha: E.linha, sel: (e.esp === 'jequitiba' && P.selJequitiba) || E.sel, valor: e.valor }; };   // KF: [nome, cor]; Alma: [nome, arquivo, rugosidade]
@@ -768,7 +771,7 @@ async function aplica() {
   if (TAMANHOS.length) $('nm-tamanho').textContent = TAM_ROT ? TAM_ROT[estado.z] : TAMANHOS[estado.z] + ' cm de largura';
   if (EMBED) {
     const l = tem('tecido') && !KF.semLinha ? CAT.linha(estado.t) : '';   // Ancezki: preço único, sem linha de tecido
-    $('b-linha').textContent = l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[l] || Object.values(precos)[0])) || '';
+    $('b-linha').textContent = MODELO() ? MODELO()[2] : l ? 'Linha ' + l : P.nome; $('b-preco').textContent = (precos && (precos[MODELO() ? MODELO()[2] : l] || (MODELO() ? '' : Object.values(precos)[0]))) || '';
   }
   if (!pronto || !mv.model || DEBUG) return;
   const urlM = P.texMadeira ? P.texMadeira : EH_KF ? PASTA + '/madeiras/' + MADS[estado.m][2] : CDN + 'madeiras-v2/' + arqM, [forca, rough, volume] = TIPO[CAT.tipo(estado.t)];
@@ -843,7 +846,8 @@ function ajustaGrupos() {   // só aparecem os grupos de opção que este produt
   $('g-metal').hidden = !(METAIS.length && tem('metal')); $('g-tamanho').hidden = !TAMANHOS.length;
   if (EH_KF) boxT.closest('.grupo').querySelector('h2').firstChild.textContent = P.tituloTecido || 'Tecido ';
   if (EH_VND) boxE.closest('.grupo').querySelector('h2').firstChild.textContent = KF.tituloTela || 'Tela ';
-  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && !(EH_VND && PALHAS.length < 2) && (EH_VND ? KF.artigoTela || 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && 'o metal'].filter(Boolean);
+  const itens = [TAMANHOS.length && 'o tamanho', tem('madeira') && !(EH_KF && MADS.length < 2) && 'a madeira', tem('palha') && !(EH_VND && PALHAS.length < 2) && (EH_VND ? KF.artigoTela || 'a tela' : 'a palha'), tem('tecido') && (P.tituloTecido ? (/^Tela/.test(P.tituloTecido) ? 'a tela' : /^Feltro/.test(P.tituloTecido) ? 'o feltro' : 'o couro') : EH_KF ? 'o tecido' : 'o acabamento'), METAIS.length && tem('metal') && (P.artigoMetal || 'o metal')].filter(Boolean);
+  if (P.tituloMetal) $('g-metal').querySelector('h2').firstChild.textContent = P.tituloMetal + ' ';
   const lista = itens.length > 1 ? itens.slice(0, -1).join(', ') + ' e ' + itens.at(-1) : itens[0] || 'as opções';
   const peca = /^banqueta/i.test(P.nome) ? 'a banqueta' : /^poltrona/i.test(P.nome) ? 'a poltrona' : /^sof/i.test(P.nome) ? 'o sofá' : /^cama/i.test(P.nome) ? 'a cama' : /^(mesa|c.moda|estante|escrivaninha|cristaleira|lumin|carrinho|puff|bar )/i.test(P.nome) ? 'a peça' : /^(aparador|buffet|espelho|cabideiro)/i.test(P.nome) ? 'o móvel' : /^recamier/i.test(P.nome) ? 'o recamier' : 'a cadeira';
   document.querySelector('.texto').textContent = `Escolha ${lista} e veja a peça mudar na hora. No celular, toque em “Ver no meu ambiente” para colocar ${peca} na sua sala.`;
@@ -863,15 +867,17 @@ if (EMBED) {
     const noSite = [].concat(d.cartoes || []), m = MADS.findIndex(x => { const i = infoMad(x); return i ? !!d.todos && d.todos[i.sel] === i.valor && noSite.includes(i.linha) : x[0] === d.madeira; }); if (m >= 0) estado.m = m;
     const e = PALHAS.findIndex(x => x[0] === d.tela); if (e >= 0) estado.e = e;
     const c = CAT.deSite(d.acabamento); if (CAT.valido(c)) estado.t = c;
-    const x = METAIS.findIndex(q => q[0] === d.metal); if (x >= 0) estado.x = x;
+    const x = P.modelos ? METAIS.findIndex(q => q[2] === d.linha && (!q[3] || q[4] === d[q[3]])) : METAIS.findIndex(q => q[0] === d.metal); if (x >= 0) estado.x = x;
+    else if (P.modelos) { const x2 = METAIS.findIndex(q => q[2] === d.linha); if (x2 >= 0) estado.x = x2; }   // Modelo escolhido na página, cor ainda não
     let z = TAMANHOS.indexOf(parseInt(d.tamanho, 10)); if (z < 0 && TAM_NOMES) z = TAM_NOMES.findIndex(n => [].concat(d.cartoes || [], d.tamanho).includes(n)); if (z >= 0 && z !== estado.z) { estado.z = z; trocaModelo(); }
     marcaTudo(); aplica();
   });
   $('usar').addEventListener('click', () => parent.postMessage({
     sfc3d: 'usar', madeira: !tem('madeira') ? '' : infoMad(MADS[estado.m]) ? infoMad(MADS[estado.m]).valor : MADS[estado.m][0], selMadeira: infoMad(MADS[estado.m]) ? infoMad(MADS[estado.m]).sel : '', tela: tem('palha') ? PALHAS[estado.e][0] : '',
-    acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: tem('tecido') && !P.semLinha ? CAT.linha(estado.t) : P.linhaTela && tem('palha') ? 'Tela ' + telaTipo() : '',
+    acabamento: tem('tecido') ? CAT.valorSite(estado.t) : '', linha: MODELO() ? MODELO()[2] : tem('tecido') && !P.semLinha ? CAT.linha(estado.t) : P.linhaTela && tem('palha') ? 'Tela ' + telaTipo() : '',
+    laca: MODELO() && MODELO()[3] === 'laca' ? MODELO()[4] : '',
     cartoes: [infoMad(MADS[estado.m]) && tem('madeira') && infoMad(MADS[estado.m]).linha, ...(P.cartoesFixos || []), TAM_NOMES && TAM_NOMES[estado.z], P.cartaoTela && tem('palha') && 'Encosto tela ' + telaTipo()].filter(Boolean),
-    metal: METAIS.length && tem('metal') ? METAIS[estado.x][0] : '', tamanho: TAM_NOMES ? '' : TAMANHOS.length ? TAMANHOS[estado.z] : ''
+    metal: MODELO() ? (MODELO()[3] === 'metal' ? MODELO()[4] : '') : METAIS.length && tem('metal') ? METAIS[estado.x][0] : '', tamanho: TAM_NOMES ? '' : TAMANHOS.length ? TAMANHOS[estado.z] : ''
   }, '*'));
 }
 
