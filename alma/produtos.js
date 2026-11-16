@@ -46,6 +46,9 @@ export const PRODUTOS = {
     // SEM anúncio no site em 13/11/2026. O bloco divide as faces de cada peça em duas malhas (parecem duplicadas, mas
     // são metades complementares): usar todas. #2 a #5 = pés; o resto é estofado
     partes: { 'default_face_material': 'tecido', '#2': 'madeira', '#3': 'madeira', '#4': 'madeira', '#5': 'madeira' } },
+  // Poltrona Rio (giratória): bloco "KF. POLTRONA RIO" (0fec360f…), 77 × 92 × 75 cm (ficha 80 × 95 × 75); confere com as duas fotos.
+  // TECIDO = assento e encosto, COURO = concha de trás (cor fixa: o anúncio não tem escolha para ela), ACO = base giratória (metal escolhível)
+  'kf-rio': { nome: 'Poltrona Rio', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/rio.glb', partes: { TECIDO: 'tecido', COURO: 'couro', ACO: 'metal' } },
   // Sofá Orla (2 módulos com braço, base em lâmina): bloco "KF. Sofa Orla Base lamina" (650d308d…), 220 cm. Malhas juntadas por material:
   // #0 tecido, #1 pés em lâmina (madeira escolhível). O anúncio vende de 180 a 300 cm: estica o miolo, braços fixos.
   'kf-orla': { nome: 'Sofá Orla', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/orla.glb', partes: { '*': 'tecido', '#1': 'madeira' }, tamanhos: [180, 200, 220, 260, 300], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.18, rigido: 0.3 } },
