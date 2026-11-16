@@ -54,6 +54,10 @@ export const PRODUTOS = {
   // Na foto a carcaça da poltrona é em couro (versão "Couro/Tec."); o anúncio e o 3D são da versão inteira no mesmo tecido.
   'kf-paturi-poltrona-puff': { nome: 'Poltrona e Puff Paturi', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/paturi-poltrona-puff.glb', partes: { TECIDO: 'tecido', ACO: 'metal' } },
   // Poltrona Paturi (sem o puff): o mesmo bloco, só a poltrona. Anúncio próprio (/poltrona-paturi), pedido de Matheus em 16/11/2026.
+  // Sofá Paturi: a Warehouse da fábrica só tem o bloco da POLTRONA (c664009b…). O sofá foi montado dela (16/11/2026, pedido de Matheus):
+  // base e painel das costas alongados para 220 cm, braços, almofadas laterais e pés afastados, 2 almofadas de assento e 2 de encosto
+  // (as da poltrona, alargadas e duplicadas), como nas fotos do anúncio. Altura e profundidade do bloco (84 × 88 cm). ACO = pés (metal escolhível).
+  'kf-paturi-sofa': { nome: 'Sofá Paturi', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/paturi-sofa.glb', partes: { TECIDO: 'tecido', ACO: 'metal' }, tamanhos: [180, 200, 220], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.20, rigido: 0.3 } },
   'kf-paturi-poltrona': { nome: 'Poltrona Paturi', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/paturi-poltrona.glb', partes: { TECIDO: 'tecido', ACO: 'metal' } },
   // Poltrona Isa: bloco "KF - Poltrona ISA" (2dccc6eb…), 90 × 87 × 92 cm = a medida de 90 do anúncio; as de 80 e 100 são o mesmo bloco
   // com a largura escalada (um GLB por medida). Tudo em tecido. Puff: bloco "KF - Puff ISA" (7ceac747…), 70 × 38 × 57 cm, posto à frente,
