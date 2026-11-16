@@ -48,6 +48,11 @@ export const PRODUTOS = {
     // No ar desde 16/11/2026 (/poltrona-base). Base em lâmina de cinamomo: grupo 'cin' = personalização 85 do site.
     grupoMad: 'cin',
     partes: { 'default_face_material': 'tecido', '#2': 'madeira', '#3': 'madeira', '#4': 'madeira', '#5': 'madeira' } },
+  // Poltrona e Puff Paturi: bloco "KF - Poltrona Paturi" (c664009b…), 110 × 84 × 88 cm. O bloco só traz a poltrona: o PUFF FOI GERADO
+  // a partir da base e da almofada do assento da própria poltrona, reduzidas para 80 × 44 × 50 cm (medidas da tabela), com os 4 pés
+  // reposicionados — pedido de Matheus em 16/11/2026. TECIDO = tudo estofado; ACO = pés (metal escolhível; a foto tem pés de alumínio).
+  // Na foto a carcaça da poltrona é em couro (versão "Couro/Tec."); o anúncio e o 3D são da versão inteira no mesmo tecido.
+  'kf-paturi-poltrona-puff': { nome: 'Poltrona e Puff Paturi', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/paturi-poltrona-puff.glb', partes: { TECIDO: 'tecido', ACO: 'metal' } },
   // Poltrona Giz (giratória): bloco "KF - Poltrona GIZ" (db7b3456…), 80 × 93 × 81 cm (ficha 80 × 87 × 87); confere com as duas fotos.
   // TECIDO = assento, encosto e almofada solta; ACO = base giratória (metal escolhível)
   'kf-giz': { nome: 'Poltrona Giz', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/giz.glb', partes: { TECIDO: 'tecido', ACO: 'metal' } },
