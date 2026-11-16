@@ -56,6 +56,9 @@
       pagina: 'produto.html', params: 'p=kf-flow-poltrona', derivacao: 208,
       sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' }
     },
+    // KF: poltronas ativadas em 16/11/2026 (T-136). A Base tem base em lâmina e o anúncio não tem escolha de madeira: só o tecido volta para a página
+    '/poltrona-base': { pagina: 'produto.html', params: 'p=kf-base-poltrona', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    '/poltrona-rio': { pagina: 'produto.html', params: 'p=kf-rio', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     // KF: sofás com tamanho (derivação 181) — ligados em 13/11/2026 a pedido de Matheus
     '/sofa-celine-com-chaise': { pagina: 'produto.html', params: 'p=kf-celine', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-retratil-sollo': { pagina: 'produto.html', params: 'p=kf-sollo', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
