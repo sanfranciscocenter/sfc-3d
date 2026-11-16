@@ -45,7 +45,12 @@ export const PRODUTOS = {
   'kf-base-poltrona': { nome: 'Poltrona Base', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/base-poltrona.glb',
     // SEM anúncio no site em 13/11/2026. O bloco divide as faces de cada peça em duas malhas (parecem duplicadas, mas
     // são metades complementares): usar todas. #2 a #5 = pés; o resto é estofado
+    // No ar desde 16/11/2026 (/poltrona-base). Base em lâmina de cinamomo: grupo 'cin' = personalização 85 do site.
+    grupoMad: 'cin',
     partes: { 'default_face_material': 'tecido', '#2': 'madeira', '#3': 'madeira', '#4': 'madeira', '#5': 'madeira' } },
+  // Poltrona Giz (giratória): bloco "KF - Poltrona GIZ" (db7b3456…), 80 × 93 × 81 cm (ficha 80 × 87 × 87); confere com as duas fotos.
+  // TECIDO = assento, encosto e almofada solta; ACO = base giratória (metal escolhível)
+  'kf-giz': { nome: 'Poltrona Giz', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/giz.glb', partes: { TECIDO: 'tecido', ACO: 'metal' } },
   // Poltrona Rio (giratória): bloco "KF. POLTRONA RIO" (0fec360f…), 77 × 92 × 75 cm (ficha 80 × 95 × 75); confere com as duas fotos.
   // TECIDO = assento e encosto, COURO = concha de trás (cor fixa: o anúncio não tem escolha para ela), ACO = base giratória (metal escolhível)
   'kf-rio': { nome: 'Poltrona Rio', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/rio.glb', partes: { TECIDO: 'tecido', COURO: 'couro', ACO: 'metal' } },
