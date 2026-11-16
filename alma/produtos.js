@@ -53,6 +53,13 @@ export const PRODUTOS = {
   // reposicionados — pedido de Matheus em 16/11/2026. TECIDO = tudo estofado; ACO = pés (metal escolhível; a foto tem pés de alumínio).
   // Na foto a carcaça da poltrona é em couro (versão "Couro/Tec."); o anúncio e o 3D são da versão inteira no mesmo tecido.
   'kf-paturi-poltrona-puff': { nome: 'Poltrona e Puff Paturi', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/paturi-poltrona-puff.glb', partes: { TECIDO: 'tecido', ACO: 'metal' } },
+  // Poltrona Isa: bloco "KF - Poltrona ISA" (2dccc6eb…), 90 × 87 × 92 cm = a medida de 90 do anúncio; as de 80 e 100 são o mesmo bloco
+  // com a largura escalada (um GLB por medida). Tudo em tecido. Puff: bloco "KF - Puff ISA" (7ceac747…), 70 × 38 × 57 cm, posto à frente,
+  // em linha com a poltrona (35 cm de distância). Dois anúncios: só a poltrona e poltrona + puff.
+  'kf-isa': { nome: 'Poltrona Isa', sobre: 'KF Mobiliário', marca: 'kf', partes: { TECIDO: 'tecido' }, tamanhos: [80, 90, 100],
+    glbTam: ['kf/modelos/isa-80.glb', 'kf/modelos/isa-90.glb', 'kf/modelos/isa-100.glb'] },
+  'kf-isa-puff': { nome: 'Poltrona e Puff Isa', sobre: 'KF Mobiliário', marca: 'kf', partes: { TECIDO: 'tecido' }, tamanhos: [80, 90, 100],
+    glbTam: [['kf/modelos/isa-80.glb', 'kf/modelos/isa-puff.glb'], ['kf/modelos/isa-90.glb', 'kf/modelos/isa-puff.glb'], ['kf/modelos/isa-100.glb', 'kf/modelos/isa-puff.glb']] },
   // Poltrona Giz (giratória): bloco "KF - Poltrona GIZ" (db7b3456…), 80 × 93 × 81 cm (ficha 80 × 87 × 87); confere com as duas fotos.
   // TECIDO = assento, encosto e almofada solta; ACO = base giratória (metal escolhível)
   'kf-giz': { nome: 'Poltrona Giz', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/giz.glb', partes: { TECIDO: 'tecido', ACO: 'metal' } },
