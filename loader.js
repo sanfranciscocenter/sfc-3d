@@ -243,6 +243,10 @@
     '/sofa-bonno-kf-bonno': { pagina: 'produto.html', params: 'p=kf-bonno', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
+    '/sofa-fluxo': { pagina: 'produto.html', params: 'p=kf-fluxo', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },   // base rente ao piso: sem metal nem madeira no 3D
+    '/sofa-legado-kf-legado26': { pagina: 'produto.html', params: 'p=kf-legado', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    '/sofa-jades-com-chaise': { pagina: 'produto.html', params: 'p=kf-jades-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
+    '/sofa-orla-com-chaise': { pagina: 'produto.html', params: 'p=kf-orla-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },   // pés de madeira; o anúncio não tem escolha de madeira
     '/sofa-panna': { pagina: 'produto.html', params: 'p=kf-panna', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-pulso-curvo': { pagina: 'produto.html', params: 'p=kf-pulso', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-moss-com-chaise-curva': { pagina: 'produto.html', params: 'p=kf-moss-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
