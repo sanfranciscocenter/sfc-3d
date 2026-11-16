@@ -71,6 +71,20 @@ export const PRODUTOS = {
   // Sofá Orla (2 módulos com braço, base em lâmina): bloco "KF. Sofa Orla Base lamina" (650d308d…), 220 cm. Malhas juntadas por material:
   // #0 tecido, #1 pés em lâmina (madeira escolhível). O anúncio vende de 180 a 300 cm: estica o miolo, braços fixos.
   'kf-orla': { nome: 'Sofá Orla', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/orla.glb', partes: { '*': 'tecido', '#1': 'madeira' }, tamanhos: [180, 200, 220, 260, 300], tamanhoBloco: 220, estica: { base: 2.20, braco: 0.18, rigido: 0.3 } },
+  // Sofá Fluxo (2 braços, assento bipartido): bloco "KF. FLUXO" (5bb06221…), 268 cm, reduzido para os 260 da tabela. Base rente ao piso (rodapé escuro, fixo).
+  // O anúncio vende de 200 a 320 cm: estica o miolo, braços fixos.
+  'kf-fluxo': { nome: 'Sofá Fluxo', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/fluxo.glb', partes: { TECIDO: 'tecido', PRETO: 'preto' }, tamanhos: [200, 220, 240, 260, 280, 320], tamanhoBloco: 260, estica: { base: 2.60, braco: 0.30, rigido: 0.3 } },
+  // Sofá Legado (2 braços, assento único, 3 almofadas de encosto): bloco "KF. LEGADO" (39b85208…), 304 cm, reduzido para 300. Sapatas escuras, fixas.
+  // O anúncio vende de 180 a 300 cm.
+  'kf-legado': { nome: 'Sofá Legado', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/legado.glb', partes: { TECIDO: 'tecido', PRETO: 'preto' }, tamanhos: [180, 200, 220, 240, 280, 300], tamanhoBloco: 300, estica: { base: 3.00, braco: 0.30, rigido: 0.3 } },
+  // Sofá Jades com Chaise: bloco "KF- Sofá Jades" (b487174c…: módulo com braço + chaise à direita). No bloco a chaise tem 74 cm de largura;
+  // foi alargada para os 110 cm da tabela (braço mantido). Base: módulo 130 + chaise 110 = 240. Só o módulo estica (220 a 320 cm); a chaise não muda.
+  // TECIDO = estofado, ACO = requadro e pés em alumínio (metal escolhível).
+  'kf-jades-chaise': { nome: 'Sofá Jades com Chaise', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/jades-chaise.glb', partes: { TECIDO: 'tecido', ACO: 'metal' }, tamanhos: [220, 240, 260, 300, 320], tamanhoBloco: 240, estica: { base: 2.40, zona: [-1.05, 0.05], rigido: 0.3 } },
+  // Sofá Orla com Chaise (chaise com mesa + módulo sem braço + módulo com braço, pés de madeira): o bloco próprio da Warehouse (517d9935…) não tem GLB.
+  // Feito do bloco "KF. Sofa Orla Base lamina" (650d308d…): assento esquerdo alongado para 165 cm (chaise), mesa em lâmina de 30 cm no pé da chaise,
+  // terceiro assento e almofadas de encosto copiados, bases em lâmina trocadas por pés, como na foto do anúncio. Base 320 cm; estica só os dois módulos (260 a 380).
+  'kf-orla-chaise': { nome: 'Sofá Orla com Chaise', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/orla-chaise.glb', partes: { TECIDO: 'tecido', MADEIRA: 'madeira' }, tamanhos: [260, 290, 320, 380], tamanhoBloco: 320, estica: { base: 3.20, zona: [-0.48, 1.48], rigido: 0.3 } },
   // Sofá Oásis (com capa): bloco "KF. Sofa OASIS" (ee2e47c0…; nome interno Cassange). Mesma configuração da foto, mas o bloco veio menor
   // (176 × 65 × 80 cm): escala por eixo para 211 × 95 × 90 e largura do anúncio (195 a 275 cm) esticando o miolo, braços fixos.
   // #0 tecido (capa e almofadas), #1 sapatas (pretas, quase escondidas pela saia).
