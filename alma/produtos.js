@@ -322,6 +322,10 @@ export const PRODUTOS = {
     estica: { base: 4.26, zona: [-1.89, 0.03], rigido: 0.7 },
     ocultaEm: { 340: ['#7'] }   // no 340 cabem duas almofadas de encosto
   },
+  // Chaise Curva Moss (só a chaise redonda): tirada do mesmo bloco "KF - Sofá MOSS" — as peças com x ≥ 53 cm (base redonda, encosto curvo,
+  // 4 almofadas, 4 pés). 160 × 82 × 160 cm no bloco; o anúncio vende 160 e 140 (redonda: escala igual em largura e profundidade).
+  'kf-moss-chaise-curva': { nome: 'Chaise Curva Moss', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/moss-chaise-curva.glb',
+    partes: { TECIDO: 'tecido', ACO: 'metal' }, tamanhos: [140, 160], tamanhoBloco: 160, redonda: true },
   'kf-base-sofa': { nome: 'Sofá Base', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/base-sofa.glb',
     // Bloco "KF - Sofá Base" (a7c6c665…): sofá curvo, 248 cm no bloco; confere com as fotos. Faces em fragmentos soltos
     // (metades complementares, como na Poltrona Base): usar todas as malhas. #21 a #24 = pés ovais laminados
