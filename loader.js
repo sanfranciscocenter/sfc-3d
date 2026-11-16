@@ -244,6 +244,7 @@
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
     '/sofa-fluxo': { pagina: 'produto.html', params: 'p=kf-fluxo', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },   // base rente ao piso: sem madeira aparente no 3D (o anúncio tem a escolha de madeira, 141)
+    '/sofa-paturi': { pagina: 'produto.html', params: 'p=kf-paturi-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },   // 3D montado do bloco da poltrona
     '/sofa-legado-kf-legado26': { pagina: 'produto.html', params: 'p=kf-legado', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-jades-com-chaise': { pagina: 'produto.html', params: 'p=kf-jades-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-orla-com-chaise': { pagina: 'produto.html', params: 'p=kf-orla-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },   // pés de madeira (personalização 141 desde 16/11/2026)
