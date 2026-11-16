@@ -60,6 +60,7 @@
     '/poltrona-base': { pagina: 'produto.html', params: 'p=kf-base-poltrona', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a lâmina de cinamomo (KF):' } },
     '/poltrona-e-puff-paturi': { pagina: 'produto.html', params: 'p=kf-paturi-poltrona-puff', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/poltrona-e-puff-isa': { pagina: 'produto.html', params: 'p=kf-isa-puff', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    '/poltrona-paturi': { pagina: 'produto.html', params: 'p=kf-paturi-poltrona', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/poltrona-isa': { pagina: 'produto.html', params: 'p=kf-isa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/poltrona-giz': { pagina: 'produto.html', params: 'p=kf-giz', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/poltrona-rio': { pagina: 'produto.html', params: 'p=kf-rio', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
