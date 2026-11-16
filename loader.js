@@ -244,6 +244,9 @@
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
     '/sofa-fluxo': { pagina: 'produto.html', params: 'p=kf-fluxo', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },   // base rente ao piso: sem madeira aparente no 3D (o anúncio tem a escolha de madeira, 141)
+    // Lunna: modelo GERADO (a fábrica não tem bloco), um GLB por medida — cada medida acrescenta um gomo de 33 cm. Só tecido (sem linha Couro).
+    '/sofa-lunna': { pagina: 'produto.html', params: 'p=kf-lunna', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
+    '/sofa-lunna-com-chaise': { pagina: 'produto.html', params: 'p=kf-lunna-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-paturi': { pagina: 'produto.html', params: 'p=kf-paturi-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },   // 3D montado do bloco da poltrona
     '/sofa-legado-kf-legado26': { pagina: 'produto.html', params: 'p=kf-legado', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-jades-com-chaise': { pagina: 'produto.html', params: 'p=kf-jades-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
