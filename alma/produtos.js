@@ -65,6 +65,15 @@ export const PRODUTOS = {
   // Poltrona Isa: bloco "KF - Poltrona ISA" (2dccc6eb…), 90 × 87 × 92 cm = a medida de 90 do anúncio; as de 80 e 100 são o mesmo bloco
   // com a largura escalada (um GLB por medida). Tudo em tecido. Puff: bloco "KF - Puff ISA" (7ceac747…), 70 × 38 × 57 cm, posto à frente,
   // em linha com a poltrona (35 cm de distância). Dois anúncios: só a poltrona e poltrona + puff.
+  // Sofá Lunna (reto): a fábrica NÃO tem bloco. Modelo GERADO do zero (outputs/kf-lunna-20261116/ferramentas/_lunna.js) a partir das fotos e da tabela:
+  // braços de 30 cm e colunas de assento + encosto de 33 cm; cada medida acrescenta uma coluna (193 = 4 … 358 = 9), por isso um GLB por medida.
+  // Referência de forma: as fotos REAIS (Lunna com chaise em bouclé branco e as três ambientadas); a capa de fundo branco do inteiriço é gerada por IA.
+  // O Lunna não tem linha Couro no site: semTecido tira os couros da lista.
+  'kf-lunna': { nome: 'Sofá Lunna', sobre: 'KF Mobiliário', marca: 'kf', partes: { TECIDO: 'tecido' }, semTecido: /^Couro/i, tamanhos: [193, 226, 259, 292, 325, 358], tamanhoBloco: 259,
+    glbTam: ['kf/modelos/lunna-193.glb', 'kf/modelos/lunna-226.glb', 'kf/modelos/lunna-259.glb', 'kf/modelos/lunna-292.glb', 'kf/modelos/lunna-325.glb', 'kf/modelos/lunna-358.glb'] },
+  // Sofá Lunna com Chaise (chaise à direita de quem olha, como na foto): sofá 1 braço + chaise 1 braço da tabela; 253 = 3 + 3 colunas, 296 = 4 + 3, 359 = 5 + 4, 425 = 6 + 5.
+  'kf-lunna-chaise': { nome: 'Sofá Lunna com Chaise', sobre: 'KF Mobiliário', marca: 'kf', partes: { TECIDO: 'tecido' }, semTecido: /^Couro/i, tamanhos: [253, 296, 359, 425], tamanhoBloco: 296,
+    glbTam: ['kf/modelos/lunna-chaise-253.glb', 'kf/modelos/lunna-chaise-296.glb', 'kf/modelos/lunna-chaise-359.glb', 'kf/modelos/lunna-chaise-425.glb'] },
   'kf-isa': { nome: 'Poltrona Isa', sobre: 'KF Mobiliário', marca: 'kf', partes: { TECIDO: 'tecido' }, tamanhos: [80, 90, 100],
     glbTam: ['kf/modelos/isa-80.glb', 'kf/modelos/isa-90.glb', 'kf/modelos/isa-100.glb'] },
   'kf-isa-puff': { nome: 'Poltrona e Puff Isa', sobre: 'KF Mobiliário', marca: 'kf', partes: { TECIDO: 'tecido' }, tamanhos: [80, 90, 100],
