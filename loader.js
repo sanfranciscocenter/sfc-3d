@@ -58,6 +58,7 @@
     },
     // KF: poltronas ativadas em 16/11/2026 (T-136). A Base tem base em lâmina de cinamomo (personalização 85)
     '/poltrona-base': { pagina: 'produto.html', params: 'p=kf-base-poltrona', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a lâmina de cinamomo (KF):' } },
+    '/poltrona-e-puff-paturi': { pagina: 'produto.html', params: 'p=kf-paturi-poltrona-puff', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/poltrona-giz': { pagina: 'produto.html', params: 'p=kf-giz', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/poltrona-rio': { pagina: 'produto.html', params: 'p=kf-rio', derivacao: 208, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     // KF: sofás com tamanho (derivação 181) — ligados em 13/11/2026 a pedido de Matheus
