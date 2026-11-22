@@ -255,7 +255,7 @@
     '/sofa-panna': { pagina: 'produto.html', params: 'p=kf-panna', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-pulso-curvo': { pagina: 'produto.html', params: 'p=kf-pulso', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-moss-com-chaise-curva': { pagina: 'produto.html', params: 'p=kf-moss-chaise', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
-    '/sofa-base-kf-base2026': { pagina: 'produto.html', params: 'p=kf-base-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
+    '/sofa-base-kf-base2026': { pagina: 'produto.html', params: 'p=kf-base-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a lâmina de cinamomo (KF):' } },
     '/sofa-base-a': { pagina: 'produto.html', params: 'p=kf-base-a-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },   // pés de madeira; o anúncio não tem escolha de madeira
     '/sofa-jades-kf-jades': { pagina: 'produto.html', params: 'p=kf-jades-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },
     '/sofa-retratil-aura': { pagina: 'produto.html', params: 'p=kf-aura-sofa', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
