@@ -26,7 +26,8 @@ export const KF = {
   // madeira dos pés: [nome, cor da bolinha, textura]. Veio real da amostra do "KF - ACABAMENTOS 2026.pdf" (única
   // madeira fotografada no catálogo), pintado no tom de cada opção do site (as amostras do site são esferas).
   madeiras: [['Mel', '#C58A3C', 'mel.jpg'], ['Amêndoa', '#A89B86', 'amendoa.jpg'], ['Imbuia', '#54342A', 'imbuia.jpg'],
-    // lâmina de cinamomo (personalização 85 do site; grupo 'cin', só para o produto que pede grupoMad: 'cin'). Textura: lâmina de cinamomo do catálogo Litoral, por aproximação
-    ['Madeira Natural', '#A6682E', 'cin-natural.jpg', null, 'cin'], ['Madeira Mocca', '#491D0A', 'cin-mocca.jpg', null, 'cin'], ['Madeira Preta Ebanizada', '#1B1B1B', 'cin-ebanizada.jpg', null, 'cin']],
+    // lâmina de cinamomo (personalização 85 do site; grupo 'cin', só para o produto que pede grupoMad: 'cin').
+    // Texturas = amostras do site (T-145, 22/11/2026): Natural na cor da lâmina das fotos do Sofá Base; Mocca e Preto pela amostra da KF
+    ['Natural', '#C88F5C', 'cin-natural.jpg', null, 'cin'], ['Mocca', '#905D46', 'cin-mocca.jpg', null, 'cin'], ['Preto', '#292626', 'cin-ebanizada.jpg', null, 'cin']],
   metais: [['Preto', '#1C1C1D'], ['Grafite', '#4B4C4F'], ['Champanhe', '#B8A888'], ['Fendi', '#A39584'], ['Off White', '#E4E0D6']]
 };
