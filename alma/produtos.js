@@ -46,7 +46,7 @@ export const PRODUTOS = {
     // SEM anúncio no site em 13/11/2026. O bloco divide as faces de cada peça em duas malhas (parecem duplicadas, mas
     // são metades complementares): usar todas. #2 a #5 = pés; o resto é estofado
     // No ar desde 16/11/2026 (/poltrona-base). Base em lâmina de cinamomo: grupo 'cin' = personalização 85 do site.
-    grupoMad: 'cin',
+    grupoMad: 'cin', tituloMadeira: 'Lâmina',
     partes: { 'default_face_material': 'tecido', '#2': 'madeira', '#3': 'madeira', '#4': 'madeira', '#5': 'madeira' } },
   // Poltrona e Puff Paturi: bloco "KF - Poltrona Paturi" (c664009b…), 110 × 84 × 88 cm. O bloco só traz a poltrona: o PUFF FOI GERADO
   // a partir da base e da almofada do assento da própria poltrona, reduzidas para 80 × 44 × 50 cm (medidas da tabela), com os 4 pés
@@ -330,6 +330,8 @@ export const PRODUTOS = {
     // Bloco "KF - Sofá Base" (a7c6c665…): sofá curvo, 248 cm no bloco; confere com as fotos. Faces em fragmentos soltos
     // (metades complementares, como na Poltrona Base): usar todas as malhas. #21 a #24 = pés ovais laminados
     // (da frente até atrás); #8 a #15 = as 4 almofadas soltas; #4 a #7 = acabamento da frente dos braços (tecido)
+    // Pés em lâmina de cinamomo (T-145, 22/11/2026): grupo 'cin' = personalização 85 (Natural, Mocca, Preto)
+    grupoMad: 'cin', tituloMadeira: 'Lâmina',
     partes: { 'default_face_material': 'tecido', '#21': 'madeira', '#22': 'madeira', '#23': 'madeira', '#24': 'madeira' },
     tamanhos: [200, 220, 240, 260], tamanhoBloco: 240,
     estica: { base: 2.48, braco: 0.30, rigido: 0.6, porMalha: true }
