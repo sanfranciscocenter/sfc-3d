@@ -165,6 +165,7 @@ import { VND } from './vnd/catalogo.js';
 import { CMB as CMB0 } from './cmb/catalogo.js';
 import { MCB } from './mcb/catalogo.js';
 import { LIT } from './lit/catalogo.js';
+import { SOL } from './sol/catalogo.js';
 import { ANC } from './anc/catalogo.js';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/sanfranciscocenter/sfc-3d@main/pivot/';
@@ -211,7 +212,7 @@ const mv = $('mv'), statusEl = $('status');
 const par = new URLSearchParams(location.search);
 const CHAVE = par.get('p') || '', P = PRODUTOS[CHAVE];
 const DEBUG = par.get('debug') === '1';
-const EH_CMB = !!P && (P.marca === 'cmb' || P.marca === 'mcb' || P.marca === 'lit'), CMB = P && P.marca === 'mcb' ? MCB : P && P.marca === 'lit' ? LIT : CMB0, EH_VND = !!P && (P.marca === 'vnd' || EH_CMB);   // marcas com 'telas' próprias no catálogo (Combinare: recouro)   // Vindima: telas próprias (foto opaca), madeiras por produto, tamanhos com nome
+const EH_CMB = !!P && (P.marca === 'cmb' || P.marca === 'mcb' || P.marca === 'lit' || P.marca === 'sol'), CMB = P && P.marca === 'mcb' ? MCB : P && P.marca === 'lit' ? LIT : P && P.marca === 'sol' ? SOL : CMB0, EH_VND = !!P && (P.marca === 'vnd' || EH_CMB);   // marcas com 'telas' próprias no catálogo (Combinare: recouro)   // Vindima: telas próprias (foto opaca), madeiras por produto, tamanhos com nome
 const PALHAS = EH_VND ? (EH_CMB ? CMB : VND).telas : PALHAS_ALMA;
 
 /* ---------- 1. Modelo ---------- */
@@ -728,7 +729,7 @@ const urlTecido = c => CDN + `tecidos-v2/tc${c}.jpg`;
 const tem = papel => papeis.has(papel);
 
 // Catálogo de tecidos conforme a marca do produto (Alma: códigos TC; KF: texto da opção do site)
-const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd', 'cmb', 'mcb', 'lit', 'anc'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
+const EH_KF = !!P && ['kf', 'ser', 'bur', 'ipe', 'vnd', 'cmb', 'mcb', 'lit', 'anc', 'sol'].includes(P.marca);   // marcas com catálogo próprio no formato da KF
 const KF = P && P.marca === 'anc' ? ANC : P && P.marca === 'ser' ? SER : P && P.marca === 'bur' ? BUR : P && P.marca === 'ipe' ? IPE : EH_CMB ? CMB : EH_VND ? VND : KF0, PASTA = KF.pasta || 'kf';
 const codKF = v => P.prefixoTecido ? P.prefixoTecido + KF.sem(v) : KF.cod ? KF.cod(v) : (/(C?\d{2,4})\s*$/.exec(v) || [])[1];
 const LINHAS0 = P && P.linhas === 'tecidos+telas' ? [...KF.linhas, ...KF.linhasTela] : (P && P.linhas) || KF.linhas;

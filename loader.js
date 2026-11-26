@@ -244,6 +244,11 @@
     '/sofa-oasis': { pagina: 'produto.html', params: 'p=kf-oasis', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
     '/sofa-orla': { pagina: 'produto.html', params: 'p=kf-orla', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', madeira: 'Escolha a madeira (KF):' } },
     '/sofa-fluxo': { pagina: 'produto.html', params: 'p=kf-fluxo', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },   // base rente ao piso: sem madeira aparente no 3D (o anúncio tem a escolha de madeira, 141)
+    // Solenne (área externa, T-158): anúncios sem linha de preço por tecido (sem derivacao). Corda náutica entra como "tela".
+    '/poltrona-agave': { pagina: 'produto.html', params: 'p=sol-poltrona-agave', sel: { acabamento: 'Escolha o tecido (SOL):', tela: 'Escolha a cor da corda (SOL):', metal: 'Escolha a cor do alumínio (SOL):' } },
+    '/sofa-agave-2-lugares': { pagina: 'produto.html', params: 'p=sol-sofa-agave-2', sel: { acabamento: 'Escolha o tecido (SOL):', tela: 'Escolha a cor da corda (SOL):', metal: 'Escolha a cor do alumínio (SOL):' } },
+    '/mesa-de-centro-agave': { pagina: 'produto.html', params: 'p=sol-mesa-centro-agave', sel: { metal: 'Escolha a cor do alumínio (SOL):' } },
+    '/mesa-de-canto-agave': { pagina: 'produto.html', params: 'p=sol-mesa-canto-agave', sel: { metal: 'Escolha a cor do alumínio (SOL):' } },
     '/chaise-curva-moss': { pagina: 'produto.html', params: 'p=kf-moss-chaise-curva', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },   // chaise tirada do bloco do Sofá Moss
     // Lunna: modelo GERADO (a fábrica não tem bloco), um GLB por medida — cada medida acrescenta um gomo de 33 cm. Só tecido (sem linha Couro).
     '/sofa-lunna': { pagina: 'produto.html', params: 'p=kf-lunna', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
