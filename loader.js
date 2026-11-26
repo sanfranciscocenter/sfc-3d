@@ -277,7 +277,11 @@
       .map(u => ['/' + u, { pagina: 'produto.html', params: 'p=bur-' + u, derivacao: 208, tamanho: 186, sel: { acabamento: 'Escolha o tecido: (BUR)' } }])),
     '/sofa-madri-de-canto': { pagina: 'produto.html', params: 'p=bur-sofa-madri-de-canto', derivacao: 208, sel: { acabamento: 'Escolha o tecido: (BUR)' } },
     // Ateliê Ipê: tecido + cor da madeira, linhas de preço na derivação 208
-    ...Object.fromEntries(['cadeira-calice', 'cadeira-folhagem', 'poltrona-bruma', 'poltrona-talhe']
+    ...Object.fromEntries(['cadeira-calice', 'cadeira-folhagem', 'poltrona-bruma', 'poltrona-talhe',
+      // demais anúncios reativados em 25/11/2026 (T-160); sem bloco que sirva: banqueta-cipo-estofada, cadeira-crescente, cadeira-aragem
+      'banqueta-arcada', 'banqueta-alada', 'banqueta-malha', 'banqueta-enlace', 'banqueta-moldura', 'banqueta-laco', 'banqueta-contorno', 'banqueta-cipo', 'banqueta-seixo',
+      'cadeira-alada', 'cadeira-enlace', 'cadeira-sinuosa', 'cadeira-afago', 'cadeira-trelica', 'cadeira-laco', 'cadeira-veleira', 'cadeira-elo', 'cadeira-cipo', 'cadeira-cipo-estofada', 'cadeira-seixo', 'cadeira-plisse', 'cadeira-totem', 'cadeira-arcada',
+      'poltrona-repouso', 'poltrona-regaco', 'poltrona-esquadro', 'poltrona-cipo', 'poltrona-orbita', 'poltrona-tora-fixa']
       .map(u => ['/' + u, { pagina: 'produto.html', params: 'p=ipe-' + u, derivacao: 208, sel: { acabamento: 'Escolha o tecido (IPE):', madeira: 'Escolha a cor da madeira (IPE):' } }])),
     // Vindima: tecido e couro em personalizações separadas (a linha de preço diz qual vale), telas, madeira e,
     // nas camas, tamanho em cartões com nome (Solteiro, Casal, Queen, King); "cartoes" = outras escolhas em cartão
