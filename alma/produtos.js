@@ -27,6 +27,8 @@ const BUR_REGRAS = [[/iron|glass|acrylic|black|roda|metal.?standard|mat_padrao|^
 // O casco de trás das giratórias ("tecido das costas" no site) usa o mesmo tecido do assento no 3D.
 const MCB_R = metal => [[/^$/, 'oculto'], [/madeira|tauari|^acad4fa2c9e$|^acad7301/i, 'madeira'], [/tecido|linho|linha|couro|^acadfb1cf241$/i, 'tecido'], [/^acad(2a8b0ced|fa90ccd9)$/, metal], [/^acad(11917b7a|866a941c)$/, 'palha'], [/cromad|^acad60adb84$/i, 'aco'], [/metal|material #|0\.00/i, 'preto']];
 const MCB_P = (nome, arq, o = {}) => ({ nome, sobre: 'Marcobin', marca: 'mcb', glb: 'mcb/modelos/' + arq + '.glb', ...o, regras: [...(o.mais || []), ...MCB_R(o.metal ? 'metal' : 'aco')], partes: { '*': 'madeira', ...(o.partes || {}) } });
+// Solenne (área externa): TECIDO = almofadas, PALHA = corda náutica (escolha de cor da corda), ACO = alumínio pintado (escolha da cor), PRETO = ponteiras/estrutura fixa
+const SOL_P = (nome, arq, o = {}) => ({ nome, sobre: 'Solenne', marca: 'sol', glb: 'sol/modelos/' + arq + '.glb', tituloMetal: 'Alumínio', artigoMetal: 'o alumínio', ...o, partes: { TECIDO: 'tecido', PALHA: 'palha', ACO: 'metal', PRETO: 'preto', VIDRO: 'vidro', ...(o.partes || {}) } });
 const LIT_P = (nome, arq, o = {}) => ({ nome, sobre: 'Litoral', marca: 'lit', glb: 'lit/modelos/' + arq + '.glb', ...o, partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'palha', PRETO: 'preto', ACO: 'aco', COURO: 'couro', VIDRO: 'vidro', '*': 'madeira', ...(o.partes || {}) } });
 // Ancezki (marca real): blocos do perfil oficial na 3D Warehouse, convertidos por peça solta. Linha de preço = tecido (derivação 208).
 // grupoMad: 'mad' = "Escolha a madeira (ANC):" · 'lam' = "Escolha a lâmina (ANC):". ACO = peça que segue a cor do metal.
@@ -132,6 +134,12 @@ export const PRODUTOS = {
   // Sofá Otto Orgânico: bloco "KF. OTTO" (836f6e8f…), 3 módulos, 449 × 87 × 134 de caixa = a medida de 455 cm. #0 tecido, #1 pés (tom de madeira fixo).
   // De 455 a 515 cm só o módulo da direita cresce (assento de 0,80 a 1,40 m): estica a faixa do assento dele; o resto não muda.
   'kf-otto': { nome: 'Sofá Otto Orgânico', sobre: 'KF Mobiliário', marca: 'kf', glb: 'kf/modelos/otto.glb', partes: { '*': 'tecido', '#1': 'couro' }, tamanhos: [455, 465, 475, 485, 495, 515], tamanhoBloco: 455, estica: { base: 4.55, zona: [1.30, 2.00], rigido: 0.7 } },
+  // Solenne (T-158): catálogo em sol/catalogo.js. Blocos do perfil da fábrica na 3D Warehouse, reduzidos, com os materiais renomeados.
+  // Coleção Agave (piloto, 26/11/2026). O corpo trançado em corda vem no bloco como superfície fechada: recebe a textura da corda, sem os vazados da foto.
+  'sol-poltrona-agave': SOL_P('Poltrona Agave', 'poltrona-agave'),   // 85 × 75 × 70 cm
+  'sol-sofa-agave-2': SOL_P('Sofá Agave 2 Lugares', 'sofa-agave-2-lugares'),   // 165 × 75 × 71 cm
+  'sol-mesa-centro-agave': SOL_P('Mesa de Centro Agave', 'mesa-de-centro-agave'),   // 70 × 35 × 70 cm, toda em alumínio
+  'sol-mesa-canto-agave': SOL_P('Mesa de Canto Agave', 'mesa-de-canto-agave'),   // 50 × 47 × 50 cm, toda em alumínio
   // Litoral (T-132): catálogo em lit/catalogo.js. Blocos do perfil da fábrica na 3D Warehouse, reduzidos e com os materiais renomeados
   // para TECIDO / MADEIRA / PALHA (tela de ratan) / PRETO / ACO; LIT_P liga cada nome ao papel. Tamanho único; linha de preço = tecido.
   'lit-cadeira-enseada-estofada': LIT_P('Cadeira Enseada Estofada', 'cadeira-enseada-estofada'),   // 47 × 83 × 58, confere com a foto do anúncio
