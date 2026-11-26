@@ -419,6 +419,15 @@ export const PRODUTOS = {
   'ipe-cadeira-calice': { nome: 'Cadeira Cálice', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/calice.glb', partes: { ...IPE_BASE } },
   'ipe-cadeira-folhagem': { nome: 'Cadeira Folhagem', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/folhagem.glb', partes: { ...IPE_BASE } },
   'ipe-poltrona-bruma': { nome: 'Poltrona Bruma', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/bruma.glb', partes: { ...IPE_BASE } },
+  // Demais anúncios (26/11/2026, T-160): blocos da mesma Warehouse convertidos com _anc.js (papéis TECIDO / MADEIRA / PALHA / PRETO / ACO, ~26 mil vértices).
+  // Os blocos das banquetas trazem 2 ou 3 alturas lado a lado: ficou só a mais baixa. O 3º item de cada par (1) só marca quem tem tela no encosto.
+  ...Object.fromEntries([['banqueta-arcada', 'Banqueta Arcada'], ['banqueta-alada', 'Banqueta Alada'], ['banqueta-malha', 'Banqueta Malha', 1], ['banqueta-enlace', 'Banqueta Enlace'], ['banqueta-moldura', 'Banqueta Moldura', 1], ['banqueta-laco', 'Banqueta Laço'],
+    ['banqueta-contorno', 'Banqueta Contorno'], ['banqueta-cipo', 'Banqueta Cipó'], ['banqueta-seixo', 'Banqueta Seixo'], ['cadeira-alada', 'Cadeira Alada'], ['cadeira-enlace', 'Cadeira Enlace'], ['cadeira-sinuosa', 'Cadeira Sinuosa'], ['cadeira-afago', 'Cadeira Afago'],
+    ['cadeira-trelica', 'Cadeira Treliça', 1], ['cadeira-laco', 'Cadeira Laço'], ['cadeira-veleira', 'Cadeira Veleira', 1], ['cadeira-elo', 'Cadeira Elo'], ['cadeira-cipo', 'Cadeira Cipó'], ['cadeira-cipo-estofada', 'Cadeira Cipó Estofada'], ['cadeira-seixo', 'Cadeira Seixo'],
+    ['cadeira-plisse', 'Cadeira Plissê'], ['cadeira-totem', 'Cadeira Totem'], ['cadeira-arcada', 'Cadeira Arcada'], ['poltrona-repouso', 'Poltrona Repouso'], ['poltrona-regaco', 'Poltrona Regaço'], ['poltrona-esquadro', 'Poltrona Esquadro'],
+    ['poltrona-cipo', 'Poltrona Cipó'], ['poltrona-orbita', 'Poltrona Órbita'], ['poltrona-tora-fixa', 'Poltrona Tora Fixa']]
+    // PALHA = tela do encosto: nestes blocos a trama é geometria de verdade (fios), por isso recebe a cor lisa de palha ('forro') em vez da textura vazada
+    .map(([arq, nome]) => ['ipe-' + arq, { nome, sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/' + arq + '.glb', partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'forro', PRETO: 'preto', ACO: 'aco' } }])),
   'ipe-poltrona-talhe': { nome: 'Poltrona Talhe', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/talhe.glb', partes: { ...IPE_BASE } },
 
   // ---------- Vindima (catálogo em vnd/catalogo.js; blocos da fábrica reduzidos em vnd/modelos/) ----------
