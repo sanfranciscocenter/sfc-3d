@@ -211,6 +211,7 @@ const $ = id => document.getElementById(id);
 const mv = $('mv'), statusEl = $('status');
 const par = new URLSearchParams(location.search);
 const CHAVE = par.get('p') || '', P = PRODUTOS[CHAVE];
+if (P && par.get('nome')) P.nome = par.get('nome'); if (P && par.get('sobre')) P.sobre = par.get('sobre');   // vitrine fora da loja: nome e marca vêm do endereço
 const DEBUG = par.get('debug') === '1';
 const EH_CMB = !!P && (P.marca === 'cmb' || P.marca === 'mcb' || P.marca === 'lit' || P.marca === 'sol'), CMB = P && P.marca === 'mcb' ? MCB : P && P.marca === 'lit' ? LIT : P && P.marca === 'sol' ? SOL : CMB0, EH_VND = !!P && (P.marca === 'vnd' || EH_CMB);   // marcas com 'telas' próprias no catálogo (Combinare: recouro)   // Vindima: telas próprias (foto opaca), madeiras por produto, tamanhos com nome
 const PALHAS = EH_VND ? (EH_CMB ? CMB : VND).telas : PALHAS_ALMA;
