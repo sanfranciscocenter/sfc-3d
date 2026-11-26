@@ -425,7 +425,10 @@ export const PRODUTOS = {
     ['banqueta-contorno', 'Banqueta Contorno'], ['banqueta-cipo', 'Banqueta Cipó'], ['banqueta-seixo', 'Banqueta Seixo'], ['cadeira-alada', 'Cadeira Alada'], ['cadeira-enlace', 'Cadeira Enlace'], ['cadeira-sinuosa', 'Cadeira Sinuosa'], ['cadeira-afago', 'Cadeira Afago'],
     ['cadeira-trelica', 'Cadeira Treliça', 1], ['cadeira-laco', 'Cadeira Laço'], ['cadeira-veleira', 'Cadeira Veleira', 1], ['cadeira-elo', 'Cadeira Elo'], ['cadeira-cipo', 'Cadeira Cipó'], ['cadeira-cipo-estofada', 'Cadeira Cipó Estofada'], ['cadeira-seixo', 'Cadeira Seixo'],
     ['cadeira-plisse', 'Cadeira Plissê'], ['cadeira-totem', 'Cadeira Totem'], ['cadeira-arcada', 'Cadeira Arcada'], ['poltrona-repouso', 'Poltrona Repouso'], ['poltrona-regaco', 'Poltrona Regaço'], ['poltrona-esquadro', 'Poltrona Esquadro'],
-    ['poltrona-cipo', 'Poltrona Cipó'], ['poltrona-orbita', 'Poltrona Órbita'], ['poltrona-tora-fixa', 'Poltrona Tora Fixa']]
+    ['poltrona-cipo', 'Poltrona Cipó'], ['poltrona-orbita', 'Poltrona Órbita'], ['poltrona-tora-fixa', 'Poltrona Tora Fixa'],
+    // sem bloco próprio na fábrica — montados de outro bloco (26/11/2026): Banqueta Cipó Estofada = Banqueta Cipó + almofada no encosto (cópia da do assento);
+    // Cadeira Crescente = Cadeira Elo com o encosto alargado em meia-lua; Cadeira Aragem = bloco "Selena" com a tela do assento trocada por almofada.
+    ['banqueta-cipo-estofada', 'Banqueta Cipó Estofada'], ['cadeira-crescente', 'Cadeira Crescente'], ['cadeira-aragem', 'Cadeira Aragem']]
     // PALHA = tela do encosto: nestes blocos a trama é geometria de verdade (fios), por isso recebe a cor lisa de palha ('forro') em vez da textura vazada
     .map(([arq, nome]) => ['ipe-' + arq, { nome, sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/' + arq + '.glb', partes: { TECIDO: 'tecido', MADEIRA: 'madeira', PALHA: 'forro', PRETO: 'preto', ACO: 'aco' } }])),
   'ipe-poltrona-talhe': { nome: 'Poltrona Talhe', sobre: 'Ateliê Ipê', marca: 'ipe', glb: 'ipe/modelos/talhe.glb', partes: { ...IPE_BASE } },
