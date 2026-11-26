@@ -140,6 +140,11 @@ export const PRODUTOS = {
   'sol-sofa-agave-2': SOL_P('Sofá Agave 2 Lugares', 'sofa-agave-2-lugares'),   // 165 × 75 × 71 cm
   'sol-mesa-centro-agave': SOL_P('Mesa de Centro Agave', 'mesa-de-centro-agave'),   // 70 × 35 × 70 cm, toda em alumínio
   'sol-mesa-canto-agave': SOL_P('Mesa de Canto Agave', 'mesa-de-canto-agave'),   // 50 × 47 × 50 cm, toda em alumínio
+  // Coleções Villa, Sirênia, Terroir e Halo: nestes blocos a corda é geometria de verdade (centenas de fios), por isso os arquivos são mais pesados
+  ...Object.fromEntries([['poltrona-villa', 'Poltrona Villa'], ['cadeira-villa', 'Cadeira Villa'], ['namoradeira-villa', 'Namoradeira Villa'], ['espreguicadeira-villa', 'Espreguiçadeira Villa'],   // Mesa de Centro Villa fora: o bloco traz duas mesas, o anúncio é de uma
+    ['cadeira-sirenia-com-bracos', 'Cadeira Sirênia com Braços'], ['poltrona-sirenia', 'Poltrona Sirênia'], ['sofa-sirenia', 'Sofá Sirênia'], ['mesa-de-canto-sirenia', 'Mesa de Canto Sirênia'],
+    ['balanco-halo', 'Balanço Halo'], ['cadeira-halo', 'Cadeira Halo'], ['espreguicadeira-halo', 'Espreguiçadeira Halo'], ['poltrona-halo', 'Poltrona Halo']]
+    .map(([arq, nome]) => ['sol-' + arq, SOL_P(nome, arq)])),
   // Litoral (T-132): catálogo em lit/catalogo.js. Blocos do perfil da fábrica na 3D Warehouse, reduzidos e com os materiais renomeados
   // para TECIDO / MADEIRA / PALHA (tela de ratan) / PRETO / ACO; LIT_P liga cada nome ao papel. Tamanho único; linha de preço = tecido.
   'lit-cadeira-enseada-estofada': LIT_P('Cadeira Enseada Estofada', 'cadeira-enseada-estofada'),   // 47 × 83 × 58, confere com a foto do anúncio
