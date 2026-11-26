@@ -278,8 +278,7 @@
     '/sofa-madri-de-canto': { pagina: 'produto.html', params: 'p=bur-sofa-madri-de-canto', derivacao: 208, sel: { acabamento: 'Escolha o tecido: (BUR)' } },
     // Ateliê Ipê: tecido + cor da madeira, linhas de preço na derivação 208
     ...Object.fromEntries(['cadeira-calice', 'cadeira-folhagem', 'poltrona-bruma', 'poltrona-talhe',
-      // demais anúncios reativados em 25/11/2026 (T-160); os três últimos foram montados de outro bloco (a fábrica não tem o deles)
-      'banqueta-cipo-estofada', 'cadeira-crescente', 'cadeira-aragem',
+      // demais anúncios reativados em 25/11/2026 (T-160); ficam SEM 3D, por decisão de Matheus (a fábrica não tem o bloco): banqueta-cipo-estofada, cadeira-crescente, cadeira-aragem
       'banqueta-arcada', 'banqueta-alada', 'banqueta-malha', 'banqueta-enlace', 'banqueta-moldura', 'banqueta-laco', 'banqueta-contorno', 'banqueta-cipo', 'banqueta-seixo',
       'cadeira-alada', 'cadeira-enlace', 'cadeira-sinuosa', 'cadeira-afago', 'cadeira-trelica', 'cadeira-laco', 'cadeira-veleira', 'cadeira-elo', 'cadeira-cipo', 'cadeira-cipo-estofada', 'cadeira-seixo', 'cadeira-plisse', 'cadeira-totem', 'cadeira-arcada',
       'poltrona-repouso', 'poltrona-regaco', 'poltrona-esquadro', 'poltrona-cipo', 'poltrona-orbita', 'poltrona-tora-fixa']
