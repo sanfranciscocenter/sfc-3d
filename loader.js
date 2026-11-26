@@ -249,6 +249,11 @@
     '/sofa-agave-2-lugares': { pagina: 'produto.html', params: 'p=sol-sofa-agave-2', sel: { acabamento: 'Escolha o tecido (SOL):', tela: 'Escolha a cor da corda (SOL):', metal: 'Escolha a cor do alumínio (SOL):' } },
     '/mesa-de-centro-agave': { pagina: 'produto.html', params: 'p=sol-mesa-centro-agave', sel: { metal: 'Escolha a cor do alumínio (SOL):' } },
     '/mesa-de-canto-agave': { pagina: 'produto.html', params: 'p=sol-mesa-canto-agave', sel: { metal: 'Escolha a cor do alumínio (SOL):' } },
+    // Villa, Sirênia e Halo (26/11/2026): [url do anúncio, chave do modelo]
+    ...Object.fromEntries([['poltrona-villa'], ['namoradeira-villa'], ['cadeira-villa-sem-almofada-de-assento', 'cadeira-villa'], ['cadeira-sirenia-com-bracos'], ['poltrona-sirenia'], ['sofa-sirenia'], ['balanco-halo'], ['cadeira-halo'], ['espreguicadeira-halo'], ['poltrona-halo']]
+      .map(([u, k]) => ['/' + u, { pagina: 'produto.html', params: 'p=sol-' + (k || u), sel: { acabamento: 'Escolha o tecido (SOL):', tela: 'Escolha a cor da corda (SOL):', metal: 'Escolha a cor do alumínio (SOL):' } }])),
+    // só alumínio volta para a página (a Espreguiçadeira Villa não tem corda no bloco; a almofada do 3D é só ilustrativa)
+    ...Object.fromEntries(['espreguicadeira-villa', 'mesa-de-canto-sirenia'].map(u => ['/' + u, { pagina: 'produto.html', params: 'p=sol-' + u, sel: { metal: 'Escolha a cor do alumínio (SOL):' } }])),
     '/chaise-curva-moss': { pagina: 'produto.html', params: 'p=kf-moss-chaise-curva', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):', metal: 'Escolha o metal (KF)' } },   // chaise tirada do bloco do Sofá Moss
     // Lunna: modelo GERADO (a fábrica não tem bloco), um GLB por medida — cada medida acrescenta um gomo de 33 cm. Só tecido (sem linha Couro).
     '/sofa-lunna': { pagina: 'produto.html', params: 'p=kf-lunna', derivacao: 208, tamanho: 181, sel: { acabamento: 'Escolha o tecido (KF):' } },
